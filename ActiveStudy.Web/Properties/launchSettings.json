@@ -1,0 +1,14 @@
+﻿{
+  "profiles": {
+    "ActiveStudy.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "EMAIL_SENDER": "CONSOLE",
+        "MONGO_CONNECTION": "mongodb://localhost:27017/activestudy"
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+@model IEnumerable<ActiveStudy.Web.Models.Schools.ClassListModel>
+@inject IViewLocalizer localizer
+
+@foreach (var cls in Model)
+{
+    <a class="d-block border-bottom pb-5 mb-5" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@cls.SchoolId" asp-route-id="@cls.Id">
+        <div class="row mx-md-n2">
+            <div class="col-md-4 px-md-2 mb-3 mb-md-0">
+                <div class="position-relative">
+                    <img class="img-fluid w-100 rounded" src="/svg/components/graphics-1.svg" alt="Image Description">
+
+                    <div class="position-absolute bottom-0 left-0 mb-3 ml-4">
+                        <div class="d-flex align-items-center flex-wrap">
+                            <ul class="list-inline mt-n1 mb-0 mr-2">
+                                <li class="list-inline-item mx-0">
+                                    <img src="/svg/illustrations/star.svg" alt="Review rating" width="14">
+                                </li>
+                                <li class="list-inline-item mx-0">
+                                    <img src="/svg/illustrations/star.svg" alt="Review rating" width="14">
+                                </li>
+                                <li class="list-inline-item mx-0">
+                                    <img src="/svg/illustrations/star.svg" alt="Review rating" width="14">
+                                </li>
+                                <li class="list-inline-item mx-0">
+                                    <img src="/svg/illustrations/star.svg" alt="Review rating" width="14">
+                                </li>
+                                <li class="list-inline-item mx-0">
+                                    <img src="/svg/illustrations/star.svg" alt="Review rating" width="14">
+                                </li>
+                            </ul>
+                            <span class="d-inline-block">
+                                <small class="font-weight-bold text-white mr-1">4.91</small>
+                                <small class="text-white-70">(1.5k+ reviews)</small>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="media mb-2">
+                    <div class="media-body">
+                        <h3 class="text-hover-primary">@cls.Title</h3>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-start align-items-center small text-muted mb-2">
+                    @* <div class="d-flex align-items-center"> *@
+                    @*     <div class="avatar-group"> *@
+                    @*         <span class="avatar avatar-xs avatar-circle" data-toggle="tooltip" data-placement="top" title="" data-original-title="Nataly Gaga"> *@
+                    @*             <img class="avatar-img" src="/img/100x100/img1.jpg" alt="Image Description"> *@
+                    @*         </span> *@
+                    @*     </div> *@
+                    @* </div> *@
+                </div>
+
+                <p class="font-size-1 text-body mb-0">Learn Python like a Professional! Start from the basics and go all the way to creating your own applications and games!</p>
+            </div>
+        </div>
+    </a>
+}

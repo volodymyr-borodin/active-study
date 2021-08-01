@@ -1,0 +1,36 @@
+stages:
+  - build
+  - deploy
+  - clean
+
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+
+build:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - docker build -t activestudy:latest .
+    - docker save activestudy:latest | ssh -o StrictHostKeyChecking=no -C root@167.172.35.199 docker load
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    - ssh -o StrictHostKeyChecking=no root@167.172.35.199 'docker stop activestudy; docker rm activestudy; docker run -d -p 8030:80 --name activestudy activestudy;'
+  only:
+    - master
+    
+clean-images:
+  stage: clean
+  script:
+    - ssh -o StrictHostKeyChecking=no root@167.172.35.199 'docker image prune -f;'
+  only:
+    - master

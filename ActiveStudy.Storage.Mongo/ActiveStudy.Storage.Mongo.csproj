@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ActiveStudy.AspNetCore.Identity.Mongo\ActiveStudy.AspNetCore.Identity.Mongo.csproj" />
+      <ProjectReference Include="..\ActiveStudy.Domain\ActiveStudy.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MongoDB.Driver" Version="2.10.3" />
+    </ItemGroup>
+
+</Project>

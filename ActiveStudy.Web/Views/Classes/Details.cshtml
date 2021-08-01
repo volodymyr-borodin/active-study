@@ -1,0 +1,73 @@
+@using ActiveStudy.Web.Models.Shared
+@model ActiveStudy.Web.Models.Classes.ClassViewModel
+@inject IViewLocalizer localizer
+@{
+    var navItems = new[]
+    {
+        new NavItemModel(localizer["Students"].Value, "pills-one-example1", "/svg/icons/icon-24.svg", true),
+        new NavItemModel(localizer["Schedule"].Value, "pills-two-example1", "/svg/icons/icon-7.svg")
+    };
+}
+
+<div class="bg-light">
+    <div class="container py-3">
+        <div class="row justify-content-md-between align-items-md-center">
+            <div class="col-md-5 mb-3 mb-md-0">
+                <!-- Breadcrumb -->
+                <nav class="d-inline-block rounded" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-no-gutter font-size-1 mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="School" asp-action="List">@localizer["Schools"]</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">@Model.School.Title</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+                    </ol>
+                </nav>
+                <!-- End Breadcrumb -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container space-top-1 space-bottom-lg-2">
+    <!-- Content -->
+    <div class="row">
+        <div class="col-md-4 col-lg-3 mb-9 mb-md-0">
+            <!-- App Info -->
+            <div class="mr-lg-2">
+                <partial name="_MainInfo" for="@Model.MainInfo" />
+            </div>
+            <!-- End App Info -->
+        </div>
+
+        <div class="col-md-8 col-lg-9 column-divider-md">
+            <div class="ml-lg-2">
+
+                <!-- Nav Classic -->
+                <ul class="nav nav-classic nav-rounded nav-justified border" id="pills-tab" role="tablist">
+                    @foreach (var item in navItems)
+                    {
+                        <partial name="_NavItem" for="@item"/>
+                    }
+                </ul>
+                <!-- End Nav Classic -->
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade pt-6 active show" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-two-example1-tab">
+                        <div class="row align-items-center mx-0 mb-2">
+                            <h2>@localizer["Students"]</h2>
+                            <a asp-controller="Students" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-classId="@Model.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Create New"]</a>
+                        </div>
+                        <partial name="_StudentList" for="@Model"/>
+                    </div>
+                    <div class="tab-pane fade pt-6" id="pills-two-example1" role="tabpanel" aria-labelledby="pills-three-example1-tab"></div>
+                </div>
+                <!-- End Tab Content -->
+            </div>
+        </div>
+    </div>
+    <!-- End Content -->
+</div>

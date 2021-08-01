@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveStudy.Web", "ActiveStudy.Web\ActiveStudy.Web.csproj", "{212A5AAB-82BE-4A96-9DCF-EA64327F22D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveStudy.AspNetCore.Identity.Mongo", "ActiveStudy.AspNetCore.Identity.Mongo\ActiveStudy.AspNetCore.Identity.Mongo.csproj", "{E8247D40-AC38-4704-8DCD-22BB4DFF270B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveStudy.Storage.Mongo", "ActiveStudy.Storage.Mongo\ActiveStudy.Storage.Mongo.csproj", "{A7311B01-0959-41F5-935A-C8C8448AF290}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveStudy.Domain", "ActiveStudy.Domain\ActiveStudy.Domain.csproj", "{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{212A5AAB-82BE-4A96-9DCF-EA64327F22D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{212A5AAB-82BE-4A96-9DCF-EA64327F22D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{212A5AAB-82BE-4A96-9DCF-EA64327F22D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{212A5AAB-82BE-4A96-9DCF-EA64327F22D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8247D40-AC38-4704-8DCD-22BB4DFF270B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8247D40-AC38-4704-8DCD-22BB4DFF270B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8247D40-AC38-4704-8DCD-22BB4DFF270B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8247D40-AC38-4704-8DCD-22BB4DFF270B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7311B01-0959-41F5-935A-C8C8448AF290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7311B01-0959-41F5-935A-C8C8448AF290}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7311B01-0959-41F5-935A-C8C8448AF290}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7311B01-0959-41F5-935A-C8C8448AF290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

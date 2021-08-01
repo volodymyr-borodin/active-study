@@ -1,0 +1,47 @@
+@model ActiveStudy.Web.Components.Account.AccountModel
+@inject IViewLocalizer Localizer
+
+<!-- Account -->
+<div class="hs-unfold">
+    <a class="js-hs-unfold-invoker rounded-circle" href="javascript:;"
+       data-hs-unfold-options='{
+                    "target": "#accountDropdown",
+                    "type": "css-animation",
+                    "event": "hover",
+                    "duration": 50,
+                    "delay": 0,
+                    "hideOnScroll": "true"
+                   }'>
+        <span class="avatar avatar-xs avatar-circle">
+            <i class="fas fa-user-circle fa-2x"></i>
+        </span>
+    </a>
+
+    <div id="accountDropdown" class="hs-unfold-content dropdown-menu dropdown-menu-sm-right dropdown-menu-no-border-on-mobile p-0" style="min-width: 245px;">
+        <div class="card">
+            <!-- Header -->
+            <div class="card-header p-4">
+                <a class="media align-items-center" href="#">
+                    <i class="fas fa-user-circle fa-3x text-primary"></i>
+                    <div class="media-body">
+                        <span class="d-block font-weight-bold">@Model.FullName</span>
+                        <span class="d-block small text-muted">@Model.Username</span>
+                    </div>
+                </a>
+            </div>
+            <!-- End Header -->
+
+            <!-- Body -->
+            <div class="card-body py-3">
+                <a class="dropdown-item px-0" asp-area="" asp-controller="Account" asp-action="Logout">
+                    <span class="dropdown-item-icon">
+                        <i class="fas fa-power-off"></i>
+                    </span>
+                    @Localizer["Log out"]
+                </a>
+            </div>
+            <!-- End Body -->
+        </div>
+    </div>
+</div>
+<!-- End Account -->

@@ -1,0 +1,21 @@
+@model ActiveStudy.Web.Components.LanguageSelect.LanguageSelectModel
+
+<div class="hs-unfold">
+    <a class="js-hs-unfold-invoker dropdown-toggle btn btn-xs btn-soft-light" href="javascript:;"
+       data-hs-unfold-options='{
+                      "target": "#footerLanguage",
+                      "type": "css-animation",
+                      "animationIn": "slideInDown"
+                     }'>
+        <img class="dropdown-item-icon" src="~/vendor/flag-icon-css/flags/4x3/us.svg" alt="United States Flag">
+        <span>@Model.SelectedLanguage</span>
+    </a>
+
+    <form id="footerLanguage" asp-area="" asp-controller="Account" asp-action="SetLanguage" class="hs-unfold-content dropdown-menu dropdown-unfold dropdown-menu-bottom mb-2">
+        <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+        @foreach (var culture in Model.AvailableCultures)
+        {
+            <a class="dropdown-item @(culture.Selected ? "active" : "")" href="javascript: $('#footerLanguage').append('<input type=hidden name=Culture value=@culture.Value />'); $('#footerLanguage').submit()">@culture.Text</a>
+        }
+    </form>
+</div>

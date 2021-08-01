@@ -1,0 +1,22 @@
+@model ActiveStudy.Web.Models.Classes.ClassViewModel
+@inject IViewLocalizer localizer
+
+@foreach (var student in Model.Students)
+{
+    <div class="container">
+        <!-- Author -->
+        <div class="border-top border-bottom py-4">
+            <div class="row align-items-md-center">
+                <div class="col-md-7 mb-5 mb-md-0">
+                    <div class="media align-items-center">
+                        <i class="fas fa-user-circle fa-3x text-primary"></i>
+                        <div class="media-body font-size-1 ml-3">
+                            <span class="h6"><a href="#">@student.FullName</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Author -->
+    </div>
+}

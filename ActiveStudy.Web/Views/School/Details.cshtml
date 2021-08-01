@@ -1,0 +1,93 @@
+@using ActiveStudy.Web.Models.Shared
+@model ActiveStudy.Web.Models.Schools.SchoolHomePageModel
+@inject IViewLocalizer localizer
+@{
+    var navItems = new []
+    {
+        new NavItemModel(localizer["School Info"].Value, "pills-one-example1", "/svg/icons/icon-24.svg", true),
+        new NavItemModel(localizer["Teachers"].Value, "pills-two-example1", "/svg/icons/icon-7.svg"),
+        new NavItemModel(localizer["Classes"].Value, "pills-three-example1", "/svg/icons/icon-22.svg")
+    };
+}
+
+<div class="bg-light">
+    <div class="container py-3">
+        <div class="row justify-content-md-between align-items-md-center">
+            <div class="col-md-5 mb-3 mb-md-0">
+                <!-- Breadcrumb -->
+                <nav class="d-inline-block rounded" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-no-gutter font-size-1 mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="School" asp-action="List">@localizer["Schools"]</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+                    </ol>
+                </nav>
+                <!-- End Breadcrumb -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container space-top-1 space-bottom-lg-2">
+    <!-- Content -->
+    <div class="row">
+        <div class="col-md-4 col-lg-3 mb-9 mb-md-0">
+            <!-- App Info -->
+            <div class="mr-lg-2">
+                <partial name="_MainInfo" for="@Model.MainInfo" />
+            </div>
+            <!-- End App Info -->
+        </div>
+
+        <div class="col-md-8 col-lg-9 column-divider-md">
+            <div class="ml-lg-2">
+
+                <!-- Nav Classic -->
+                <ul class="nav nav-classic nav-rounded nav-justified border" id="pills-tab" role="tablist">
+                    @foreach (var item in navItems)
+                    {
+                        <partial name="_NavItem" for="@item"/>
+                    }
+                </ul>
+                <!-- End Nav Classic -->
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade pt-6 active show" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-one-example1-tab">
+                        <p>Use Google Drive within Slack to:</p>
+
+                        <ul class="text-body pl-4 mb-5">
+                            <li>Create new Google Docs, Slides, and Sheets files</li>
+                            <li>Import an existing file from Google Drive into a channel or direct message</li>
+                            <li>Search directly within Google Drive files shared within Slack</li>
+                            <li>Automatically grant access to the files you share with the right audience</li>
+                            <li>Get updates in Slack on changes in Drive, like comments, access requests, and new files shared with you</li>
+                            <li>Reply directly to comment notifications from within Slack and have them posted to the file</li>
+                        </ul>
+
+                        <img class="img-fluid rounded mb-4" src="/img/900x450/img5.jpg" alt="Image Description">
+                        <img class="img-fluid rounded mb-4" src="/img/900x450/img4.jpg" alt="Image Description">
+                        <img class="img-fluid rounded" src="/img/900x450/img3.jpg" alt="Image Description">
+                    </div>
+                    <div class="tab-pane fade pt-6" id="pills-two-example1" role="tabpanel" aria-labelledby="pills-two-example1-tab">
+                        <div class="row align-items-center mx-0 mb-2">
+                            <h2>@localizer["Teachers"]</h2>
+                            <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Class"]</a>
+                        </div>
+                        <partial name="_TeacherList" for="@Model.Teachers"/>
+                    </div>
+                    <div class="tab-pane fade pt-6" id="pills-three-example1" role="tabpanel" aria-labelledby="pills-three-example1-tab">
+                        <div class="row align-items-center mx-0 mb-2">
+                            <h2>@localizer["Classes"]</h2>
+                            <a asp-controller="Classes" asp-action="Create" asp-route-schoolId="@Model.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Class"]</a>
+                        </div>
+                        <partial name="_ClassList" for="@Model.Classes"/>
+                    </div>
+                </div>
+                <!-- End Tab Content -->
+            </div>
+        </div>
+    </div>
+    <!-- End Content -->
+</div>

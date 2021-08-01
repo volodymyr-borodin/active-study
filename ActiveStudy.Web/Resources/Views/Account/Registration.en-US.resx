@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="Page Title" xml:space="preserve">
+        <value>Registration</value>
+    </data>
+    <data name="Welcome" xml:space="preserve">
+        <value>Welcome</value>
+    </data>
+    <data name="Subtitle" xml:space="preserve">
+        <value>Fill out the form to get started.</value>
+    </data>
+    <data name="First Name" xml:space="preserve">
+        <value>First Name</value>
+    </data>
+    <data name="First Name is Required" xml:space="preserve">
+        <value>Please enter your First Name</value>
+    </data>
+    <data name="Last Name" xml:space="preserve">
+        <value>Last Name</value>
+    </data>
+    <data name="Last Name is Required" xml:space="preserve">
+        <value>Please enter your Last Name</value>
+    </data>
+    <data name="Email" xml:space="preserve">
+        <value>Email address</value>
+    </data>
+    <data name="Email is Required" xml:space="preserve">
+        <value>Please enter correct Email Address</value>
+    </data>
+    <data name="Password" xml:space="preserve">
+        <value>Password</value>
+    </data>
+    <data name="Password is Required" xml:space="preserve">
+        <value>Please enter your Password</value>
+    </data>
+    <data name="Already have an account?" xml:space="preserve">
+        <value>Already have an account?</value>
+    </data>
+    <data name="Login" xml:space="preserve">
+        <value>Login</value>
+    </data>
+    <data name="Sign Up" xml:space="preserve">
+        <value>Sign Up</value>
+    </data>
+</root>

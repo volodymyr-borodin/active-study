@@ -1,0 +1,35 @@
+@model IEnumerable<ActiveStudy.Web.Models.Schools.TeacherListModel>
+@inject IViewLocalizer localizer
+
+@foreach (var teacher in Model)
+{
+    <div class="container">
+        <!-- Author -->
+        <div class="border-top border-bottom py-4">
+            <div class="row align-items-md-center">
+                <div class="col-md-7 mb-5 mb-md-0">
+                    <div class="media align-items-center">
+                        <div class="avatar avatar-circle">
+                            <img class="avatar-img" src="/img/100x100/img11.jpg" alt="Image Description">
+                        </div>
+                        <div class="media-body font-size-1 ml-3">
+                            <span class="h6"><a href="#">@teacher.FullName</a></span>
+                            @if (teacher.AnySubject)
+                            {
+                                <span class="d-block text-muted">@string.Join(", ", teacher.Subjects.Select(s => s.Title))</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <form asp-controller="Teachers" asp-action="Delete" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-danger transition-3d-hover">@localizer["Delete"]</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End Author -->
+    </div>
+}

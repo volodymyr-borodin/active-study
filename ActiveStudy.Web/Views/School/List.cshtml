@@ -1,0 +1,47 @@
+@model ActiveStudy.Web.Models.Schools.SchoolListPageModel
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["Your schools"];
+}
+
+<div class="container space-top-2 space-top-lg-3">
+  <!-- Title -->
+  <div class="w-md-80 w-lg-50 text-center mx-md-auto mb-5 mb-md-9">
+    <h2>Simple, transparent pricing</h2>
+    <p>Everything you need to continuously build, connect, and ship award-winning cross-browser websites.</p>
+  </div>
+  <!-- End Title -->
+
+  <div class="w-xl-80 mx-xl-auto">
+    <!-- Pricing -->
+    @foreach (var school in Model.Schools)
+    {
+      <div class="card p-4 mb-3 mb-md-1 aos-init aos-animate" data-aos="fade-up">
+        <div class="row align-items-sm-center">
+          <div class="col">
+            <div class="media align-items-center">
+              <div class="min-w-8rem mr-2">
+                <figure class="text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="32" height="32" viewBox="0 0 160 160">
+                    <circle fill="#377DFF" opacity=".85" cx="80" cy="80" r="48"></circle>
+                  </svg>
+                </figure>
+              </div>
+              <div class="media-body">
+                <h4 class="mb-0">@school.Title</h4>
+                <small class="d-block">Single site</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-7 col-md-5">
+            <span class="font-size-1">Ideal for corporate, portfolio, blog, shop and many more.</span>
+          </div>
+          <div class="col-12 col-md col-lg-4 col-xl-3 text-lg-right mt-3 mt-lg-0">
+            <a class="btn btn-block btn-outline-primary border transition-3d-hover" asp-controller="School" asp-action="Details" asp-route-id="@school.Id">@localizer["Open"]</a>
+          </div>
+        </div>
+      </div>
+      <!-- End Pricing -->
+    }
+  </div>
+</div>
