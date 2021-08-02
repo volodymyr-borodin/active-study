@@ -8,7 +8,6 @@ env:
 
 jobs:
   push-image:
-    needs: unit-test
     runs-on: ubuntu-20.04
 
     steps:
