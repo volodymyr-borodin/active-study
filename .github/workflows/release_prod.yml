@@ -1,0 +1,47 @@
+name: Deploy production
+
+on:
+  push:
+    branches: [ master ]
+env:
+  SERVICE_NAME: activestudy
+
+jobs:
+  push-image:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --file Dockerfile --tag $SERVICE_NAME
+
+      - name: Login into github container regestry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to github container regestry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$SERVICE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          docker tag $SERVICE_NAME $IMAGE_ID
+          docker push $IMAGE_ID
+
+  deploy:
+    needs: push-image
+    runs-on: ubuntu-20.04
+    
+    steps:
+      - uses: boberneprotiv/setup-ssh-key@v1
+        id: setup-ssh
+        with:
+          private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+
+      - uses: boberneprotiv/ssh-remove-run@v1
+        with:
+          user: ${{ secrets.SSH_REMOTE_USER }}
+          host: ${{ secrets.SSH_REMOTE_HOST }}
+          private-key-path: ${{ steps.setup-ssh.outputs.private-key-path }}
+          run: |
+            docker-compose pull
+            docker-compose up -d --force-recreate
