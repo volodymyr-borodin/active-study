@@ -9,6 +9,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <Folder Include="Resources\Views\Relatives" />
       <Folder Include="wwwroot\css\vendor" />
     </ItemGroup>
     

@@ -11,9 +11,21 @@
                     <div class="media align-items-center">
                         <i class="fas fa-user-circle fa-3x text-primary"></i>
                         <div class="media-body font-size-1 ml-3">
-                            <span class="h6"><a href="#">@student.FullName</a></span>
+                            <span class="h6">
+                                <a asp-controller="Students" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@student.Id">@student.FullName</a>
+                            </span>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="text-right">
+                        <a class="btn btn-primary transition-3d-hover" asp-controller="Relatives" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-studentId="@student.Id">@localizer["Add Relative"]</a>
+                    </div>
+                    @* <form method="get" > *@
+                    @*      *@
+                    @*         <button type="submit" class="btn btn-primary transition-3d-hover"></button> *@
+                    @*     </div> *@
+                    @* </form> *@
                 </div>
             </div>
         </div>

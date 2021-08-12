@@ -13,13 +13,16 @@ namespace ActiveStudy.Storage.Mongo.Crm
 
         [BsonElement("label")]
         public string Label { get; set; }
+        
+        [BsonElement("teacher")]
+        public TeacherShortEntity Teacher { get; set; }
 
         [BsonElement("schoolId")]
         public ObjectId SchoolId { get; set; }
 
         public static implicit operator Class(ClassEntity entity)
         {
-            return new Class(entity.Id.ToString(), entity.Grade, entity.Label, entity.SchoolId.ToString());
+            return new Class(entity.Id.ToString(), entity.Grade, entity.Label, entity.Teacher, entity.SchoolId.ToString());
         }
     }
 }

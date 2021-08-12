@@ -1,17 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ActiveStudy.Web.Models.Students
+namespace ActiveStudy.Web.Models.Relatives
 {
-    public class CreateStudentInputModel
+    public class CreateRelativeInputModel
     {
         [Required]
         public string FirstName { get; set; }
+
         [Required]
         public string LastName { get; set; }
-        [Required, EmailAddress]
+
+        [EmailAddress]
         public string Email { get; set; }
+
         [Phone]
         public string Phone { get; set; }
-        public string ClassId { get; set; }
+
+        public string StudentId { get; set; }
     }
 }

@@ -1,9 +1,9 @@
 @model ActiveStudy.Web.Components.SchoolsNav.SchoolsNavModel
-@inject IViewLocalizer Localizer
+@inject IViewLocalizer localizer
 
 <!-- Pages -->
 <li class="hs-has-sub-menu navbar-nav-item mr-lg-auto">
-    <a id="pagesMegaMenu" class="hs-mega-menu-invoker nav-link nav-link-toggle" href="javascript:;" aria-haspopup="true" aria-expanded="false" aria-labelledby="pagesSubMenu">@Localizer["My Schools"]</a>
+    <a id="pagesMegaMenu" class="hs-mega-menu-invoker nav-link nav-link-toggle" href="javascript:;" aria-haspopup="true" aria-expanded="false" aria-labelledby="pagesSubMenu">@localizer["My Schools"]</a>
 
     <!-- Pages - Submenu -->
     <div id="pagesSubMenu" class="hs-sub-menu dropdown-menu" aria-labelledby="pagesMegaMenu" style="min-width: 230px;">
@@ -11,13 +11,13 @@
         <!-- TODO: Add view for empty result -->
         @foreach (var school in Model.Schools)
         {
-            <a class="dropdown-item" asp-area="Schools" asp-controller="Home" asp-action="Index" asp-route-schoolId="@school.Id">@school.Title</a>
+            <a class="dropdown-item" asp-controller="School" asp-action="Details" asp-route-id="@school.Id">@school.Title</a>
         }
         @if (Model.Schools.Any())
         {
             <div class="dropdown-divider"></div>
         }
-        <a class="dropdown-item" asp-area="" asp-controller="School" asp-action="Create">@Localizer["Create New"]</a>
+        <a class="dropdown-item" asp-area="" asp-controller="School" asp-action="Create">@localizer["Create New"]</a>
     </div>
     <!-- End Pages - Submenu -->
 </li>

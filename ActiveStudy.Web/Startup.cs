@@ -5,6 +5,7 @@ using System.Linq;
 using ActiveStudy.AspNetCore.Identity.Mongo;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
@@ -65,8 +66,6 @@ namespace ActiveStudy.Web
                     throw new Exception("Unknown EMAIL_SENDER");
             }
 
-            services.AddScoped<SmtpEmailService>();
-
             var mongoUrl = MongoUrl.Create(Configuration["MONGO_CONNECTION"]);
 
             services.AddIdentity<ActiveStudyUserEntity, ActiveStudyRoleEntity>(options =>
@@ -97,6 +96,7 @@ namespace ActiveStudy.Web
             services.AddScoped<IClassStorage, ClassStorage>();
             services.AddScoped<ITeacherStorage, TeacherStorage>();
             services.AddScoped<IStudentStorage, StudentStorage>();
+            services.AddScoped<IRelativesStorage, RelativesStorage>();
 
             services.Configure<RouteOptions>(options =>
             {

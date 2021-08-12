@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using ActiveStudy.Domain.Crm.Students;
+
 namespace ActiveStudy.Web.Models.Schools
 {
     public class ClassListModel

@@ -42,4 +42,10 @@
     <data name="Save" xml:space="preserve">
         <value>Зберегти</value>
     </data>
+    <data name="Phone" xml:space="preserve">
+        <value>Телефон</value>
+    </data>
+    <data name="Phone is required" xml:space="preserve">
+        <value>Будь ласка, введіть правильный контактный телефон</value>
+    </data>
 </root>

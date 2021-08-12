@@ -21,7 +21,4 @@
     <data name="Students" xml:space="preserve">
         <value>Студенти</value>
     </data>
-    <data name="Create New" xml:space="preserve">
-        <value>Створити новий</value>
-    </data>
 </root>

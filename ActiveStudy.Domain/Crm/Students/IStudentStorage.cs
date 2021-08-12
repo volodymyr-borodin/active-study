@@ -7,5 +7,6 @@ namespace ActiveStudy.Domain.Crm.Students
     {
         Task<string> InsertAsync(Student student);
         Task<IEnumerable<Student>> FindAsync(StudentFilter filter);
+        Task<Student> GetByIdAsync(string id);
     }
 }

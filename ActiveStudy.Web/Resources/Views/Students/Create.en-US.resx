@@ -42,4 +42,10 @@
     <data name="Save" xml:space="preserve">
         <value>Save</value>
     </data>
+    <data name="Phone" xml:space="preserve">
+        <value>Phone</value>
+    </data>
+    <data name="Phone is required" xml:space="preserve">
+        <value>Please enter correct Phone Number</value>
+    </data>
 </root>

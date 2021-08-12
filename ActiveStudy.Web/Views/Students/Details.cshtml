@@ -1,0 +1,14 @@
+@model ActiveStudy.Web.Models.Students.StudentDetailsPageModel
+@inject IViewLocalizer localizer
+
+<p>@Model.FullName</p>
+<ul>
+    @foreach (var relative in Model.Relatives)
+    {
+        <li>
+            <h3>@relative.FirstName @relative.LastName</h3>
+            <p>Email: @(relative.Email ?? "-")</p>
+            <h3>Phone: @(relative.Phone ?? "-")</h3>
+        </li>
+    }
+</ul>

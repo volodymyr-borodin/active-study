@@ -23,6 +23,15 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             this.subjectStorage = subjectStorage;
         }
     
+        [HttpGet]
+        public async Task<IActionResult> List([Required]string schoolId)
+        {
+            var school = await schoolStorage.GetByIdAsync(schoolId);
+            var teachers = await teacherStorage.FindAsync(schoolId);
+
+            return View(new TeachersListPageModel(school, teachers));
+        }
+    
         [HttpGet("create")]
         public async Task<IActionResult> Create([Required]string schoolId)
         {
@@ -44,7 +53,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var teacher = new Teacher(string.Empty, model.FirstName, model.LastName, model.Email, subjects, schoolId, string.Empty);
             var teacherId = await teacherStorage.InsertAsync(teacher);
     
-            return RedirectToAction("Details", "School", new { id = schoolId });
+            return RedirectToAction("List", "Teachers", new { schoolId });
         }
 
         [HttpPost("{id}/delete")]
@@ -55,7 +64,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             // TODO: Add validation. Teacher can be assigned to class
             await teacherStorage.DeleteAsync(teacher);
 
-            return RedirectToAction("Details", "School", new {id = schoolId});
+            return RedirectToAction("List", "Teachers", new {schoolId});
         }
 
         private async Task<CreateTeacherViewModel> Build(string schoolId, CreateTeacherInputModel input = null)

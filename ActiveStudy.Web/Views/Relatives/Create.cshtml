@@ -1,4 +1,4 @@
-@model ActiveStudy.Web.Models.Students.CreateStudentViewModel
+@model ActiveStudy.Web.Models.Relatives.CreateRelativeViewModel
 @inject IViewLocalizer localizer
 @{
     ViewData["Title"] = localizer["Page Title"];
@@ -6,8 +6,8 @@
 
 <div class="container space-2">
     <!-- Apply Form -->
-    <form asp-action="Create" class="js-validate">
-        <input type="hidden" asp-for="ClassId" />
+    <form asp-action="Create" class="js-validate" asp-route-schoolId="@Model.SchoolId">
+        <input type="hidden" asp-for="StudentId" />
         <div class="row">
             <div class="col-md-6 mb-3 mb-md-5">
                 <!-- Input -->
@@ -39,7 +39,7 @@
                 <div class="js-form-message">
                     <label class="input-label" asp-for="Email">@localizer["Email"]</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" asp-for="Email" placeholder="@localizer["Email"]" required
+                        <input type="text" class="form-control" asp-for="Email" placeholder="@localizer["Email"]"
                                autocomplete="off" data-msg="@localizer["Email is required"]">
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                 <div class="js-form-message">
                     <label class="input-label" asp-for="Phone">@localizer["Phone"]</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" asp-for="Phone" placeholder="@localizer["Phone"]" required
+                        <input type="text" class="form-control" asp-for="Phone" placeholder="@localizer["Phone"]"
                                autocomplete="off" data-msg="@localizer["Phone is required"]">
                     </div>
                 </div>

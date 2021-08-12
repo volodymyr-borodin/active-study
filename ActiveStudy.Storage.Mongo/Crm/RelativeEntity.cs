@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using ActiveStudy.Domain.Crm;
+using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Students;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace ActiveStudy.Storage.Mongo.Crm
 {
-    public class StudentEntity
+    public class RelativeEntity
     {
         public ObjectId Id { get; set; }
 
@@ -23,23 +24,18 @@ namespace ActiveStudy.Storage.Mongo.Crm
         [BsonElement("phone")]
         public string Phone { get; set; }
 
-        [BsonElement("schoolId")]
-        public ObjectId SchoolId { get; set; }
+        [BsonElement("studentIds")]
+        public IList<string> StudentIds { get; set; }
 
-        [BsonElement("classes")]
-        public IList<ClassShortEntity> Classes { get; set; }
-
-        public StudentEntity()
+        public RelativeEntity()
         {
-            Classes = new List<ClassShortEntity>();
+            StudentIds = new List<string>();
         }
 
-        public static implicit operator Student(StudentEntity student)
+        public static implicit operator Relative(RelativeEntity student)
         {
-            var classes = student.Classes.Select(c => (ClassShortInfo)c);
-
-            return new Student(student.Id.ToString(), student.FirstName, student.LastName,
-                student.Email, student.Phone, student.SchoolId.ToString(), classes);
+            return new Relative(student.Id.ToString(), student.FirstName, student.LastName,
+                student.Email, student.Phone);
         }
     }
 }

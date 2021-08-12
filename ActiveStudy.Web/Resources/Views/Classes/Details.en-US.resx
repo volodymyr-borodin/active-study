@@ -18,13 +18,19 @@
     <resheader name="writer">
         <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
     </resheader>
-    <data name="School" xml:space="preserve">
-        <value>School</value>
-    </data>
     <data name="Students" xml:space="preserve">
         <value>Students</value>
     </data>
     <data name="Schedule" xml:space="preserve">
         <value>Schedule</value>
+    </data>
+    <data name="Schools" xml:space="preserve">
+        <value>Schools</value>
+    </data>
+    <data name="Add Student" xml:space="preserve">
+        <value>Add Student</value>
+    </data>
+    <data name="Responsible Teacher" xml:space="preserve">
+        <value>Responsible Teacher</value>
     </data>
 </root>

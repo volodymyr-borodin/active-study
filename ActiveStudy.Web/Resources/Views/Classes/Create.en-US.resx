@@ -36,4 +36,7 @@
     <data name="Save" xml:space="preserve">
         <value>Save</value>
     </data>
+    <data name="Responsible Teacher" xml:space="preserve">
+        <value>Responsible Teacher</value>
+    </data>
 </root>

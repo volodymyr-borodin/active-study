@@ -16,11 +16,18 @@ namespace ActiveStudy.Storage.Mongo.Crm
 
         public static implicit operator TeacherShortInfo(TeacherShortEntity entity)
         {
-            return new TeacherShortInfo(entity.Id.ToString(), entity.FullName, entity.UserId);
+            return entity == null
+                ? null
+                : new TeacherShortInfo(entity.Id.ToString(), entity.FullName, entity.UserId);
         }
 
         public static implicit operator TeacherShortEntity(TeacherShortInfo info)
         {
+            if (info == null)
+            {
+                return null;
+            }
+
             return new TeacherShortEntity
             {
                 Id = new ObjectId(info.Id),

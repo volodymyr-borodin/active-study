@@ -35,6 +35,13 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return entities.Select(s => (Student)s).ToList();
         }
 
+        public async Task<Student> GetByIdAsync(string id)
+        {
+            var filter = FilterBuilder.Eq(s => s.Id, new ObjectId(id));
+
+            return await context.Students.Find(filter).FirstOrDefaultAsync();
+        }
+
         public async Task<string> InsertAsync(Student student)
         {
             var entity = new StudentEntity
@@ -42,6 +49,8 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 FirstName = student.FirstName,
                 LastName = student.LastName,
                 Email = student.Email,
+                Phone = student.Phone,
+                
                 Classes = student.Classes.Select(c => (ClassShortEntity)c).ToList(),
                 SchoolId = new ObjectId(student.SchoolId)
             };

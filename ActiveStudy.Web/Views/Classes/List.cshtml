@@ -1,4 +1,4 @@
-@model ActiveStudy.Web.Models.Schools.SchoolHomePageModel
+@model ActiveStudy.Web.Models.Classes.ClassesListPageModel
 @inject IViewLocalizer localizer
 
 <div class="bg-light">
@@ -11,7 +11,10 @@
                         <li class="breadcrumb-item">
                             <a asp-controller="School" asp-action="List">@localizer["Schools"]</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Classes" asp-action="Details" asp-action-id="@Model.School.Id">@Model.School.Title</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">@localizer["Classes"]</li>
                     </ol>
                 </nav>
                 <!-- End Breadcrumb -->
@@ -35,9 +38,9 @@
             <div class="ml-lg-2">
 
                 <!-- Nav Classic -->
-                <ul class="nav nav-classic nav-rounded nav-justified border" id="pills-tab" role="tablist">
+                <ul class="nav nav-classic nav-rounded nav-justified border">
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold active" data-toggle="pill" asp-controller="School" asp-action="Details" asp-route-id="@Model.Id">
+                        <a class="nav-link font-weight-bold" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-24.svg" alt="SVG">
@@ -46,7 +49,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.Id">
+                        <a class="nav-link font-weight-bold" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-7.svg" alt="SVG">
@@ -55,7 +58,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.Id">
+                        <a class="nav-link font-weight-bold active" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-22.svg" alt="SVG">
@@ -69,20 +72,29 @@
                 <!-- Tab Content -->
                 <div class="tab-content">
                     <div class="tab-pane fade pt-6 active show">
-                        <p>Use Google Drive within Slack to:</p>
-
-                        <ul class="text-body pl-4 mb-5">
-                            <li>Create new Google Docs, Slides, and Sheets files</li>
-                            <li>Import an existing file from Google Drive into a channel or direct message</li>
-                            <li>Search directly within Google Drive files shared within Slack</li>
-                            <li>Automatically grant access to the files you share with the right audience</li>
-                            <li>Get updates in Slack on changes in Drive, like comments, access requests, and new files shared with you</li>
-                            <li>Reply directly to comment notifications from within Slack and have them posted to the file</li>
-                        </ul>
-
-                        <img class="img-fluid rounded mb-4" src="/img/900x450/img5.jpg" alt="Image Description">
-                        <img class="img-fluid rounded mb-4" src="/img/900x450/img4.jpg" alt="Image Description">
-                        <img class="img-fluid rounded" src="/img/900x450/img3.jpg" alt="Image Description">
+                        <div class="container d-flex align-items-center mx-0 mb-2">
+                            <h2>@localizer["Classes"]</h2>
+                            <a asp-controller="Classes" asp-action="Create" asp-route-schoolId="@Model.School.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Class"]</a>
+                        </div>
+                        <div class="container">
+                            @foreach (var cls in Model.Classes)
+                            {
+                                <!-- Card -->
+                                <a class="card card-frame py-3 px-4 mb-2" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@cls.Id">
+                                    <div class="row align-items-sm-center">
+                                        <span class="col-sm-6 text-dark">
+                                            @cls.Title
+                                        </span>
+                                        <span class="col-6 col-sm-3 text-body">
+                                            @(cls.Teacher?.FullName ?? "-")
+                                        </span>
+                                        <span class="col-6 col-sm-3 text-right">
+                                            @localizer["Open"] <i class="fas fa-angle-right fa-sm ml-1"></i>
+                                        </span>
+                                    </div>
+                                </a>
+                            }
+                        </div>
                     </div>
                 </div>
                 <!-- End Tab Content -->

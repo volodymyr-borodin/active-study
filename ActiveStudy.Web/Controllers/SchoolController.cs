@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
-using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Storage.Mongo.Identity;
@@ -24,21 +23,18 @@ namespace ActiveStudy.Web.Controllers
         private readonly UserManager<ActiveStudyUserEntity> userManager;
 
         private readonly ITeacherStorage teacherStorage;
-        private readonly IClassStorage classStorage;
 
         public SchoolController(ISchoolStorage schoolStorage,
             ICountryStorage countryStorage,
             CurrentUserProvider currentUserProvider,
             UserManager<ActiveStudyUserEntity> userManager,
-            ITeacherStorage teacherStorage,
-            IClassStorage classStorage)
+            ITeacherStorage teacherStorage)
         {
             this.schoolStorage = schoolStorage;
             this.countryStorage = countryStorage;
             this.currentUserProvider = currentUserProvider;
             this.userManager = userManager;
             this.teacherStorage = teacherStorage;
-            this.classStorage = classStorage;
         }
 
         [HttpGet("create")]
@@ -88,12 +84,8 @@ namespace ActiveStudy.Web.Controllers
         private async Task<SchoolHomePageModel> BuildIndexModel(string schoolId)
         {
             var school = await schoolStorage.GetByIdAsync(schoolId);
-            var classes = await classStorage.FindAsync(schoolId);
-            var teachers = await teacherStorage.FindAsync(schoolId);
 
-            return new SchoolHomePageModel(school.Id, school.Title,
-                classes.Select(c => new ClassListModel(c.Id, c.Title, c.SchoolId)),
-                teachers.Select(t => new TeacherListModel(t.Id, t.FullName, t.SchoolId, t.Subjects)));
+            return new SchoolHomePageModel(school.Id, school.Title);
         }
 
         private async Task<CreateSchoolModel> BuildCreateModel()

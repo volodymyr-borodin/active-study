@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Web.Models.Students;
 using Microsoft.AspNetCore.Authorization;
@@ -15,11 +16,21 @@ namespace ActiveStudy.Web.Controllers
     {
         private readonly IStudentStorage studentStorage;
         private readonly IClassStorage classStorage;
+        private readonly IRelativesStorage relativesStorage;
 
-        public StudentsController(IStudentStorage studentStorage, IClassStorage classStorage)
+        public StudentsController(IStudentStorage studentStorage, IClassStorage classStorage, IRelativesStorage relativesStorage)
         {
             this.studentStorage = studentStorage;
             this.classStorage = classStorage;
+            this.relativesStorage = relativesStorage;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Details([Required] string id)
+        {
+            var student = await studentStorage.GetByIdAsync(id);
+            var relatives = await relativesStorage.SearchAsync(student.Id);
+            return View(new StudentDetailsPageModel(student.FullName, relatives));
         }
 
         [HttpGet("create")]
@@ -36,7 +47,7 @@ namespace ActiveStudy.Web.Controllers
             {
                 return View(await Build(model?.ClassId, model));
             }
-                
+
             // TODO: Validate create class access to school
             ClassShortInfo classInfo = null;
             if (!string.IsNullOrEmpty(model.ClassId))
@@ -44,8 +55,8 @@ namespace ActiveStudy.Web.Controllers
                 var @class = await classStorage.GetByIdAsync(model.ClassId);
                 classInfo = new ClassShortInfo(@class.Id, @class.Title);
             }
-            
-            var student = new Student(string.Empty, model.FirstName, model.LastName, model.Email, schoolId, classInfo == null ? Enumerable.Empty<ClassShortInfo>() : new [] { classInfo });
+
+            var student = new Student(string.Empty, model.FirstName, model.LastName, model.Email, model.Phone, schoolId, classInfo == null ? Enumerable.Empty<ClassShortInfo>() : new [] { classInfo });
             await studentStorage.InsertAsync(student);
 
             return RedirectToAction("Details", "Classes", new { schoolId, id = model.ClassId });

@@ -31,6 +31,11 @@ namespace ActiveStudy.Domain.Crm.Teachers
 
         public static explicit operator TeacherShortInfo(Teacher teacher)
         {
+            if (teacher == null)
+            {
+                return null;
+            }
+            
             return new TeacherShortInfo(teacher.Id, teacher.FullName, teacher.UserId);
         }
     }

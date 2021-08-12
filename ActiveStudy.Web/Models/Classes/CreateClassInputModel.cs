@@ -7,5 +7,7 @@ namespace ActiveStudy.Web.Models.Classes
         [Required]
         public string Label { get; set; }
         public int? Grade { get; set; }
+        
+        public string TeacherId { get; set; }
     }
 }

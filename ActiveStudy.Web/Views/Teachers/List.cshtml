@@ -1,0 +1,119 @@
+@model ActiveStudy.Web.Models.Teachers.TeachersListPageModel
+@inject IViewLocalizer localizer
+
+<div class="bg-light">
+    <div class="container py-3">
+        <div class="row justify-content-md-between align-items-md-center">
+            <div class="col-md-5 mb-3 mb-md-0">
+                <!-- Breadcrumb -->
+                <nav class="d-inline-block rounded" aria-label="breadcrumb">
+                    <ol class="breadcrumb breadcrumb-no-gutter font-size-1 mb-0">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="School" asp-action="List">@localizer["Schools"]</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Teachers" asp-action="Details" asp-action-id="@Model.School.Id">@Model.School.Title</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">@localizer["Teachers"]</li>
+                    </ol>
+                </nav>
+                <!-- End Breadcrumb -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container space-top-1 space-bottom-lg-2">
+    <!-- Content -->
+    <div class="row">
+        <div class="col-md-4 col-lg-3 mb-9 mb-md-0">
+            <!-- App Info -->
+            <div class="mr-lg-2">
+                <partial name="_MainInfo" for="@Model.MainInfo" />
+            </div>
+            <!-- End App Info -->
+        </div>
+
+        <div class="col-md-8 col-lg-9 column-divider-md">
+            <div class="ml-lg-2">
+
+                <!-- Nav Classic -->
+                <ul class="nav nav-classic nav-rounded nav-justified border">
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">
+                            <div class="d-md-flex justify-content-md-center align-items-md-center">
+                                <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
+                                    <img class="img-fluid" src="/svg/icons/icon-24.svg" alt="SVG">
+                                </figure>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold active" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
+                            <div class="d-md-flex justify-content-md-center align-items-md-center">
+                                <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
+                                    <img class="img-fluid" src="/svg/icons/icon-7.svg" alt="SVG">
+                                </figure>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
+                            <div class="d-md-flex justify-content-md-center align-items-md-center">
+                                <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
+                                    <img class="img-fluid" src="/svg/icons/icon-22.svg" alt="SVG">
+                                </figure>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <!-- End Nav Classic -->
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    
+                    <div class="tab-pane fade pt-6 active show">
+                        <div class="row align-items-center mx-0 mb-2">
+                            <h2>@localizer["Teachers"]</h2>
+                            <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Class"]</a>
+                        </div>
+                        @foreach (var teacher in Model.Teachers)
+                        {
+                            <div class="container">
+                                <!-- Author -->
+                                <div class="border-top border-bottom py-4">
+                                    <div class="row align-items-md-center">
+                                        <div class="col-md-7 mb-5 mb-md-0">
+                                            <div class="media align-items-center">
+                                                <div class="avatar avatar-circle">
+                                                    <img class="avatar-img" src="/img/100x100/img11.jpg" alt="Image Description">
+                                                </div>
+                                                <div class="media-body font-size-1 ml-3">
+                                                    <span class="h6"><a href="#">@teacher.FullName</a></span>
+                                                    @if (teacher.Subjects.Any())
+                                                    {
+                                                        <span class="d-block text-muted">@string.Join(", ", teacher.Subjects.Select(s => s.Title))</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <form asp-controller="Teachers" asp-action="Delete" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
+                                                <div class="text-right">
+                                                    <button type="submit" class="btn btn-danger transition-3d-hover">@localizer["Delete"]</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Author -->
+                            </div>
+                        }
+                    </div>
+                </div>
+                <!-- End Tab Content -->
+            </div>
+        </div>
+    </div>
+    <!-- End Content -->
+</div>

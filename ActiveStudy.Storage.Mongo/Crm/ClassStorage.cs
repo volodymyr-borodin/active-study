@@ -38,7 +38,8 @@ namespace ActiveStudy.Storage.Mongo.Crm
             {
                 SchoolId = new ObjectId(@class.SchoolId),
                 Grade = @class.Grade,
-                Label = @class.Label
+                Label = @class.Label,
+                Teacher = @class.Teacher
             };
 
             await context.Classes.InsertOneAsync(entity);
