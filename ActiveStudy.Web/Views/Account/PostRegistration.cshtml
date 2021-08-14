@@ -1,6 +1,6 @@
-@inject IViewLocalizer Localizer
+@inject IViewLocalizer localizer
 @{
-    ViewData["Title"] = Localizer["Your account has been created"];
+    ViewData["Title"] = localizer["Your account has been created"];
 }
 
 <div class="d-lg-flex text-center">
@@ -8,8 +8,8 @@
         <div class="w-100 mx-auto">
             <div class="w-md-80 w-lg-50 text-center mx-md-auto">
                 <div class="mb-5">
-                    <h1 class="h2">@Localizer["Your account has been created"]</h1>
-                    <p>@Localizer["Thank you for registering. Please check your email"]</p>
+                    <h1 class="h2">@localizer["Your account has been created"]</h1>
+                    <p>@localizer["Thank you for registering. Please check your email"]</p>
                 </div>
             </div>
         </div>

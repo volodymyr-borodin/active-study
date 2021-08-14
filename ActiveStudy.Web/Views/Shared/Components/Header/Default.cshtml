@@ -1,5 +1,5 @@
 @model ActiveStudy.Web.Components.Header.HeaderModel
-@inject IViewLocalizer Localizer
+@inject IViewLocalizer localizer
 
 <header id="header" class="header header-box-shadow-on-scroll header-bg-transparent header-show-hide"
         data-hs-header-options='{
@@ -25,7 +25,7 @@
                         else
                         {
                             <!-- Button -->
-                            <a class="btn btn-sm btn-primary transition-3d-hover" asp-aria="" asp-controller="Account" asp-action="Login">@Localizer["Sign In"]</a>
+                            <a class="btn btn-sm btn-primary transition-3d-hover" asp-aria="" asp-controller="Account" asp-action="Login">@localizer["Sign In"]</a>
                             <!-- End Button -->
                         }
                     </div>
