@@ -12,7 +12,7 @@
                             <a asp-controller="School" asp-action="List">@localizer["Schools"]</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a asp-controller="Classes" asp-action="Details" asp-action-id="@Model.School.Id">@Model.School.Title</a>
+                            <a asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">@Model.School.Title</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">@localizer["Classes"]</li>
                     </ol>

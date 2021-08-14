@@ -9,7 +9,6 @@ using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Web.Models.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StudentListModel = ActiveStudy.Web.Models.Classes.StudentListModel;
 
 namespace ActiveStudy.Web.Areas.Schools.Controllers
 {
@@ -48,7 +47,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
             
-            var model = new ClassViewModel(@class.Id, school, @class.Title, @class.Teacher, students.Select(s => new StudentListModel(s.Id, s.FullName)));
+            var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students);
             
             return View(model);
         }

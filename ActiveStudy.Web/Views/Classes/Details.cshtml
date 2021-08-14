@@ -22,6 +22,9 @@
                         <li class="breadcrumb-item">
                             <a asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">@Model.School.Title</a>
                         </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">@localizer["Classes"]</a>
+                        </li>
                         <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
                     </ol>
                 </nav>
