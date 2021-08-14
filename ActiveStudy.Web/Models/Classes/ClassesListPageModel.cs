@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Schools;
-using ActiveStudy.Web.Models.Shared;
 
 namespace ActiveStudy.Web.Models.Classes
 {
@@ -16,7 +15,5 @@ namespace ActiveStudy.Web.Models.Classes
 
         public School School { get; }
         public IEnumerable<Class> Classes { get; }
-
-        public MainInfoModel MainInfo => new MainInfoModel(School.Title, "fa-university");
     }
 }

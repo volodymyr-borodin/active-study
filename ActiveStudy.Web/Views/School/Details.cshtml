@@ -11,7 +11,7 @@
                         <li class="breadcrumb-item">
                             <a asp-controller="School" asp-action="List">@localizer["Schools"]</a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
+                        <li class="breadcrumb-item active" aria-current="page">@Model.School.Title</li>
                     </ol>
                 </nav>
                 <!-- End Breadcrumb -->
@@ -24,11 +24,7 @@
     <!-- Content -->
     <div class="row">
         <div class="col-md-4 col-lg-3 mb-9 mb-md-0">
-            <!-- App Info -->
-            <div class="mr-lg-2">
-                <partial name="_MainInfo" for="@Model.MainInfo" />
-            </div>
-            <!-- End App Info -->
+            <partial name="_MainInfo" for="@Model.School" />
         </div>
 
         <div class="col-md-8 col-lg-9 column-divider-md">
@@ -37,7 +33,7 @@
                 <!-- Nav Classic -->
                 <ul class="nav nav-classic nav-rounded nav-justified border" id="pills-tab" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold active" data-toggle="pill" asp-controller="School" asp-action="Details" asp-route-id="@Model.Id">
+                        <a class="nav-link font-weight-bold active" data-toggle="pill" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-24.svg" alt="SVG">
@@ -46,7 +42,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.Id">
+                        <a class="nav-link font-weight-bold" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-7.svg" alt="SVG">
@@ -55,7 +51,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.Id">
+                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-22.svg" alt="SVG">

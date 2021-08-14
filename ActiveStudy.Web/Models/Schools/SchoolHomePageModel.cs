@@ -1,18 +1,14 @@
-using ActiveStudy.Web.Models.Shared;
+using ActiveStudy.Domain.Crm.Schools;
 
 namespace ActiveStudy.Web.Models.Schools
 {
     public class SchoolHomePageModel
     {
-        public SchoolHomePageModel(string id, string title)
+        public SchoolHomePageModel(School school)
         {
-            Id = id;
-            Title = title;
+            School = school;
         }
 
-        public string Id { get; }
-        public string Title { get; }
-
-        public MainInfoModel MainInfo => new MainInfoModel(Title, "fa-university");
+        public School School { get; }
     }
 }

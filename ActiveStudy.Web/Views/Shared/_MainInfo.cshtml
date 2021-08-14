@@ -1,10 +1,12 @@
-@model ActiveStudy.Web.Models.Shared.MainInfoModel
+@model ActiveStudy.Domain.Crm.Schools.School
+@inject IViewLocalizer localizer
 
-<div class="text-center mx-auto mb-3">
-    <div class="mb-2">
-        <h2>
-            @Model.Title
-        </h2>
+<div class="mr-lg-2">
+    <div class="text-center mx-auto mb-3">
+        <div class="mb-2">
+            <h2>@Model.Title</h2>
+        </div>
+        <i class="fas fa-university fa-7x text-primary"></i>
+        <p>@localizer["Owner"]: @Model.Owner.FullName</p>
     </div>
-    <i class="fas @Model.Icon fa-7x text-primary"></i>
 </div>

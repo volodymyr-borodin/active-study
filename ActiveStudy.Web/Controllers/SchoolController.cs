@@ -85,7 +85,7 @@ namespace ActiveStudy.Web.Controllers
         {
             var school = await schoolStorage.GetByIdAsync(schoolId);
 
-            return new SchoolHomePageModel(school.Id, school.Title);
+            return new SchoolHomePageModel(school);
         }
 
         private async Task<CreateSchoolModel> BuildCreateModel()
