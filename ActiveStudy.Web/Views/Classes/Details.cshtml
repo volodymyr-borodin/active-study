@@ -62,7 +62,24 @@
                         </div>
                         <partial name="_StudentList" for="@Model"/>
                     </div>
-                    <div class="tab-pane fade pt-6" id="pills-two-example1" role="tabpanel" aria-labelledby="pills-three-example1-tab"></div>
+                    <div class="tab-pane fade pt-6" id="pills-two-example1" role="tabpanel" aria-labelledby="pills-three-example1-tab">
+                        @foreach (var (day, events) in Model.Schedule)
+                        {
+                            <div>
+                                <p>@day.ToString("d")</p>
+                                <ul>
+                                    @foreach (var ent in events)
+                                    {
+                                        <li>
+                                            <p>@ent.From.ToString("hh\\:mm") - @ent.To.ToString("hh\\:mm")</p>
+                                            <p>@ent.Teacher.FullName</p>
+                                            <p>@ent.Class.Title</p>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    </div>
                 </div>
                 <!-- End Tab Content -->
             </div>

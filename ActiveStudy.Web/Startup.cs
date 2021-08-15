@@ -6,6 +6,7 @@ using ActiveStudy.AspNetCore.Identity.Mongo;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Relatives;
+using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
@@ -97,6 +98,7 @@ namespace ActiveStudy.Web
             services.AddScoped<ITeacherStorage, TeacherStorage>();
             services.AddScoped<IStudentStorage, StudentStorage>();
             services.AddScoped<IRelativesStorage, RelativesStorage>();
+            services.AddScoped<IScheduleStorage, ScheduleStorage>();
 
             services.Configure<RouteOptions>(options =>
             {

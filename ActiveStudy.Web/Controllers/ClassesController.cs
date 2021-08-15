@@ -1,8 +1,10 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
@@ -19,15 +21,18 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly ISchoolStorage schoolStorage;
         private readonly IStudentStorage studentStorage;
         private readonly ITeacherStorage teacherStorage;
+        private readonly IScheduleStorage scheduleStorage;
 
         public ClassesController(IClassStorage classStorage,
             ISchoolStorage schoolStorage,
             IStudentStorage studentStorage,
-            ITeacherStorage teacherStorage)
+            ITeacherStorage teacherStorage,
+            IScheduleStorage scheduleStorage)
         {
             this.classStorage = classStorage;
             this.studentStorage = studentStorage;
             this.teacherStorage = teacherStorage;
+            this.scheduleStorage = scheduleStorage;
             this.schoolStorage = schoolStorage;
         }
 
@@ -46,9 +51,10 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var @class = await classStorage.GetByIdAsync(id);
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
-            
-            var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students);
-            
+            var schedule = await scheduleStorage.GetByClassAsync(id, DateTime.Today, DateTime.Today.AddDays(7));
+
+            var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students, schedule);
+
             return View(model);
         }
 
