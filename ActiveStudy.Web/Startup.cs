@@ -98,7 +98,7 @@ namespace ActiveStudy.Web
             services.AddScoped<ITeacherStorage, TeacherStorage>();
             services.AddScoped<IStudentStorage, StudentStorage>();
             services.AddScoped<IRelativesStorage, RelativesStorage>();
-            services.AddScoped<IScheduleStorage, ScheduleStorage>();
+            services.AddScoped<ISchedulerStorage, SchedulerStorage>();
 
             services.Configure<RouteOptions>(options =>
             {

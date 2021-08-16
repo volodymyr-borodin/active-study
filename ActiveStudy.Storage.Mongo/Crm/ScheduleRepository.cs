@@ -8,11 +8,11 @@ using MongoDB.Driver;
 
 namespace ActiveStudy.Storage.Mongo.Crm
 {
-    public class ScheduleStorage : IScheduleStorage
+    public class SchedulerStorage : ISchedulerStorage
     {
         private readonly CrmContext context;
 
-        public ScheduleStorage(CrmContext context)
+        public SchedulerStorage(CrmContext context)
         {
             this.context = context;
         }

@@ -21,13 +21,13 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly ISchoolStorage schoolStorage;
         private readonly IStudentStorage studentStorage;
         private readonly ITeacherStorage teacherStorage;
-        private readonly IScheduleStorage scheduleStorage;
+        private readonly ISchedulerStorage scheduleStorage;
 
         public ClassesController(IClassStorage classStorage,
             ISchoolStorage schoolStorage,
             IStudentStorage studentStorage,
             ITeacherStorage teacherStorage,
-            IScheduleStorage scheduleStorage)
+            ISchedulerStorage scheduleStorage)
         {
             this.classStorage = classStorage;
             this.studentStorage = studentStorage;

@@ -6,6 +6,7 @@ namespace ActiveStudy.Domain
 {
     public interface ISubjectStorage
     {
+        Task<Subject> GetByIdAsync(string id);
         Task<IEnumerable<Subject>> SearchAsync(string countryCode);
         Task<IEnumerable<Subject>> SearchAsync(IEnumerable<string> subjects);
     }
