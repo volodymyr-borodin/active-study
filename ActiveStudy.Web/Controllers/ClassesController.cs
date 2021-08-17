@@ -58,6 +58,19 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             return View(model);
         }
 
+        [HttpGet("{id}/students")]
+        public async Task<IActionResult> Students([Required] string schoolId, [Required] string id)
+        {
+            var @class = await classStorage.GetByIdAsync(id);
+            var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
+            var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
+            var schedule = await scheduleStorage.GetByClassAsync(id, DateTime.Today, DateTime.Today.AddDays(7));
+
+            var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students, schedule);
+
+            return View(model);
+        }
+
         [HttpGet("create")]
         public async Task<IActionResult> Create(string schoolId)
         {

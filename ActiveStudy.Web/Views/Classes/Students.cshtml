@@ -39,7 +39,7 @@
                 <!-- Nav Classic -->
                 <ul class="nav nav-classic nav-rounded nav-justified border">
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold active" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
+                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-24.svg" alt="SVG">
@@ -48,7 +48,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="Students" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
+                        <a class="nav-link font-weight-bold active" asp-controller="Classes" asp-action="Students" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
                                 <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
                                     <img class="img-fluid" src="/svg/icons/icon-24.svg" alt="SVG">
@@ -62,22 +62,11 @@
                 <!-- Tab Content -->
                 <div class="tab-content">
                     <div class="tab-pane fade pt-6 active show">
-                        @foreach (var (day, events) in Model.Schedule)
-                        {
-                            <div>
-                                <p>@day.ToString("d")</p>
-                                <ul>
-                                    @foreach (var ent in events)
-                                    {
-                                        <li>
-                                            <p>@ent.From.ToString("hh\\:mm") - @ent.To.ToString("hh\\:mm")</p>
-                                            <p>@ent.Teacher.FullName</p>
-                                            <p>@ent.Class.Title</p>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        }
+                        <div class="container d-flex align-items-center mx-0 mb-2">
+                            <h2>@localizer["Students"]</h2>
+                            <a asp-controller="Students" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-classId="@Model.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Student"]</a>
+                        </div>
+                        <partial name="_StudentList" for="@Model"/>
                     </div>
                 </div>
                 <!-- End Tab Content -->
