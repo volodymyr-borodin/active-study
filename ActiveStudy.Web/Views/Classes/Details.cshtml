@@ -62,22 +62,7 @@
                 <!-- Tab Content -->
                 <div class="tab-content">
                     <div class="tab-pane fade pt-6 active show">
-                        @foreach (var (day, events) in Model.Schedule)
-                        {
-                            <div>
-                                <p>@day.ToString("d")</p>
-                                <ul>
-                                    @foreach (var ent in events)
-                                    {
-                                        <li>
-                                            <p>@ent.From.ToString("hh\\:mm") - @ent.To.ToString("hh\\:mm")</p>
-                                            <p>@ent.Teacher.FullName</p>
-                                            <p>@ent.Class.Title</p>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        }
+                        <partial name="_Scheduler" for="@Model.Schedule" />
                     </div>
                 </div>
                 <!-- End Tab Content -->
