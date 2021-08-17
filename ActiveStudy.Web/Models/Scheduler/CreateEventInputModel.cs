@@ -44,7 +44,7 @@ namespace ActiveStudy.Web.Models.Scheduler
             School = school;
             Subjects = subjects.Select(s => new SelectListItem(s.Title, s.Id));
             Teachers = teachers.Select(s => new SelectListItem(s.FullName, s.Id));
-            Classes = classes.Select(s => new SelectListItem(s.Title, s.Id));
+            Classes = classes.OrderBy(c => c.Title).Select(s => new SelectListItem(s.Title, s.Id));
         }
 
         public School School { get; }

@@ -36,9 +36,23 @@ namespace ActiveStudy.Web.Controllers
         }
 
         [HttpGet("create")]
-        public async Task<IActionResult> Create([Required]string schoolId)
+        public async Task<IActionResult> Create([Required]string schoolId,
+            [FromQuery]DateTime? day,
+            [FromQuery]string classId)
         {
-            return View(await Build(schoolId));
+            var model = await Build(schoolId);
+
+            if (day.HasValue)
+            {
+                model.Date = day.Value;
+            }
+
+            if (!string.IsNullOrEmpty(classId))
+            {
+                model.ClassId = classId;
+            }
+            
+            return View(model);
         }
 
         [HttpPost("create")]

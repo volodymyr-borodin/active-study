@@ -1,0 +1,51 @@
+@model ActiveStudy.Web.Components.Scheduler.SchedulerModel
+
+@foreach (var (day, events) in Model.Schedule)
+{
+  <!-- Description Section -->
+  <div class="container card card-frame mb-3">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="mb-3">
+          <div class="mb-3 d-flex">
+            <h4 class="m-3">@day.ToString("d")</h4>
+            <a class="link" asp-controller="Scheduler" asp-action="Create"
+               asp-route-schoolId="@Model.SchoolId"
+               asp-route-day="@day.Date"
+               asp-route-classId="@Model.ClassId">Add</a>
+          </div>
+
+          @if (events.Any())
+          {
+            <!-- Step -->
+            <ul class="step">
+              @foreach (var ent in events)
+              {
+                <li class="step-item">
+                  <div class="step-content-wrapper">
+                    <span class="step-icon step-icon-soft-primary step-icon-pseudo"></span>
+                    <div class="step-content">
+                      <h5>@ent.Subject.Title</h5>
+                      <span class="d-block text-dark">@ent.Teacher.FullName</span>
+                      <small class="d-block mb-2">@ent.From.ToString("hh\\:mm") - @ent.To.ToString("hh\\:mm")</small>
+                      @if (!string.IsNullOrEmpty(ent.Description))
+                      {
+                        <p class="text-body mb-0">@ent.Description</p>
+                      }
+                    </div>
+                  </div>
+                </li>
+              }
+            </ul>
+            <!-- End Step -->
+          }
+          else
+          {
+            <p>Empty</p>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Description Section -->
+}
