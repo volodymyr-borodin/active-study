@@ -50,7 +50,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             // TODO: Validate create class access to school
             var subjects = await subjectStorage.SearchAsync(model.SubjectIds);
             
-            var teacher = new Teacher(string.Empty, model.FirstName, model.LastName, model.Email, subjects, schoolId, string.Empty);
+            var teacher = new Teacher(string.Empty, model.FirstName, model.LastName, model.MiddleName, model.Email, subjects, schoolId, string.Empty);
             var teacherId = await teacherStorage.InsertAsync(teacher);
     
             return RedirectToAction("List", "Teachers", new { schoolId });
@@ -71,9 +71,8 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         {
             var school = await schoolStorage.GetByIdAsync(schoolId);
             var subjects = await subjectStorage.SearchAsync(school.Country.Code);
-    
-    
-            return new CreateTeacherViewModel(subjects)
+
+            return new CreateTeacherViewModel(school, subjects)
             {
                 FirstName = input?.FirstName,
                 LastName = input?.LastName,

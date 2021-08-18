@@ -60,7 +60,7 @@ namespace ActiveStudy.Web.Controllers
             await userManager.AddSchoolClaimAsync(await userManager.GetUserAsync(User), schoolId);
 
             await teacherStorage.InsertAsync(new Teacher(string.Empty, currentUserProvider.User.FirstName,
-                currentUserProvider.User.LastName, currentUserProvider.User.Email, Enumerable.Empty<Subject>(),
+                currentUserProvider.User.LastName, string.Empty, currentUserProvider.User.Email, Enumerable.Empty<Subject>(),
                 schoolId, currentUserProvider.User.Id));
             
             return RedirectToAction("Index", "Home");

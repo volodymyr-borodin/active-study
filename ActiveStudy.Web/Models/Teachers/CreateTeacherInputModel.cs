@@ -7,10 +7,15 @@ namespace ActiveStudy.Web.Models.Teachers
     {
         [Required]
         public string FirstName { get; set; }
+
         [Required]
         public string LastName { get; set; }
+
+        public string MiddleName { get; set; }
+
         [Required, EmailAddress]
         public string Email { get; set; }
+
         public IEnumerable<string> SubjectIds { get; set; }
     }
 }

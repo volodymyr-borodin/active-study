@@ -23,6 +23,9 @@ namespace ActiveStudy.Storage.Mongo.Crm
         [BsonElement("lastName")]
         public string LastName { get; set; }
 
+        [BsonElement("middleName")]
+        public string MiddleName { get; set; }
+
         [BsonElement("email")]
         public string Email { get; set; }
 
@@ -38,7 +41,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
         {
             var subjects = entity.Subjects.Select(s => (Subject)s);
 
-            return new Teacher(entity.Id.ToString(), entity.FirstName, entity.LastName,
+            return new Teacher(entity.Id.ToString(), entity.FirstName, entity.LastName, entity.MiddleName,
                 entity.Email, subjects, entity.SchoolId.ToString(), entity.UserId);
         }
     }

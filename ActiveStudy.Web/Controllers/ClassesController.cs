@@ -75,6 +75,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         public async Task<IActionResult> Create(string schoolId)
         {
             return View(new CreateClassViewModel(
+                await schoolStorage.GetByIdAsync(schoolId),
                 await teacherStorage.FindAsync(schoolId)));
         }
 
@@ -84,7 +85,9 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(new CreateClassViewModel(await teacherStorage.FindAsync(schoolId))
+                return View(new CreateClassViewModel(
+                    await schoolStorage.GetByIdAsync(schoolId),
+                    await teacherStorage.FindAsync(schoolId))
                 {
                     Label = model.Label,
                     Grade = model.Grade

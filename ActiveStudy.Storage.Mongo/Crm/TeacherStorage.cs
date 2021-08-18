@@ -37,6 +37,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
             {
                 FirstName = teacher.FirstName,
                 LastName = teacher.LastName,
+                MiddleName = teacher.MiddleName,
                 Email = teacher.Email,
                 SchoolId = new ObjectId(teacher.SchoolId),
                 Subjects = teacher.Subjects.Select(s => (SubjectEntity)s).ToList()

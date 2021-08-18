@@ -7,6 +7,7 @@ namespace ActiveStudy.Domain.Crm.Teachers
         public string Id { get; }
         public string FirstName { get; }
         public string LastName { get; }
+        public string MiddleName { get; }
 
         public string Email { get; }
         public IEnumerable<Subject> Subjects { get; }
@@ -14,13 +15,16 @@ namespace ActiveStudy.Domain.Crm.Teachers
         public string SchoolId { get; }
         public string UserId { get; }
 
-        public string FullName => $"{FirstName} {LastName}";
+        public string FullName => string.IsNullOrEmpty(MiddleName)
+            ? $"{FirstName} {LastName}"
+            : $"{FirstName} {MiddleName} {LastName}";
 
-        public Teacher(string id, string firstName, string lastName, string email, IEnumerable<Subject> subjects, string schoolId, string userId)
+        public Teacher(string id, string firstName, string lastName, string middleName, string email, IEnumerable<Subject> subjects, string schoolId, string userId)
         {
             Id = id;
             FirstName = firstName;
             LastName = lastName;
+            MiddleName = middleName;
 
             Email = email;
             Subjects = subjects;
