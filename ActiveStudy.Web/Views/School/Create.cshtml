@@ -1,8 +1,18 @@
 @model ActiveStudy.Web.Models.Schools.CreateSchoolModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
 @inject IViewLocalizer localizer
+
 @{
     ViewData["Title"] = localizer["Page Title"];
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.InActive(localizer["New School"].Value)
+    };
 }
+
+<vc:breadcrumb items="@breadcrumb" />
 
 <div class="container space-2">
     <!-- Apply Form -->

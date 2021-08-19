@@ -1,29 +1,19 @@
 @model ActiveStudy.Web.Models.Teachers.CreateTeacherViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
 @inject IViewLocalizer localizer
+
 @{
     ViewData["Title"] = localizer["Page Title"];
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
+        BreadcrumbItem.InActive(localizer["New Teacher"].Value)
+    };
 }
-<div class="bg-light">
-    <div class="container py-3">
-        <div class="row justify-content-md-between align-items-md-center">
-            <div class="col-md-5 mb-3 mb-md-0">
-                <!-- Breadcrumb -->
-                <nav class="d-inline-block rounded" aria-label="breadcrumb">
-                    <ol class="breadcrumb breadcrumb-no-gutter font-size-1 mb-0">
-                        <li class="breadcrumb-item">
-                            <a asp-controller="School" asp-action="List">@localizer["Schools"]</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">@Model.School.Title</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">@localizer["New Teacher"]</li>
-                    </ol>
-                </nav>
-                <!-- End Breadcrumb -->
-            </div>
-        </div>
-    </div>
-</div>
+
+<vc:breadcrumb items="@breadcrumb" />
 
 <div class="container space-2">
     <!-- Apply Form -->
