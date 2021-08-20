@@ -1,0 +1,8 @@
+@model IEnumerable<ActiveStudy.Domain.AuditItem>
+
+<ul>
+    @foreach (var item in Model)
+    {
+        <li>[@item.Time] - [@item.User.FullName]: @item.Message</li>
+    }
+</ul>

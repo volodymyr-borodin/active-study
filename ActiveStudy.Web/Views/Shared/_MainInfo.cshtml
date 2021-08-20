@@ -8,5 +8,8 @@
         </div>
         <i class="fas fa-university fa-7x text-primary"></i>
         <p>@localizer["Owner"]: @Model.Owner.FullName</p>
+        <ul>
+            <a asp-controller="School" asp-action="Audit" asp-route-id="@Model.Id">@localizer["Audit"]</a>
+        </ul>
     </div>
 </div>

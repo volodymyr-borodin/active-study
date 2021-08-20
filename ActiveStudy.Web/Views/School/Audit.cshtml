@@ -1,0 +1,15 @@
+@using ActiveStudy.Domain
+@model ActiveStudy.Web.Models.Schools.SchoolHomePageModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = localizer["Page Title"];
+
+    var auditFilter = new List<AuditEntity>
+    {
+        new AuditEntity(Model.School.Id, EntityType.School)
+    };
+}
+
+<vc:audit entities="@auditFilter" />

@@ -21,4 +21,10 @@
     <data name="Schools" xml:space="preserve">
         <value>Школи</value>
     </data>
+    <data name="Classes" xml:space="preserve">
+        <value>Класи</value>
+    </data>
+    <data name="Students" xml:space="preserve">
+        <value>Учні</value>
+    </data>
 </root>

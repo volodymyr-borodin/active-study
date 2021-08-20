@@ -10,6 +10,7 @@ using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
+using ActiveStudy.Storage.Mongo;
 using ActiveStudy.Storage.Mongo.Crm;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models;
@@ -88,8 +89,10 @@ namespace ActiveStudy.Web
             services.AddScoped<CurrentUserProvider>();
 
             // common
+            services.AddScoped(provider => new CommonContext(mongoUrl));
             services.AddScoped<ISubjectStorage, InMemorySubjectStorage>();
             services.AddScoped<ICountryStorage, InMemoryCountryStorage>();
+            services.AddScoped<IAuditStorage, AuditStorage>();
 
             // crm
             services.AddScoped(provider => new CrmContext(mongoUrl));

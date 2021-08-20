@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
+using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,17 +25,23 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly IStudentStorage studentStorage;
         private readonly ITeacherStorage teacherStorage;
         private readonly ISchedulerStorage scheduleStorage;
+        private readonly IAuditStorage auditStorage;
+        private readonly CurrentUserProvider currentUserProvider;
 
         public ClassesController(IClassStorage classStorage,
             ISchoolStorage schoolStorage,
             IStudentStorage studentStorage,
             ITeacherStorage teacherStorage,
-            ISchedulerStorage scheduleStorage)
+            ISchedulerStorage scheduleStorage,
+            IAuditStorage auditStorage,
+            CurrentUserProvider currentUserProvider)
         {
             this.classStorage = classStorage;
             this.studentStorage = studentStorage;
             this.teacherStorage = teacherStorage;
             this.scheduleStorage = scheduleStorage;
+            this.auditStorage = auditStorage;
+            this.currentUserProvider = currentUserProvider;
             this.schoolStorage = schoolStorage;
         }
 
@@ -102,7 +111,36 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var @class = new Class(string.Empty, model.Grade, model.Label, (TeacherShortInfo) teacher, schoolId);
             var classId = await classStorage.InsertAsync(@class);
 
+            await LogClassAdded(schoolId, classId, @class.Title);
+            if (teacher != null)
+            {
+                await LogTeacherAssignedToClass(schoolId, classId, teacher);
+            }
+
             return RedirectToAction("Details", new { schoolId, id = classId });
+        }
+
+        private async Task LogClassAdded(string schoolId, string classId, string className)
+        {
+            var user = currentUserProvider.User.AsUser();
+            var school = await schoolStorage.GetByIdAsync(schoolId);
+            await auditStorage.LogAsync(new AuditItem($"Class {className} has added to {school.Title} school", user, new List<AuditEntity>
+            {
+                new AuditEntity(school.Id, EntityType.School),
+                new AuditEntity(classId, EntityType.Class)
+            }));
+        }
+
+        private async Task LogTeacherAssignedToClass(string schoolId, string classId, Teacher teacher)
+        {
+            var user = currentUserProvider.User.AsUser();
+            var school = await schoolStorage.GetByIdAsync(schoolId);
+            await auditStorage.LogAsync(new AuditItem($"Teacher {teacher.FullName} has assigned to class {school.Title} of school {school.Title}", user, new List<AuditEntity>
+            {
+                new AuditEntity(school.Id, EntityType.School),
+                new AuditEntity(teacher.Id, EntityType.Teacher),
+                new AuditEntity(classId, EntityType.Class)
+            }));
         }
     }
 }

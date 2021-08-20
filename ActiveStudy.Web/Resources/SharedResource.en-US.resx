@@ -22,4 +22,10 @@
     <data name="Schools" xml:space="preserve">
         <value>Schools</value>
     </data>
+    <data name="Classes" xml:space="preserve">
+        <value>Classes</value>
+    </data>
+    <data name="Students" xml:space="preserve">
+        <value>Students</value>
+    </data>
 </root>

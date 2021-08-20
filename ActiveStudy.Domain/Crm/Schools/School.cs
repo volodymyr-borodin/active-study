@@ -3,7 +3,7 @@ namespace ActiveStudy.Domain.Crm.Schools
     public class School
     {
         public string Id { get; }
-        public string Title { get; private set; }
+        public string Title { get; }
         public Country Country { get; }
 
         public User Owner { get; }

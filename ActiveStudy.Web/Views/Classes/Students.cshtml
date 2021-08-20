@@ -9,9 +9,9 @@
     {
         BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
         BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
-        BreadcrumbItem.Active(localizer["Classes"].Value, Url.Action("List", "Classes", new {schoolId = Model.School.Id})),
+        BreadcrumbItem.Active(sharedLocalizer["Classes"].Value, Url.Action("List", "Classes", new {schoolId = Model.School.Id})),
         BreadcrumbItem.Active(Model.Title, Url.Action("Details", "Classes", new {schoolId = Model.School.Id, id = Model.Id})),
-        BreadcrumbItem.InActive(localizer["Students"].Value)
+        BreadcrumbItem.InActive(sharedLocalizer["Students"].Value)
     };
 }
 

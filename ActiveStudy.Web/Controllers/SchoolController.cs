@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,18 +24,21 @@ namespace ActiveStudy.Web.Controllers
         private readonly UserManager<ActiveStudyUserEntity> userManager;
 
         private readonly ITeacherStorage teacherStorage;
+        private readonly IAuditStorage auditStorage;
 
         public SchoolController(ISchoolStorage schoolStorage,
             ICountryStorage countryStorage,
             CurrentUserProvider currentUserProvider,
             UserManager<ActiveStudyUserEntity> userManager,
-            ITeacherStorage teacherStorage)
+            ITeacherStorage teacherStorage,
+            IAuditStorage auditStorage)
         {
             this.schoolStorage = schoolStorage;
             this.countryStorage = countryStorage;
             this.currentUserProvider = currentUserProvider;
             this.userManager = userManager;
             this.teacherStorage = teacherStorage;
+            this.auditStorage = auditStorage;
         }
 
         [HttpGet("create")]
@@ -57,11 +61,16 @@ namespace ActiveStudy.Web.Controllers
             var school = new School(null, model.Title, country, user);
 
             var schoolId = await schoolStorage.CreateAsync(school);
+            await LogSchoolCreate(schoolId, school.Title, user);
+            
             await userManager.AddSchoolClaimAsync(await userManager.GetUserAsync(User), schoolId);
 
-            await teacherStorage.InsertAsync(new Teacher(string.Empty, currentUserProvider.User.FirstName,
+            var teacher = new Teacher(string.Empty, currentUserProvider.User.FirstName,
                 currentUserProvider.User.LastName, string.Empty, currentUserProvider.User.Email, Enumerable.Empty<Subject>(),
-                schoolId, currentUserProvider.User.Id));
+                schoolId, currentUserProvider.User.Id);
+            var teacherId = await teacherStorage.InsertAsync(teacher);
+
+            await LogTeacherAdded(schoolId, school.Title, teacherId, teacher.FullName, user);
             
             return RedirectToAction("Index", "Home");
         }
@@ -81,6 +90,12 @@ namespace ActiveStudy.Web.Controllers
             return View(await BuildIndexModel(id));
         }
 
+        [HttpGet("{id}/audit")]
+        public async Task<IActionResult> Audit([Required] string id)
+        {
+            return View(await BuildIndexModel(id));
+        }
+
         private async Task<SchoolHomePageModel> BuildIndexModel(string schoolId)
         {
             var school = await schoolStorage.GetByIdAsync(schoolId);
@@ -93,6 +108,24 @@ namespace ActiveStudy.Web.Controllers
             var countries = await countryStorage.SearchAsync();
 
             return new CreateSchoolModel(countries);
+        }
+
+        private async Task LogSchoolCreate(string schoolId, string schoolTitle, User user)
+        {
+            await auditStorage.LogAsync(new AuditItem($"School {schoolTitle} has created", user, new List<AuditEntity>
+            {
+                new AuditEntity(schoolId, EntityType.School)
+            }));
+        }
+
+        private async Task LogTeacherAdded(string schoolId, string schoolTitle,
+            string teacherId, string teacherName, User user)
+        {
+            await auditStorage.LogAsync(new AuditItem($"Teacher {teacherName} has added to {schoolTitle} school", user, new List<AuditEntity>
+            {
+                new AuditEntity(schoolId, EntityType.School),
+                new AuditEntity(teacherId, EntityType.Teacher)
+            }));
         }
     }
 }

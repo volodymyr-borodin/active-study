@@ -9,7 +9,7 @@
     {
         BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
         BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
-        BreadcrumbItem.InActive(localizer["Classes"].Value)
+        BreadcrumbItem.InActive(sharedLocalizer["Classes"].Value)
     };
 }
 
