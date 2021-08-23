@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -111,36 +110,19 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var @class = new Class(string.Empty, model.Grade, model.Label, (TeacherShortInfo) teacher, schoolId);
             var classId = await classStorage.InsertAsync(@class);
 
-            await LogClassAdded(schoolId, classId, @class.Title);
+            var school = await schoolStorage.GetByIdAsync(schoolId);
+            await auditStorage.LogClassCreatedAsync(school.Id, school.Title,
+                @class.Id, @class.Title,
+                currentUserProvider.User.AsUser());
             if (teacher != null)
             {
-                await LogTeacherAssignedToClass(schoolId, classId, teacher);
+                await auditStorage.LogTeacherAddedToClassAsync(school.Id, school.Title,
+                    teacher.Id, teacher.FullName,
+                    @class.Id, @class.Title,
+                    currentUserProvider.User.AsUser());
             }
 
             return RedirectToAction("Details", new { schoolId, id = classId });
-        }
-
-        private async Task LogClassAdded(string schoolId, string classId, string className)
-        {
-            var user = currentUserProvider.User.AsUser();
-            var school = await schoolStorage.GetByIdAsync(schoolId);
-            await auditStorage.LogAsync(new AuditItem($"Class {className} has added to {school.Title} school", user, new List<AuditEntity>
-            {
-                new AuditEntity(school.Id, EntityType.School),
-                new AuditEntity(classId, EntityType.Class)
-            }));
-        }
-
-        private async Task LogTeacherAssignedToClass(string schoolId, string classId, Teacher teacher)
-        {
-            var user = currentUserProvider.User.AsUser();
-            var school = await schoolStorage.GetByIdAsync(schoolId);
-            await auditStorage.LogAsync(new AuditItem($"Teacher {teacher.FullName} has assigned to class {school.Title} of school {school.Title}", user, new List<AuditEntity>
-            {
-                new AuditEntity(school.Id, EntityType.School),
-                new AuditEntity(teacher.Id, EntityType.Teacher),
-                new AuditEntity(classId, EntityType.Class)
-            }));
         }
     }
 }

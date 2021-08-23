@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ActiveStudy.Storage.Mongo
@@ -17,35 +19,35 @@ namespace ActiveStudy.Storage.Mongo
         
         public async Task LogAsync(AuditItem item)
         {
+            var dataElements = item.Data
+                .Select(kv => new BsonElement(kv.Key, kv.Value));
+            
             await context.Audit.InsertOneAsync(new AuditItemEntity
             {
-                Message = item.Message,
+                ActionId = item.ActionId,
                 Time = item.Time,
                 User = item.User,
-                Entities = item.Entities
-                    .Select(e => new AuditObjectEntity
-                    {
-                        Id = e.Id,
-                        EntityType = e.EntityType
-                    })
+                Data = new BsonDocument(dataElements)
             });
         }
 
-        public async Task<IEnumerable<AuditItem>> SearchAnyAsync(IEnumerable<AuditEntity> entities)
+        public async Task<IEnumerable<AuditItem>> SearchAnyAsync(IDictionary<string, string> filter)
         {
-            var filters = entities
-                .Select(e => Builders<AuditItemEntity>.Filter
-                    .ElemMatch(
-                        a => a.Entities,
-                        a => a.Id == e.Id && a.EntityType == e.EntityType));
+            if (filter == null || filter.Count == 0)
+            {
+                throw new ArgumentException("Filter can not be empty");
+            }
+            
+            var filterDocument = new BsonDocument(filter.Select(kv => new BsonElement("data." + kv.Key, kv.Value)));
 
             var result = await context.Audit
-                .Find(Builders<AuditItemEntity>.Filter.Or(filters))
+                .Find(filterDocument)
                 .ToListAsync();
 
             return result
-                .Select(e => new AuditItem(e.Message, e.User, entities
-                    .Select(e => new AuditEntity(e.Id, e.EntityType))))
+                .Select(r => new AuditItem(r.ActionId,
+                    r.Data.Elements.ToDictionary(e => e.Name, e => e.Value.AsString),
+                    r.User))
                 .ToList();
         }
     }

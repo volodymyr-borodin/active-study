@@ -61,7 +61,7 @@ namespace ActiveStudy.Web.Controllers
             var school = new School(null, model.Title, country, user);
 
             var schoolId = await schoolStorage.CreateAsync(school);
-            await LogSchoolCreate(schoolId, school.Title, user);
+            await auditStorage.LogSchoolCreateAsync(schoolId, school.Title, user);
             
             await userManager.AddSchoolClaimAsync(await userManager.GetUserAsync(User), schoolId);
 
@@ -70,7 +70,8 @@ namespace ActiveStudy.Web.Controllers
                 schoolId, currentUserProvider.User.Id);
             var teacherId = await teacherStorage.InsertAsync(teacher);
 
-            await LogTeacherAdded(schoolId, school.Title, teacherId, teacher.FullName, user);
+            await auditStorage.LogTeacherCreatedAsync(schoolId, school.Title,
+                teacherId, teacher.FullName, user);
             
             return RedirectToAction("Index", "Home");
         }
@@ -108,24 +109,6 @@ namespace ActiveStudy.Web.Controllers
             var countries = await countryStorage.SearchAsync();
 
             return new CreateSchoolModel(countries);
-        }
-
-        private async Task LogSchoolCreate(string schoolId, string schoolTitle, User user)
-        {
-            await auditStorage.LogAsync(new AuditItem($"School {schoolTitle} has created", user, new List<AuditEntity>
-            {
-                new AuditEntity(schoolId, EntityType.School)
-            }));
-        }
-
-        private async Task LogTeacherAdded(string schoolId, string schoolTitle,
-            string teacherId, string teacherName, User user)
-        {
-            await auditStorage.LogAsync(new AuditItem($"Teacher {teacherName} has added to {schoolTitle} school", user, new List<AuditEntity>
-            {
-                new AuditEntity(schoolId, EntityType.School),
-                new AuditEntity(teacherId, EntityType.Teacher)
-            }));
         }
     }
 }

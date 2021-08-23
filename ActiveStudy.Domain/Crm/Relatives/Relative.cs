@@ -8,6 +8,8 @@ namespace ActiveStudy.Domain.Crm.Relatives
         public string Email { get; }
         public string Phone { get; }
 
+        public string FullName => $"{FirstName} {LastName}";
+
         public Relative(string id, string firstName, string lastName, string email, string phone)
         {
             Id = id;

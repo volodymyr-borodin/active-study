@@ -1,10 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Relatives;
+using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
+using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.Students;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,15 +17,26 @@ namespace ActiveStudy.Web.Controllers
     [Route("school/{schoolId}/students"), Authorize]
     public class StudentsController : Controller
     {
+        private readonly ISchoolStorage schoolStorage;
         private readonly IStudentStorage studentStorage;
         private readonly IClassStorage classStorage;
         private readonly IRelativesStorage relativesStorage;
+        private readonly IAuditStorage auditStorage;
+        private readonly CurrentUserProvider currentUserProvider;
 
-        public StudentsController(IStudentStorage studentStorage, IClassStorage classStorage, IRelativesStorage relativesStorage)
+        public StudentsController(ISchoolStorage schoolStorage,
+            IStudentStorage studentStorage,
+            IClassStorage classStorage,
+            IRelativesStorage relativesStorage,
+            IAuditStorage auditStorage,
+            CurrentUserProvider currentUserProvider)
         {
+            this.schoolStorage = schoolStorage;
             this.studentStorage = studentStorage;
             this.classStorage = classStorage;
             this.relativesStorage = relativesStorage;
+            this.auditStorage = auditStorage;
+            this.currentUserProvider = currentUserProvider;
         }
 
         [HttpGet("{id}")]
@@ -57,7 +71,19 @@ namespace ActiveStudy.Web.Controllers
             }
 
             var student = new Student(string.Empty, model.FirstName, model.LastName, model.Email, model.Phone, schoolId, classInfo == null ? Enumerable.Empty<ClassShortInfo>() : new [] { classInfo });
-            await studentStorage.InsertAsync(student);
+            var studentId = await studentStorage.InsertAsync(student);
+
+            var school = await schoolStorage.GetByIdAsync(schoolId);
+            await auditStorage.LogStudentCreateAsync(school.Id, school.Title,
+                studentId, student.FullName,
+                currentUserProvider.User.AsUser());
+            foreach (var @class in student.Classes)
+            {
+                await auditStorage.LogStudentAddedToClassAsync(school.Id, school.Title,
+                    studentId, student.FullName,
+                    @class.Id, @class.Title,
+                    currentUserProvider.User.AsUser());
+            }
 
             return RedirectToAction("Details", "Classes", new { schoolId, id = model.ClassId });
         }

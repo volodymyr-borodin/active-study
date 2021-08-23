@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using ActiveStudy.Domain;
 using ActiveStudy.Storage.Mongo.Crm;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -24,8 +22,8 @@ namespace ActiveStudy.Storage.Mongo
     {
         public ObjectId Id { get; set; }
 
-        [BsonElement("message")]
-        public string Message { get; set; }
+        [BsonElement("actionId")]
+        public Guid ActionId { get; set; }
 
         [BsonElement("time")]
         public DateTime Time { get; set; }
@@ -33,16 +31,7 @@ namespace ActiveStudy.Storage.Mongo
         [BsonElement("user")]
         public UserEntity User { get; set; }
 
-        [BsonElement("entities")]
-        public IEnumerable<AuditObjectEntity> Entities { get; set; }
-    }
-
-    public class AuditObjectEntity
-    {
-        [BsonElement("id")]
-        public string Id { get; set; }
-
-        [BsonElement("entityType")]
-        public EntityType EntityType { get; set; }
+        [BsonElement("data")]
+        public BsonDocument Data { get; set; }
     }
 }

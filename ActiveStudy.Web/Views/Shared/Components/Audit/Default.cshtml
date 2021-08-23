@@ -1,8 +1,54 @@
+@using ActiveStudy.Domain
 @model IEnumerable<ActiveStudy.Domain.AuditItem>
+@inject IViewLocalizer localizer
 
 <ul>
     @foreach (var item in Model)
     {
-        <li>[@item.Time] - [@item.User.FullName]: @item.Message</li>
+        // schools
+        if (item.ActionId == AuditItem.SchoolCreated)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["schoolTitle"]]</li>
+        }
+
+        // classes
+        else if (item.ActionId == AuditItem.ClassCreated)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["classTitle"]]</li>
+        }
+
+        // teachers
+        else if (item.ActionId == AuditItem.TeacherCreated)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["teacherName"]]</li>
+        }
+        else if (item.ActionId == AuditItem.TeacherRemoved)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["teacherName"]]</li>
+        }
+        else if (item.ActionId == AuditItem.TeacherAddedToClass)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["teacherName"], item.Data["classTitle"]]</li>
+        }
+
+        // students
+        else if (item.ActionId == AuditItem.StudentCreated)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["studentName"]]</li>
+        }
+        else if (item.ActionId == AuditItem.StudentAddedToClass)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["studentName"], item.Data["classTitle"]]</li>
+        }
+
+        // relatives
+        else if (item.ActionId == AuditItem.RelativeCreated)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["relativeName"]]</li>
+        }
+        else if (item.ActionId == AuditItem.RelativeAddedToStudent)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["relativeName"], item.Data["studentName"]]</li>
+        }
     }
 </ul>
