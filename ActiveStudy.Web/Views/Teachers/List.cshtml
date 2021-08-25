@@ -86,14 +86,20 @@
                                             </div>
                                         </div>
                                         <div class="col-md-5">
-                                            <form asp-controller="Teachers" asp-action="Delete" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
-                                                <div class="text-right">
-                                                    <button type="submit" class="btn btn-danger transition-3d-hover">@localizer["Delete"]</button>
-                                                </div>
-                                            </form>
                                             <form asp-controller="Teachers" asp-action="Invite" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
                                                 <div class="text-right">
-                                                    <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Invite"]</button>
+                                                    <button type="submit" class="btn btn-link p-1">
+                                                        <i class="far fa-location-arrow mr-1"></i>
+                                                        <span>@localizer["Invite"]</span>
+                                                    </button>
+                                                </div>
+                                            </form>
+                                            <form asp-controller="Teachers" asp-action="Delete" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
+                                                <div class="text-right">
+                                                    <button type="submit" class="btn btn-link text-danger p-1 btn-sm">
+                                                        <i class="far fa-trash-alt mr-1"></i>
+                                                        <span>@localizer["Delete"]</span>
+                                                    </button>
                                                 </div>
                                             </form>
                                         </div>

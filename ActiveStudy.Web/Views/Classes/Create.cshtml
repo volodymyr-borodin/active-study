@@ -18,8 +18,8 @@
 <div class="container space-2">
     <!-- Apply Form -->
     <form asp-action="Create" class="js-validate">
-        <div class="row">
-            <div class="col-md-6 mb-3 mb-md-5">
+        <div class="row mb-3">
+            <div class="col-md-6">
                 <!-- Input -->
                 <div class="js-form-message">
                     <label class="input-label" asp-for="Label">@localizer["Label"]</label>
@@ -31,7 +31,7 @@
                 <!-- End Input -->
             </div>
 
-            <div class="col-md-6 mb-3 mb-md-5">
+            <div class="col-md-6">
                 <!-- Input -->
                 <div class="js-form-message">
                     <label class="input-label" asp-for="Grade">@localizer["Grade"]</label>
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-12">
                 <div class="js-form-message">
                     <label class="input-label" asp-for="TeacherId">@localizer["Responsible Teacher"]</label>
@@ -55,7 +55,7 @@
         </div>
 
         <div class="text-right">
-            <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Save"]</button>
+            <button type="submit" class="btn btn-primary">@localizer["Save"]</button>
         </div>
     </form>
     <!-- End Apply Form -->

@@ -19,13 +19,11 @@
                 </div>
                 <div class="col-md-5">
                     <div class="text-right">
-                        <a class="btn btn-primary transition-3d-hover" asp-controller="Relatives" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-studentId="@student.Id">@localizer["Add Relative"]</a>
+                        <a class="btn btn-link" asp-controller="Relatives" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-studentId="@student.Id">
+                            <i class="far fa-user-plus mr-1"></i>
+                            <span>@localizer["Add Relative"]</span>
+                        </a>
                     </div>
-                    @* <form method="get" > *@
-                    @*      *@
-                    @*         <button type="submit" class="btn btn-primary transition-3d-hover"></button> *@
-                    @*     </div> *@
-                    @* </form> *@
                 </div>
             </div>
         </div>
