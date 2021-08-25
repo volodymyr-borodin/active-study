@@ -1,11 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
+using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.Teachers;
+using ActiveStudy.Web.Services.Email;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActiveStudy.Web.Areas.Schools.Controllers
@@ -18,18 +22,22 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly ISubjectStorage subjectStorage;
         private readonly IAuditStorage auditStorage;
         private readonly CurrentUserProvider currentUserProvider;
+        private readonly UserManager<ActiveStudyUserEntity> userManager;
+        private readonly IEmailService emailService;
 
         public TeachersController(ITeacherStorage teacherStorage,
             ISchoolStorage schoolStorage,
             ISubjectStorage subjectStorage,
             IAuditStorage auditStorage,
-            CurrentUserProvider currentUserProvider)
+            CurrentUserProvider currentUserProvider, UserManager<ActiveStudyUserEntity> userManager, IEmailService emailService)
         {
             this.teacherStorage = teacherStorage;
             this.schoolStorage = schoolStorage;
             this.subjectStorage = subjectStorage;
             this.auditStorage = auditStorage;
             this.currentUserProvider = currentUserProvider;
+            this.userManager = userManager;
+            this.emailService = emailService;
         }
     
         [HttpGet]
@@ -87,6 +95,50 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             return RedirectToAction("List", "Teachers", new {schoolId});
         }
 
+        [HttpPost("{id}/invite")]
+        public async Task<IActionResult> Invite([Required] string schoolId, [Required] string id)
+        {
+            var teacher = await teacherStorage.GetByIdAsync(id);
+            var school = await schoolStorage.GetByIdAsync(schoolId);
+
+            var user = new ActiveStudyUserEntity
+            {
+                UserName = teacher.Email,
+                Email = teacher.Email,
+                FirstName = teacher.FirstName,
+                LastName = teacher.LastName
+            };
+
+            var existingUser = await userManager.FindByNameAsync(user.UserName);
+            if (existingUser != null)
+            {
+                var schoolIds = await userManager.GetSchoolClaimsAsync(existingUser);
+                if (schoolIds.Any(s => s.Value == schoolId))
+                {
+                    // TODO: Show error
+                    return RedirectToAction("List", new {schoolId});
+                }
+
+                await userManager.AddSchoolClaimAsync(existingUser, schoolId);
+                await SendInvitationEmail(existingUser);
+            }
+            else
+            {
+                var result = await userManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    await userManager.AddSchoolClaimAsync(user, schoolId);
+                    await SendInvitationEmail(user);
+                }
+            }
+
+            await auditStorage.LogTeacherInvitedAsync(school.Id, school.Title,
+                teacher.Id, teacher.FullName,
+                currentUserProvider.User.AsUser());
+            
+            return RedirectToAction("List", new {schoolId});
+        }
+
         private async Task<CreateTeacherViewModel> Build(string schoolId, CreateTeacherInputModel input = null)
         {
             var school = await schoolStorage.GetByIdAsync(schoolId);
@@ -99,6 +151,20 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
                 Email = input?.Email,
                 SubjectIds = input?.SubjectIds
             };
+        }
+
+        private async Task SendInvitationEmail(ActiveStudyUserEntity user)
+        {
+            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var url = Url.Action(
+                "CompleteInvitation", "Account",
+                new { userId = user.Id, code }, 
+                Request.Scheme);
+
+            var subject = "Confirm your email";
+            var body = $"You was invited to school. Please accept invitation clicking this link: <a href=\"{url}\">link</a>";
+
+            await emailService.SendEmailAsync(new EmailRecipient($"{user.FirstName} {user.LastName}", user.Email), subject, body);
         }
     }
 }

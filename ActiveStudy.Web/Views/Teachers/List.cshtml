@@ -63,7 +63,7 @@
                     <div class="tab-pane fade pt-6 active show">
                         <div class="container d-flex align-items-center mx-0 mb-2">
                             <h2>@localizer["Teachers"]</h2>
-                            <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Class"]</a>
+                            <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Teacher"]</a>
                         </div>
                         @foreach (var teacher in Model.Teachers)
                         {
@@ -89,6 +89,11 @@
                                             <form asp-controller="Teachers" asp-action="Delete" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
                                                 <div class="text-right">
                                                     <button type="submit" class="btn btn-danger transition-3d-hover">@localizer["Delete"]</button>
+                                                </div>
+                                            </form>
+                                            <form asp-controller="Teachers" asp-action="Invite" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
+                                                <div class="text-right">
+                                                    <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Invite"]</button>
                                                 </div>
                                             </form>
                                         </div>

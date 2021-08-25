@@ -45,6 +45,50 @@ namespace ActiveStudy.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> CompleteInvitation(string userId, string code)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            // TODO: user not found
+
+            var result = await userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+            {
+                // email confirmed
+                return View(new CompleteInvitationInputModel
+                {
+                    UserId = userId
+                });
+            }
+
+            // return page with errors
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> CompleteInvitation(CompleteInvitationInputModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.UserId);
+            // TODO: user not found
+
+            var result = await userManager.AddPasswordAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                var signInResult = await signInManager.PasswordSignInAsync(user.UserName, model.Password, false, lockoutOnFailure: true);
+                if (signInResult.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                // email confirmed
+                return View();
+            }
+
+            // return page with errors
+            return View();
+        }
+
         [HttpPost]
         [AllowAnonymous]
         public IActionResult SetLanguage(string culture, string returnUrl)

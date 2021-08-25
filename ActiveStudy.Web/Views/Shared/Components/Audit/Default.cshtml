@@ -30,6 +30,10 @@
         {
             <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["teacherName"], item.Data["classTitle"]]</li>
         }
+        else if (item.ActionId == AuditItem.TeacherInvited)
+        {
+            <li>[@item.Time] - [@item.User.FullName]: @localizer[item.ActionId.ToString(), item.Data["teacherName"]]</li>
+        }
 
         // students
         else if (item.ActionId == AuditItem.StudentCreated)

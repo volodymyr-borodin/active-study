@@ -30,6 +30,7 @@ namespace ActiveStudy.Domain
         public static Guid TeacherCreated = new Guid("9B4D025A-ECF5-4EAE-A3BE-083DC753C8CA");
         public static Guid TeacherRemoved = new Guid("B13B1A50-EB02-4ED7-A741-CA6B1DB49AE1");
         public static Guid TeacherAddedToClass = new Guid("5F81919F-1276-4CCA-9C58-492B31AEB76D");
+        public static Guid TeacherInvited = new Guid("0D5D2438-1A31-4C95-8DD8-3429DCD4FEC0");
 
         public static Guid SchoolCreated = new Guid("87C411CD-FF23-4A05-AA78-F36A7685AEE8");
 
@@ -50,6 +51,22 @@ namespace ActiveStudy.Domain
             User user)
         {
             await auditStorage.LogAsync(new AuditItem(AuditItem.TeacherCreated,
+                new Dictionary<string, string>
+                {
+                    ["schoolId"] = schoolId,
+                    ["schoolTitle"] = schoolTitle,
+                    ["teacherId"] = teacherId,
+                    ["teacherName"] = teacherName
+                },
+                user));
+        }
+
+        public static async Task LogTeacherInvitedAsync(this IAuditStorage auditStorage,
+            string schoolId, string schoolTitle,
+            string teacherId, string teacherName,
+            User user)
+        {
+            await auditStorage.LogAsync(new AuditItem(AuditItem.TeacherInvited,
                 new Dictionary<string, string>
                 {
                     ["schoolId"] = schoolId,

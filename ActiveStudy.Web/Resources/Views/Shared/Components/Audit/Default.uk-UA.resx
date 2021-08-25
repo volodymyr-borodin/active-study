@@ -45,4 +45,7 @@
     <data name="925f22e9-801d-483f-bcaf-c8d51caec575" xml:space="preserve">
         <value>Relative {0} has assigned to student {1}</value>
     </data>
+    <data name="0d5d2438-1a31-4c95-8dd8-3429dcd4fec0" xml:space="preserve">
+        <value>Teacher {0} has invited</value>
+    </data>
 </root>
