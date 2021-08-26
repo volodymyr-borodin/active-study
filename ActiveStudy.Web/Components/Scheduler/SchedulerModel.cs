@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ActiveStudy.Domain.Crm.Scheduler;
 
 namespace ActiveStudy.Web.Components.Scheduler
@@ -7,5 +8,6 @@ namespace ActiveStudy.Web.Components.Scheduler
         public Schedule Schedule { get; set; }
         public string SchoolId { get; set; }
         public string ClassId { get; set; }
+        public IEnumerable<Lesson> Lessons { get; set; }
     }
 }
