@@ -59,7 +59,7 @@
                 <div class="js-form-message">
                     <label class="input-label" asp-for="SubjectId">@localizer["Date"]</label>
                     <div class="input-group">
-                        <input type="date" asp-for="Date" class="form-control" />
+                        <input @(Model.DateLocked ? "readonly" : "") readonly type="date" asp-for="Date" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
                 <div class="js-form-message">
                     <label class="input-label" asp-for="SubjectId">@localizer["From"]</label>
                     <div class="input-group">
-                        <input asp-for="From" class="form-control" />
+                        <input @(Model.TimeLocked ? "readonly" : "") asp-for="From" class="form-control" />
                     </div>
                 </div>
             </div>
@@ -75,7 +75,7 @@
                 <div class="js-form-message">
                     <label class="input-label" asp-for="SubjectId">@localizer["To"]</label>
                     <div class="input-group">
-                        <input asp-for="To" class="form-control" />
+                        <input @(Model.TimeLocked ? "readonly" : "") asp-for="To" class="form-control" />
                     </div>
                 </div>
             </div>

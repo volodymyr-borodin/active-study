@@ -5,24 +5,25 @@
             <th>N/A</th>
             @foreach (var (day, _) in Model.Schedule)
             {
-                <th style="white-space: nowrap;" class="@(day.DayOfWeek == DayOfWeek.Saturday || day.DayOfWeek == DayOfWeek.Sunday ? "bg-light" : "")">@day.ToString("ddd MMMM dd")</th>
+                <th style="white-space: nowrap;" class="@(day == DateTime.Today ? "bg-light" : "")">@day.ToString("ddd MMMM dd")</th>
             }
         </tr>
         @foreach (var lesson in Model.Lessons)
         {
             <tr>
-                <td>
+                <td style="white-space: nowrap;">
                     @lesson.From.ToString("hh\\:mm") - @lesson.To.ToString("hh\\:mm")
                 </td>
-                @foreach (var day in Model.Schedule)
+                @foreach (var (day, events) in Model.Schedule)
                 {
-                    var e = day.Value.FirstOrDefault(e => e.From == lesson.From && e.To == lesson.To);
+                    var e = events.FirstOrDefault(e => e.From == lesson.From && e.To == lesson.To);
                     @if (e == null)
                     {
-                        <td style="white-space: nowrap;" class="@(day.Key.DayOfWeek == DayOfWeek.Saturday || day.Key.DayOfWeek == DayOfWeek.Sunday ? "bg-light" : "")">
+                        <td style="white-space: nowrap;" class="@(day == DateTime.Today ? "bg-light" : "")">
                             <a class="link" asp-controller="Scheduler" asp-action="Create"
                                asp-route-schoolId="@Model.SchoolId"
-                               asp-route-day="@day.Key"
+                               asp-route-day="@day"
+                               asp-route-time="@lesson.From.ToString("hh\\:mm") - @lesson.To.ToString("hh\\:mm")"
                                asp-route-classId="@Model.ClassId">Add</a>
                         </td>
                     }

@@ -31,18 +31,16 @@
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold active" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
-                                    <img class="img-fluid" src="/svg/icons/icon-24.svg" alt="SVG">
-                                </figure>
+                                <span>@localizer["Schedule"]</span>
+                                <i class="fas fa-calendar fa-2x ml-3"></i>
                             </div>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="Students" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <figure class="d-none d-md-block w-100 max-w-5rem mr-3">
-                                    <img class="img-fluid" src="/svg/icons/icon-24.svg" alt="SVG">
-                                </figure>
+                                <span>@localizer["Students"]</span>
+                                <i class="fas fa-users fa-2x ml-3"></i>
                             </div>
                         </a>
                     </li>

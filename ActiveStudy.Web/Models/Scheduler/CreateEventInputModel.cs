@@ -51,5 +51,8 @@ namespace ActiveStudy.Web.Models.Scheduler
         public IEnumerable<SelectListItem> Subjects { get; }
         public IEnumerable<SelectListItem> Teachers { get; }
         public IEnumerable<SelectListItem> Classes { get; }
+        
+        public bool DateLocked { get; set; }
+        public bool TimeLocked { get; set; }
     }
 }

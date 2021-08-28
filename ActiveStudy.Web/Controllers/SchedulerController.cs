@@ -37,14 +37,26 @@ namespace ActiveStudy.Web.Controllers
 
         [HttpGet("create")]
         public async Task<IActionResult> Create([Required]string schoolId,
-            [FromQuery]DateTime? day,
+            [FromQuery]string day,
+            [FromQuery]string time,
             [FromQuery]string classId)
         {
             var model = await Build(schoolId);
 
-            if (day.HasValue)
+            if (DateTime.TryParse(day, out var pDay))
             {
-                model.Date = day.Value;
+                model.Date = pDay;
+                model.DateLocked = true;
+            }
+
+            var timeArray = time.Split(" - ");
+            if (timeArray.Length == 2
+                && TimeSpan.TryParse(timeArray[0], out var from)
+                && TimeSpan.TryParse(timeArray[1], out var to))
+            {
+                model.From = from;
+                model.To = to;
+                model.TimeLocked = true;
             }
 
             if (!string.IsNullOrEmpty(classId))
