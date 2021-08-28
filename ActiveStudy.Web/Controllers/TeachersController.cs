@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
+using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Storage.Mongo.Identity;
@@ -20,6 +21,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly ITeacherStorage teacherStorage;
         private readonly ISchoolStorage schoolStorage;
         private readonly ISubjectStorage subjectStorage;
+        private readonly IClassStorage classStorage;
         private readonly IAuditStorage auditStorage;
         private readonly CurrentUserProvider currentUserProvider;
         private readonly UserManager<ActiveStudyUserEntity> userManager;
@@ -28,12 +30,16 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         public TeachersController(ITeacherStorage teacherStorage,
             ISchoolStorage schoolStorage,
             ISubjectStorage subjectStorage,
+            IClassStorage classStorage,
             IAuditStorage auditStorage,
-            CurrentUserProvider currentUserProvider, UserManager<ActiveStudyUserEntity> userManager, IEmailService emailService)
+            CurrentUserProvider currentUserProvider,
+            UserManager<ActiveStudyUserEntity> userManager,
+            IEmailService emailService)
         {
             this.teacherStorage = teacherStorage;
             this.schoolStorage = schoolStorage;
             this.subjectStorage = subjectStorage;
+            this.classStorage = classStorage;
             this.auditStorage = auditStorage;
             this.currentUserProvider = currentUserProvider;
             this.userManager = userManager;
@@ -121,6 +127,8 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
 
                 await userManager.AddSchoolClaimAsync(existingUser, schoolId);
                 await SendInvitationEmail(existingUser);
+                await teacherStorage.SetUserIdAsync(teacher.Id, existingUser.Id);
+                await classStorage.SetTeacherUserIdAsync(teacher.Id, existingUser.Id);
             }
             else
             {
@@ -129,6 +137,8 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
                 {
                     await userManager.AddSchoolClaimAsync(user, schoolId);
                     await SendInvitationEmail(user);
+                    await teacherStorage.SetUserIdAsync(teacher.Id, user.Id);
+                    await classStorage.SetTeacherUserIdAsync(teacher.Id, user.Id);
                 }
             }
 

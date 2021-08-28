@@ -9,5 +9,6 @@ namespace ActiveStudy.Domain.Crm.Teachers
         Task<IEnumerable<Teacher>> FindAsync(string schoolId);
         Task<string> InsertAsync(Teacher teacher);
         Task DeleteAsync(Teacher teacher);
+        Task SetUserIdAsync(string id, string userId);
     }
 }

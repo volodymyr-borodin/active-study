@@ -47,6 +47,17 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return entity.Id.ToString();
         }
 
+        public async Task SetTeacherUserIdAsync(string teacherId, string userId)
+        {
+            var idFilter = Builders<ClassEntity>.Filter
+                .Eq(s => s.Teacher.Id, new ObjectId(teacherId));
+
+            var update = Builders<ClassEntity>.Update
+                .Set(t => t.Teacher.UserId, userId);
+
+            await context.Classes.UpdateOneAsync(idFilter, update);
+        }
+
         private static FilterDefinitionBuilder<ClassEntity> FilterBuilder => Builders<ClassEntity>.Filter;
     }
 }
