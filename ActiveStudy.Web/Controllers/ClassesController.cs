@@ -59,7 +59,9 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var @class = await classStorage.GetByIdAsync(id);
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
-            var schedule = await scheduleStorage.GetByClassAsync(id, DateTime.Today, DateTime.Today.AddDays(7));
+            var scheduleFrom = DateTime.Today.NearestMonday();
+            var scheduleTo = scheduleFrom.AddDays(7);
+            var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
 
             var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students, schedule);
 
@@ -72,7 +74,9 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var @class = await classStorage.GetByIdAsync(id);
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
-            var schedule = await scheduleStorage.GetByClassAsync(id, DateTime.Today, DateTime.Today.AddDays(7));
+            var scheduleFrom = DateTime.Today.NearestMonday();
+            var scheduleTo = scheduleFrom.AddDays(7);
+            var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
 
             var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students, schedule);
 
