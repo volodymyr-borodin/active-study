@@ -8,5 +8,6 @@ namespace ActiveStudy.Domain.Crm.Relatives
         Task<string> InsertAsync(Relative relative);
         Task AddStudentAsync(string relativeId, string studentId);
         Task<IEnumerable<Relative>> SearchAsync(string studentId);
+        Task<IDictionary<string, IEnumerable<Relative>>> SearchAsync(IEnumerable<string> studentIds);
     }
 }

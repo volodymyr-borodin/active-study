@@ -49,5 +49,18 @@ namespace ActiveStudy.Storage.Mongo.Crm
 
             return entities.Select(e => (Relative) e).ToList();
         }
+
+        public async Task<IDictionary<string, IEnumerable<Relative>>> SearchAsync(IEnumerable<string> studentIds)
+        {
+            var filter = Builders<RelativeEntity>.Filter.AnyIn(r => r.StudentIds, studentIds);
+
+            var entities = await context.Relatives.Find(filter).ToListAsync();
+
+            return studentIds
+                .ToDictionary(s => s,
+                    s => entities
+                        .Where(e => e.StudentIds.Contains(s))
+                        .Select(e => (Relative) e));
+        }
     }
 }

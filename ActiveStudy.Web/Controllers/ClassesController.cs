@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
@@ -22,6 +23,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly IClassStorage classStorage;
         private readonly ISchoolStorage schoolStorage;
         private readonly IStudentStorage studentStorage;
+        private readonly IRelativesStorage relativesStorage;
         private readonly ITeacherStorage teacherStorage;
         private readonly ISchedulerStorage scheduleStorage;
         private readonly IAuditStorage auditStorage;
@@ -30,6 +32,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         public ClassesController(IClassStorage classStorage,
             ISchoolStorage schoolStorage,
             IStudentStorage studentStorage,
+            IRelativesStorage relativesStorage,
             ITeacherStorage teacherStorage,
             ISchedulerStorage scheduleStorage,
             IAuditStorage auditStorage,
@@ -37,6 +40,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         {
             this.classStorage = classStorage;
             this.studentStorage = studentStorage;
+            this.relativesStorage = relativesStorage;
             this.teacherStorage = teacherStorage;
             this.scheduleStorage = scheduleStorage;
             this.auditStorage = auditStorage;
@@ -63,7 +67,20 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var scheduleTo = scheduleFrom.AddDays(7);
             var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
 
-            var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students, schedule);
+            var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
+
+            var model = new ClassViewModel(@class.Id,
+                @class.Title,
+                school,
+                @class.Teacher,
+                students.Select(s => new StudentViewModel(
+                        s.Id,
+                        s.FullName,
+                        relatives[s.Id]
+                            .Select(r => new RelativeViewModel(r.Id, r.FullName, r.Phone))
+                            .ToList()))
+                    .ToList(),
+                schedule);
 
             return View(model);
         }
@@ -78,7 +95,20 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var scheduleTo = scheduleFrom.AddDays(7);
             var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
 
-            var model = new ClassViewModel(@class.Id, @class.Title, school, @class.Teacher, students, schedule);
+            var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
+
+            var model = new ClassViewModel(@class.Id,
+                @class.Title,
+                school,
+                @class.Teacher,
+                students.Select(s => new StudentViewModel(
+                    s.Id,
+                    s.FullName,
+                    relatives[s.Id]
+                        .Select(r => new RelativeViewModel(r.Id, r.FullName, r.Phone))
+                        .ToList()))
+                    .ToList(),
+                schedule);
 
             return View(model);
         }
