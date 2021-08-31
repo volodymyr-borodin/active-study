@@ -75,7 +75,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             // TODO: Validate create class access to school
             var subjects = await subjectStorage.SearchAsync(model.SubjectIds);
             
-            var teacher = new Teacher(string.Empty, model.FirstName, model.LastName, model.MiddleName, model.Email, subjects, schoolId, string.Empty);
+            var teacher = new Teacher(string.Empty, model.FirstName, model.LastName, model.MiddleName, model.Email, subjects, schoolId, null);
             var teacherId = await teacherStorage.InsertAsync(teacher);
 
             await auditStorage.LogTeacherCreatedAsync(school.Id, school.Title,
