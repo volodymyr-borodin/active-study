@@ -1,10 +1,9 @@
-@using ActiveStudy.Domain
 @model ActiveStudy.Web.Models.Schools.SchoolHomePageModel
 @inject IHtmlLocalizer<SharedResource> sharedLocalizer;
 @inject IViewLocalizer localizer
 
 @{
-    ViewData["Title"] = localizer["Page Title"];
+    ViewData["Title"] = Model.School.Title;
 
     var breadcrumb = new List<BreadcrumbItem>
     {
@@ -30,21 +29,21 @@
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold active" data-toggle="pill" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Details"]</span>
+                                <span>@sharedLocalizer["Details"]</span>
                             </div>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Teachers"]</span>
+                                <span>@sharedLocalizer["Teachers"]</span>
                             </div>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Classes"]</span>
+                                <span>@sharedLocalizer["Classes"]</span>
                             </div>
                         </a>
                     </li>

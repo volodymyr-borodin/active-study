@@ -28,4 +28,40 @@
     <data name="Students" xml:space="preserve">
         <value>Students</value>
     </data>
+    <data name="New School" xml:space="preserve">
+        <value>New School</value>
+    </data>
+    <data name="Details" xml:space="preserve">
+        <value>Details</value>
+    </data>
+    <data name="Teachers" xml:space="preserve">
+        <value>Teachers</value>
+    </data>
+    <data name="Teacher" xml:space="preserve">
+        <value>Teacher</value>
+    </data>
+    <data name="Subject" xml:space="preserve">
+        <value>Subject</value>
+    </data>
+    <data name="Class" xml:space="preserve">
+        <value>Class</value>
+    </data>
+    <data name="Add Teacher" xml:space="preserve">
+        <value>Add Teacher</value>
+    </data>
+    <data name="Add Class" xml:space="preserve">
+        <value>Add Class</value>
+    </data>
+    <data name="Delete" xml:space="preserve">
+        <value>Delete</value>
+    </data>
+    <data name="Schedule" xml:space="preserve">
+        <value>Schedule</value>
+    </data>
+    <data name="New Class" xml:space="preserve">
+        <value>New Class</value>
+    </data>
+    <data name="Add Student" xml:space="preserve">
+        <value>Add Student</value>
+    </data>
 </root>

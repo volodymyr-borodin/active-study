@@ -1,4 +1,4 @@
-namespace ActiveStudy.Web.Resources
+namespace ActiveStudy.Web
 {
     public class SharedResource
     {

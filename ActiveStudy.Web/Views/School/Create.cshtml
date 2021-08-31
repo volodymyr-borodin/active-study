@@ -3,12 +3,12 @@
 @inject IViewLocalizer localizer
 
 @{
-    ViewData["Title"] = localizer["Page Title"];
+    ViewData["Title"] = sharedLocalizer["New School"].Value;
 
     var breadcrumb = new List<BreadcrumbItem>
     {
         BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
-        BreadcrumbItem.InActive(localizer["New School"].Value)
+        BreadcrumbItem.InActive(sharedLocalizer["New School"].Value)
     };
 }
 

@@ -19,6 +19,8 @@ namespace ActiveStudy.Domain.Crm.Teachers
             ? $"{FirstName} {LastName}"
             : $"{FirstName} {MiddleName} {LastName}";
 
+        public bool IsInvited => UserId != null;
+
         public Teacher(string id, string firstName, string lastName, string middleName, string email, IEnumerable<Subject> subjects, string schoolId, string userId)
         {
             Id = id;
@@ -35,12 +37,9 @@ namespace ActiveStudy.Domain.Crm.Teachers
 
         public static explicit operator TeacherShortInfo(Teacher teacher)
         {
-            if (teacher == null)
-            {
-                return null;
-            }
-            
-            return new TeacherShortInfo(teacher.Id, teacher.FullName, teacher.UserId);
+            return teacher == null
+                ? null
+                : new TeacherShortInfo(teacher.Id, teacher.FullName, teacher.UserId);
         }
     }
 }

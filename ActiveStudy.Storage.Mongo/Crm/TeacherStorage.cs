@@ -40,7 +40,8 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 MiddleName = teacher.MiddleName,
                 Email = teacher.Email,
                 SchoolId = new ObjectId(teacher.SchoolId),
-                Subjects = teacher.Subjects.Select(s => (SubjectEntity)s).ToList()
+                Subjects = teacher.Subjects.Select(s => (SubjectEntity)s).ToList(),
+                UserId = teacher.UserId
             };
 
             await context.Teachers.InsertOneAsync(entity);

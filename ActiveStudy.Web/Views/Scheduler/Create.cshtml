@@ -1,4 +1,5 @@
 @model ActiveStudy.Web.Models.Scheduler.CreateEventPageModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer
 @inject IViewLocalizer localizer
 @{
     ViewData["Title"] = localizer["Page Title"];
@@ -24,7 +25,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="js-form-message">
-                    <label class="input-label" asp-for="ClassId">@localizer["Class"]</label>
+                    <label class="input-label" asp-for="ClassId">@sharedLocalizer["Class"]</label>
                     <div class="input-group">
                         <select asp-for="ClassId" asp-items="@Model.Classes" class="form-control"></select>
                     </div>
@@ -35,7 +36,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="js-form-message">
-                    <label class="input-label" asp-for="TeacherId">@localizer["Teacher"]</label>
+                    <label class="input-label" asp-for="TeacherId">@sharedLocalizer["Teacher"]</label>
                     <div class="input-group">
                         <select asp-for="TeacherId" asp-items="@Model.Teachers" class="form-control"></select>
                     </div>
@@ -46,7 +47,7 @@
         <div class="row mb-3">
             <div class="col-12">
                 <div class="js-form-message">
-                    <label class="input-label" asp-for="SubjectId">@localizer["Subject"]</label>
+                    <label class="input-label" asp-for="SubjectId">@sharedLocalizer["Subject"]</label>
                     <div class="input-group">
                         <select asp-for="SubjectId" asp-items="@Model.Subjects" class="form-control"></select>
                     </div>

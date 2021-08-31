@@ -14,6 +14,7 @@ using ActiveStudy.Storage.Mongo;
 using ActiveStudy.Storage.Mongo.Crm;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models;
+using ActiveStudy.Web.Resources;
 using ActiveStudy.Web.Services.Email;
 using ActiveStudy.Web.Services.Email.Smtp;
 using Microsoft.AspNetCore.Builder;
@@ -110,7 +111,11 @@ namespace ActiveStudy.Web
 
             services.AddControllersWithViews()
                 .AddRazorOptions(options => { options.ViewLocationFormats.Add("/{0}.cshtml"); })
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization(options => {
+                    options.DataAnnotationLocalizerProvider = (type, factory) =>
+                        factory.Create(typeof(SharedResource));
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

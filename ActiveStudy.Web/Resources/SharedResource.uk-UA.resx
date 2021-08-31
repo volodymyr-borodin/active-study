@@ -27,4 +27,40 @@
     <data name="Students" xml:space="preserve">
         <value>Учні</value>
     </data>
+    <data name="New School" xml:space="preserve">
+        <value>Нова школа</value>
+    </data>
+    <data name="Details" xml:space="preserve">
+        <value>Деталі</value>
+    </data>
+    <data name="Teachers" xml:space="preserve">
+        <value>Вчителі</value>
+    </data>
+    <data name="Teacher" xml:space="preserve">
+        <value>Вчитель</value>
+    </data>
+    <data name="Subject" xml:space="preserve">
+        <value>Предмет</value>
+    </data>
+    <data name="Class" xml:space="preserve">
+        <value>Клас</value>
+    </data>
+    <data name="Add Teacher" xml:space="preserve">
+        <value>Додати вчителя</value>
+    </data>
+    <data name="Add Class" xml:space="preserve">
+        <value>Додати клас</value>
+    </data>
+    <data name="Delete" xml:space="preserve">
+        <value>Видалити</value>
+    </data>
+    <data name="Schedule" xml:space="preserve">
+        <value>Розклад</value>
+    </data>
+    <data name="New Class" xml:space="preserve">
+        <value>Новий клас</value>
+    </data>
+    <data name="Add Student" xml:space="preserve">
+        <value>Додати студента</value>
+    </data>
 </root>

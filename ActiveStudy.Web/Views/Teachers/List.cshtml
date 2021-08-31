@@ -1,15 +1,15 @@
 @model ActiveStudy.Web.Models.Teachers.TeachersListPageModel
-@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer
 @inject IViewLocalizer localizer
 
 @{
-    ViewData["Title"] = localizer["Page Title"];
+    ViewData["Title"] = sharedLocalizer["Teachers"].Value + " | " + Model.School.Title;
 
     var breadcrumb = new List<BreadcrumbItem>
     {
         BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
         BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
-        BreadcrumbItem.InActive(localizer["Teachers"].Value)
+        BreadcrumbItem.InActive(sharedLocalizer["Teachers"].Value)
     };
 }
 
@@ -30,21 +30,21 @@
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Details"]</span>
+                                <span>@sharedLocalizer["Details"]</span>
                             </div>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold active" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Teachers"]</span>
+                                <span>@sharedLocalizer["Teachers"]</span>
                             </div>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Classes"]</span>
+                                <span>@sharedLocalizer["Classes"]</span>
                             </div>
                         </a>
                     </li>
@@ -56,8 +56,8 @@
                     
                     <div class="tab-pane fade pt-6 active show">
                         <div class="container d-flex align-items-center mx-0 mb-2">
-                            <h2>@localizer["Teachers"]</h2>
-                            <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Teacher"]</a>
+                            <h2>@sharedLocalizer["Teachers"]</h2>
+                            <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id" class="ml-auto btn btn-soft-primary btn-sm">@sharedLocalizer["Add Teacher"]</a>
                         </div>
                         @foreach (var teacher in Model.Teachers)
                         {
@@ -80,19 +80,22 @@
                                             </div>
                                         </div>
                                         <div class="col-md-5">
-                                            <form asp-controller="Teachers" asp-action="Invite" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
-                                                <div class="text-right">
-                                                    <button type="submit" class="btn btn-link p-1">
-                                                        <i class="far fa-location-arrow mr-1"></i>
-                                                        <span>@localizer["Invite"]</span>
-                                                    </button>
-                                                </div>
-                                            </form>
+                                            @if (!teacher.IsInvited)
+                                            {
+                                                <form asp-controller="Teachers" asp-action="Invite" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
+                                                    <div class="text-right">
+                                                        <button type="submit" class="btn btn-link p-1">
+                                                            <i class="far fa-location-arrow mr-1"></i>
+                                                            <span>@localizer["Invite"]</span>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            }
                                             <form asp-controller="Teachers" asp-action="Delete" asp-route-schoolId="@teacher.SchoolId" asp-route-id="@teacher.Id">
                                                 <div class="text-right">
                                                     <button type="submit" class="btn btn-link text-danger p-1 btn-sm">
                                                         <i class="far fa-trash-alt mr-1"></i>
-                                                        <span>@localizer["Delete"]</span>
+                                                        <span>@sharedLocalizer["Delete"]</span>
                                                     </button>
                                                 </div>
                                             </form>

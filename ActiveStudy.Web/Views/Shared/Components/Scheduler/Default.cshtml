@@ -2,10 +2,10 @@
 <div class="table-responsive">
     <table class="table">
         <tr>
-            <th>N/A</th>
+            <th></th>
             @foreach (var (day, _) in Model.Schedule)
             {
-                <th style="white-space: nowrap;" class="@(day == DateTime.Today ? "bg-light" : "")">@day.ToString("ddd MMMM dd")</th>
+                <th style="white-space: nowrap;" class="@(day == DateTime.Today ? "bg-light" : "")">@day.ToString("dd/MM (ddd)")</th>
             }
         </tr>
         @foreach (var lesson in Model.Lessons)

@@ -32,14 +32,14 @@
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Schedule"]</span>
+                                <span>@sharedLocalizer["Schedule"]</span>
                             </div>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link font-weight-bold active" asp-controller="Classes" asp-action="Students" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
                             <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@localizer["Students"]</span>
+                                <span>@sharedLocalizer["Students"]</span>
                             </div>
                         </a>
                     </li>
@@ -50,8 +50,8 @@
                 <div class="tab-content">
                     <div class="tab-pane fade pt-6 active show">
                         <div class="container d-flex align-items-center mx-0 mb-2">
-                            <h2>@localizer["Students"]</h2>
-                            <a asp-controller="Students" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-classId="@Model.Id" class="ml-auto btn btn-soft-primary btn-sm">@localizer["Add Student"]</a>
+                            <h2>@sharedLocalizer["Students"]</h2>
+                            <a asp-controller="Students" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-classId="@Model.Id" class="ml-auto btn btn-soft-primary btn-sm">@sharedLocalizer["Add Student"]</a>
                         </div>
                         @foreach (var student in Model.Students)
                         {
