@@ -24,10 +24,13 @@ namespace ActiveStudy.Web.Models.Scheduler
         [Required]
         public string ClassId { get; set; }
         
+        [DataType(DataType.Date)]
         public DateTime Date { get; set; }
         
+        [DataType(DataType.Time)]
         public TimeSpan From { get; set; }
         
+        [DataType(DataType.Time)]
         public TimeSpan To { get; set; }
 
         public string Description { get; set; }
