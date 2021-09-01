@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -30,8 +31,8 @@ namespace ActiveStudy.Web.Components.LanguageSelect
             var cultures = _localizationOptions.SupportedUICultures
                 .Select(c => new SelectListItem(c.NativeName, c.Name, c.Name == requestCulture.Name))
                 .ToList();
-            
-            return View(new LanguageSelectModel(_returnUrl, requestCulture.NativeName, cultures));
+
+            return View(new LanguageSelectModel(_returnUrl, requestCulture, cultures));
         }
     }
 }
