@@ -1,4 +1,16 @@
 @model ActiveStudy.Web.Components.Scheduler.SchedulerModel
+<div class="d-flex justify-content-between">
+    <a asp-controller="@ViewContext.RouteData.Values["Controller"].ToString()"
+       asp-action="@ViewContext.RouteData.Values["Action"].ToString()"
+       asp-route-schoolId="@ViewContext.RouteData.Values["schoolId"].ToString()"
+       asp-route-id="@ViewContext.RouteData.Values["id"].ToString()"
+       asp-route-scheduleDate="@Model.Schedule.Keys.First().AddDays(-7).ToShortDateString()"><< @Model.Schedule.Keys.First().AddDays(-7).ToShortDateString() - @Model.Schedule.Keys.First().AddDays(-1).ToShortDateString()</a>
+    <a asp-controller="@ViewContext.RouteData.Values["Controller"].ToString()"
+       asp-action="@ViewContext.RouteData.Values["Action"].ToString()"
+       asp-route-schoolId="@ViewContext.RouteData.Values["schoolId"].ToString()"
+       asp-route-id="@ViewContext.RouteData.Values["id"].ToString()"
+       asp-route-scheduleDate="@Model.Schedule.Keys.First().AddDays(7).ToShortDateString()">@Model.Schedule.Keys.First().AddDays(7).ToShortDateString() - @Model.Schedule.Keys.First().AddDays(13).ToShortDateString() >></a>
+</div>
 <div class="table-responsive">
     <table class="table">
         <tr>

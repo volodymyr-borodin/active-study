@@ -58,13 +58,24 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Details([Required] string schoolId, [Required] string id)
+        public async Task<IActionResult> Details([Required] string schoolId,
+            [Required] string id,
+            string scheduleDate = null)
         {
             var @class = await classStorage.GetByIdAsync(id);
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
+
             var scheduleFrom = DateTime.Today.NearestMonday();
+            if (!string.IsNullOrEmpty(scheduleDate))
+            {
+                if (DateTime.TryParse(scheduleDate, out var sFrom))
+                {
+                    scheduleFrom = sFrom;
+                }
+            }
             var scheduleTo = scheduleFrom.AddDays(7);
+
             var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
 
             var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
@@ -86,13 +97,21 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         }
 
         [HttpGet("{id}/students")]
-        public async Task<IActionResult> Students([Required] string schoolId, [Required] string id)
+        public async Task<IActionResult> Students([Required] string schoolId,
+            [Required] string id,
+            string scheduleDate = null)
         {
             var @class = await classStorage.GetByIdAsync(id);
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
+
             var scheduleFrom = DateTime.Today.NearestMonday();
+            if (!string.IsNullOrEmpty(scheduleDate))
+            {
+                DateTime.TryParse(scheduleDate, out scheduleFrom);
+            }
             var scheduleTo = scheduleFrom.AddDays(7);
+
             var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
 
             var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
