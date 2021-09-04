@@ -14,7 +14,7 @@ using ActiveStudy.Storage.Mongo;
 using ActiveStudy.Storage.Mongo.Crm;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models;
-using ActiveStudy.Web.Resources;
+using ActiveStudy.Web.Services;
 using ActiveStudy.Web.Services.Email;
 using ActiveStudy.Web.Services.Email.Smtp;
 using Microsoft.AspNetCore.Builder;
@@ -68,6 +68,8 @@ namespace ActiveStudy.Web
                 default:
                     throw new Exception("Unknown EMAIL_SENDER");
             }
+
+            services.AddScoped<NotificationManager>();
 
             var mongoUrl = MongoUrl.Create(Configuration["MONGO_CONNECTION"]);
 

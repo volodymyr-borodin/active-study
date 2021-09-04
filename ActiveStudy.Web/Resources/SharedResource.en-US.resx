@@ -64,4 +64,22 @@
     <data name="Add Student" xml:space="preserve">
         <value>Add Student</value>
     </data>
+    <data name="EmailTemplate_PasswordRecovery_Subject" xml:space="preserve">
+        <value>Recovery your password</value>
+    </data>
+    <data name="EmailTemplate_EmailConfirmation_Subject" xml:space="preserve">
+        <value>Confirm your email</value>
+    </data>
+    <data name="EmailTemplate_InvitationEmail_Subject" xml:space="preserve">
+        <value>Confirm your email</value>
+    </data>
+    <data name="EmailTemplate_InvitationEmail_Body" xml:space="preserve">
+        <value>&lt;p&gt;{invitor.firstName} {invitor.lastName} was invited to {school.title} school.&lt;/p&gt;&lt;p&gt;Please accept invitation clicking this link: &lt;a href=\"{completeInvitationUrl}\"&gt;link&lt;/a&gt;&lt;/p&gt;</value>
+    </data>
+    <data name="EmailTemplate_EmailConfirmation_Body" xml:space="preserve">
+        <value>Please confirm your account by clicking this link: &lt;a href=\"{confirmEmailUrl}\"&gt;link&lt;/a&gt;</value>
+    </data>
+    <data name="EmailTemplate_PasswordRecovery_Body" xml:space="preserve">
+        <value>Follow the link below to the account recovery form: &lt;a href=\"{resetPasswordUrl}\"&gt;link&lt;/a&gt;</value>
+    </data>
 </root>

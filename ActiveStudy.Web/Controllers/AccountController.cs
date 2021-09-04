@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models.Account;
-using ActiveStudy.Web.Services.Email;
+using ActiveStudy.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,15 +16,15 @@ namespace ActiveStudy.Web.Controllers
     {
         private readonly SignInManager<ActiveStudyUserEntity> signInManager;
         private readonly UserManager<ActiveStudyUserEntity> userManager;
-        private readonly IEmailService emailService;
+        private readonly NotificationManager notificationManager;
 
         public AccountController(SignInManager<ActiveStudyUserEntity> signInManager,
             UserManager<ActiveStudyUserEntity> userManager,
-            IEmailService emailService)
+            NotificationManager notificationManager)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
-            this.emailService = emailService;
+            this.notificationManager = notificationManager;
         }
 
         [HttpGet]
@@ -256,30 +256,31 @@ namespace ActiveStudy.Web.Controllers
 
         private async Task SendConfirmationEmail(ActiveStudyUserEntity user)
         {
-            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var url = Url.Action(
-                "ConfirmEmail", "Account",
-                new { userId = user.Id, code }, 
+                "ConfirmEmail",
+                "Account",
+                new
+                {
+                    userId = user.Id,
+                    code = await userManager.GenerateEmailConfirmationTokenAsync(user)
+                }, 
                 Request.Scheme);
 
-            var subject = "Confirm your email";
-            var body = $"Please confirm your account by clicking this link: <a href=\"{url}\">link</a>";
-
-            await emailService.SendEmailAsync(new EmailRecipient($"{user.FirstName} {user.LastName}", user.Email), subject, body);
+            await notificationManager.SendEmailConfirmationAsync(new EmailConfirmationTemplateInfo(user, url));
         }
 
         private async Task SendPasswordRecoveryEmail(ActiveStudyUserEntity user)
         {
-            var code = await userManager.GeneratePasswordResetTokenAsync(user);
             var url = Url.Action(
-                "PasswordRecovery", "Account", 
-                new { userId = user.Id, code }, 
+                "PasswordRecovery",
+                "Account", 
+                new
+                {
+                    userId = user.Id, code = await userManager.GeneratePasswordResetTokenAsync(user)
+                }, 
                 Request.Scheme);
 
-            var subject = "Recovery your password";
-            var body = $"Follow the link below to the account recovery form: <a href=\"{url}\">link</a>";
-            
-            await emailService.SendEmailAsync(new EmailRecipient($"{user.FirstName} {user.LastName}", user.Email), subject, body);
+            await notificationManager.SendPasswordRecoveryAsync(new PasswordRecoveryTemplateInfo(user, url));
         }
     }
 }
