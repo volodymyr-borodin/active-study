@@ -39,7 +39,8 @@ namespace ActiveStudy.Web.Controllers
         public async Task<IActionResult> Create([Required]string schoolId,
             [FromQuery]string day,
             [FromQuery]string time,
-            [FromQuery]string classId)
+            [FromQuery]string classId,
+            [FromQuery]string teacherId)
         {
             var model = await Build(schoolId);
 
@@ -57,6 +58,11 @@ namespace ActiveStudy.Web.Controllers
                 model.From = from;
                 model.To = to;
                 model.TimeLocked = true;
+            }
+
+            if (!string.IsNullOrEmpty(teacherId))
+            {
+                model.TeacherId = teacherId;
             }
 
             if (!string.IsNullOrEmpty(classId))

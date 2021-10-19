@@ -8,6 +8,7 @@ namespace ActiveStudy.Web.Components.Scheduler
         public Schedule Schedule { get; set; }
         public string SchoolId { get; set; }
         public string ClassId { get; set; }
+        public string TeacherId { get; set; }
         public IEnumerable<Lesson> Lessons { get; set; }
     }
 }

@@ -1,12 +1,15 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models;
+using ActiveStudy.Web.Models.Classes;
 using ActiveStudy.Web.Models.Teachers;
 using ActiveStudy.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +26,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly ISubjectStorage subjectStorage;
         private readonly IClassStorage classStorage;
         private readonly IAuditStorage auditStorage;
+        private readonly ISchedulerStorage scheduleStorage;
         private readonly CurrentUserProvider currentUserProvider;
         private readonly UserManager<ActiveStudyUserEntity> userManager;
         private readonly NotificationManager notificationManager;
@@ -31,6 +35,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             ISchoolStorage schoolStorage,
             ISubjectStorage subjectStorage,
             IClassStorage classStorage,
+            ISchedulerStorage scheduleStorage,
             IAuditStorage auditStorage,
             CurrentUserProvider currentUserProvider,
             UserManager<ActiveStudyUserEntity> userManager,
@@ -40,6 +45,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             this.schoolStorage = schoolStorage;
             this.subjectStorage = subjectStorage;
             this.classStorage = classStorage;
+            this.scheduleStorage = scheduleStorage;
             this.auditStorage = auditStorage;
             this.currentUserProvider = currentUserProvider;
             this.userManager = userManager;
@@ -53,6 +59,34 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var teachers = await teacherStorage.FindAsync(schoolId);
 
             return View(new TeachersListPageModel(school, teachers));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Details([Required] string schoolId,
+            [Required] string id,
+            string scheduleDate = null)
+        {
+            var teacher = await teacherStorage.GetByIdAsync(id);
+            var school = await schoolStorage.GetByIdAsync(teacher.SchoolId);
+
+            var scheduleFrom = DateTime.Today.NearestMonday();
+            if (!string.IsNullOrEmpty(scheduleDate))
+            {
+                if (DateTime.TryParse(scheduleDate, out var sFrom))
+                {
+                    scheduleFrom = sFrom;
+                }
+            }
+            var scheduleTo = scheduleFrom.AddDays(7);
+
+            var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
+
+            var model = new TeacherDetailsViewModel(teacher.Id,
+                teacher.FullName,
+                school,
+                schedule);
+
+            return View(model);
         }
     
         [HttpGet("create")]

@@ -54,6 +54,26 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return new Schedule(dict);
         }
 
+        public async Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to)
+        {
+            var filter =
+                Builders<EventEntity>.Filter.Eq(entity => entity.Teacher.Id, ObjectId.Parse(teacherId))
+                & Builders<EventEntity>.Filter.Gte(entity => entity.Date, from)
+                & Builders<EventEntity>.Filter.Lte(entity => entity.Date, to);
+
+            var entities = await context.Events
+                .Find(filter)
+                .ToListAsync();
+
+            var dict = DaysRange(from, to)
+                .ToDictionary(day => day, day => entities
+                    .Where(e => e.Date == day)
+                    .OrderBy(e => e.From)
+                    .Select(e => (Event)e));
+
+            return new Schedule(dict);
+        }
+
         private static IEnumerable<DateTime> DaysRange(DateTime from, DateTime to)
         {
             while (from < to)

@@ -8,6 +8,7 @@ namespace ActiveStudy.Domain.Crm.Scheduler
     {
         Task CreateAsync(Event @event);
         Task<Schedule> GetByClassAsync(string classId, DateTime from, DateTime to);
+        Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to);
     }
 
     public class Schedule : Dictionary<DateTime, IEnumerable<Event>>

@@ -8,13 +8,15 @@ namespace ActiveStudy.Web.Components.Scheduler
     {
         public IViewComponentResult Invoke(Schedule schedule,
             string schoolId,
-            string classId)
+            string classId,
+            string teacherId)
         {
             return View(new SchedulerModel
             {
                 Schedule = schedule,
                 SchoolId = schoolId,
                 ClassId = classId,
+                TeacherId = teacherId,
                 Lessons = new[]
                 {
                     new Lesson(TimeSpan.Parse("08:30"), TimeSpan.Parse("09:15")),

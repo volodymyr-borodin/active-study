@@ -36,7 +36,8 @@
                                asp-route-schoolId="@Model.SchoolId"
                                asp-route-day="@day"
                                asp-route-time="@lesson.From.ToString("hh\\:mm") - @lesson.To.ToString("hh\\:mm")"
-                               asp-route-classId="@Model.ClassId">Add</a>
+                               asp-route-classId="@Model.ClassId"
+                               asp-route-teacherId="@Model.TeacherId">Add</a>
                         </td>
                     }
                     else
