@@ -79,7 +79,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             }
             var scheduleTo = scheduleFrom.AddDays(7);
 
-            var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
+            var schedule = await scheduleStorage.GetByTeacherAsync(id, scheduleFrom, scheduleTo);
 
             var model = new TeacherDetailsViewModel(teacher.Id,
                 teacher.FullName,
