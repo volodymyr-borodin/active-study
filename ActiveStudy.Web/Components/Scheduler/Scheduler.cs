@@ -8,8 +8,8 @@ namespace ActiveStudy.Web.Components.Scheduler
     {
         public IViewComponentResult Invoke(Schedule schedule,
             string schoolId,
-            string classId,
-            string teacherId)
+            string classId = null,
+            string teacherId = null)
         {
             return View(new SchedulerModel
             {

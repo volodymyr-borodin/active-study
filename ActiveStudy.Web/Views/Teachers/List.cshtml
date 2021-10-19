@@ -71,7 +71,9 @@
                                                     <img class="avatar-img" src="/img/100x100/img11.jpg" alt="Image Description">
                                                 </div>
                                                 <div class="media-body font-size-1 ml-3">
-                                                    <span class="h6"><a href="#">@teacher.FullName</a></span>
+                                                    <span class="h6">
+                                                        <a asp-controller="Teachers" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@teacher.Id">@teacher.FullName</a>
+                                                    </span>
                                                     @if (teacher.Subjects.Any())
                                                     {
                                                         <span class="d-block text-muted">@string.Join(", ", teacher.Subjects.Select(s => s.Title))</span>

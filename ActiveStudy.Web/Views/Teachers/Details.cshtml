@@ -35,13 +35,6 @@
                             </div>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="Students" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Students"]</span>
-                            </div>
-                        </a>
-                    </li>
                 </ul>
                 <!-- End Nav Classic -->
 
@@ -50,6 +43,7 @@
                     <div class="tab-pane fade pt-6 active show">
                         <vc:scheduler schedule="@Model.Schedule"
                                       school-id="@Model.School.Id"
+                                      class-id="@null"
                                       teacher-id="@Model.Id">
                         </vc:scheduler>
                     </div>
