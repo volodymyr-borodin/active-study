@@ -4,63 +4,50 @@
     ViewData["Title"] = localizer["Page Title"];
 }
 
-<div class="container space-2 space-lg-2">
-    <form asp-route="Registration" class="js-validate w-md-75 w-lg-50 mx-md-auto">
-        <!-- Title -->
-        <div class="mb-5 mb-md-7">
-            <h1 class="h2 mb-0">@localizer["Welcome"]</h1>
-            <p>@localizer["Subtitle"]</p>
-        </div>
-        <!-- End Title -->
+<form asp-route="Registration">
+    <div>
+        <h1>@localizer["Welcome"]</h1>
+        <p>@localizer["Subtitle"]</p>
+    </div>
 
-        <div class="row">
-            <div class="col-sm-6">
-                <!-- Form Group -->
-                <div class="js-form-message form-group">
-                    <label class="input-label" asp-for="FirstName">@localizer["First Name"]</label>
-                    <input type="text" class="form-control" asp-for="FirstName" placeholder="@localizer["First Name"]" required
-                           data-msg="@localizer["First Name is Required"]">
-                </div>
-                <!-- End Form Group -->
-            </div>
-            <div class="col-sm-6">
-                <!-- Form Group -->
-                <div class="js-form-message form-group">
-                    <label class="input-label" asp-for="LastName">@localizer["Last Name"]</label>
-                    <input type="text" class="form-control" asp-for="LastName" placeholder="@localizer["Last Name"]" required
-                           data-msg="@localizer["Last Name is Required"]">
-                </div>
-                <!-- End Form Group -->
-            </div>
-        </div>
+    <div>
+        <label asp-for="FirstName">@localizer["First Name"]</label>
+        <input type="text"
+               asp-for="FirstName"
+               placeholder="@localizer["First Name"]"
+               required />
+    </div>
 
-        <!-- Form Group -->
-        <div class="js-form-message form-group">
-            <label class="input-label" asp-for="Email">@localizer["Email"]</label>
-            <input type="email" class="form-control" asp-for="Email" placeholder="@localizer["Email"]" required
-                   data-msg="@localizer["Email is Required"]">
-        </div>
-        <!-- End Form Group -->
+    <div>
+        <label asp-for="LastName">@localizer["Last Name"]</label>
+        <input type="text"
+               asp-for="LastName"
+               placeholder="@localizer["Last Name"]"
+               required />
+    </div>
 
-        <!-- Form Group -->
-        <div class="js-form-message form-group">
-            <label class="input-label" asp-for="Password">@localizer["Password"]</label>
-            <input type="password" class="form-control" asp-for="Password" placeholder="********" aria-label="********" required
-                   data-msg="@localizer["Password is Required"]">
-        </div>
-        <!-- End Form Group -->
+    <div>
+        <label asp-for="Email">@localizer["Email"]</label>
+        <input type="email"
+               asp-for="Email"
+               placeholder="@localizer["Email"]"
+               required />
+    </div>
 
-        <!-- Button -->
-        <div class="row align-items-center mb-5">
-            <div class="col-sm-6 mb-3 mb-sm-0">
-                <span class="font-size-1 text-muted">@localizer["Already have an account?"]</span>
-                <a class="font-size-1 font-weight-bold" asp-area="" asp-controller="Account" asp-action="Login">@localizer["Login"]</a>
-            </div>
+    <div>
+        <label asp-for="Password">@localizer["Password"]</label>
+        <input type="password"
+               asp-for="Password"
+               placeholder="********"
+               required>
+    </div>
+        
+    <div>
+        <button type="submit">@localizer["Sign Up"]</button>
+    </div>
 
-            <div class="col-sm-6 text-sm-right">
-                <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Sign Up"]</button>
-            </div>
-        </div>
-        <!-- End Button -->
-    </form>
-</div>
+    <div>
+        <span>@localizer["Already have an account?"]</span>
+        <a asp-controller="Account" asp-action="Login">@localizer["Login"]</a>
+    </div>
+</form>

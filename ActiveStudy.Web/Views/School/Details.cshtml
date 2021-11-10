@@ -14,64 +14,12 @@
 
 <vc:breadcrumb items="@breadcrumb" />
 
-<div class="container space-top-1 space-bottom-lg-2">
-    <!-- Content -->
-    <div class="row">
-        <div class="col-md-4 col-lg-3 mb-9 mb-md-0">
-            <partial name="_MainInfo" for="@Model.School" />
-        </div>
-
-        <div class="col-md-8 col-lg-9 column-divider-md">
-            <div class="ml-lg-2">
-
-                <!-- Nav Classic -->
-                <ul class="nav nav-classic nav-rounded nav-justified border" id="pills-tab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold active" data-toggle="pill" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Details"]</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Teachers"]</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Classes"]</span>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-                <!-- End Nav Classic -->
-
-                <!-- Tab Content -->
-                <div class="tab-content">
-                    <div class="tab-pane fade pt-6 active show">
-                        <p>Use Google Drive within Slack to:</p>
-
-                        <ul class="text-body pl-4 mb-5">
-                            <li>Create new Google Docs, Slides, and Sheets files</li>
-                            <li>Import an existing file from Google Drive into a channel or direct message</li>
-                            <li>Search directly within Google Drive files shared within Slack</li>
-                            <li>Automatically grant access to the files you share with the right audience</li>
-                            <li>Get updates in Slack on changes in Drive, like comments, access requests, and new files shared with you</li>
-                            <li>Reply directly to comment notifications from within Slack and have them posted to the file</li>
-                        </ul>
-
-                        <img class="img-fluid rounded mb-4" src="/img/900x450/img5.jpg" alt="Image Description">
-                        <img class="img-fluid rounded mb-4" src="/img/900x450/img4.jpg" alt="Image Description">
-                        <img class="img-fluid rounded" src="/img/900x450/img3.jpg" alt="Image Description">
-                    </div>
-                </div>
-                <!-- End Tab Content -->
-            </div>
-        </div>
-    </div>
-    <!-- End Content -->
+<div>
+    <a asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
+        @sharedLocalizer["Teachers"]
+    </a>
+    |
+    <a asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
+        @sharedLocalizer["Classes"]
+    </a>
 </div>

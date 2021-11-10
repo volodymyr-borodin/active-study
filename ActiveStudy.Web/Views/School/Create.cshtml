@@ -14,37 +14,26 @@
 
 <vc:breadcrumb items="@breadcrumb" />
 
-<div class="container space-2">
-    <!-- Apply Form -->
-    <form asp-action="Create" class="js-validate">
-        <div class="row">
-            <div class="col-md-6 mb-3 mb-md-5">
-                <!-- Input -->
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="Title">@localizer["Title"]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" asp-for="Title" placeholder="@localizer["Title"]" required
-                               autocomplete="off" data-msg="@localizer["Title is required"]">
-                    </div>
-                </div>
-                <!-- End Input -->
-            </div>
+<h1>Create new school</h1>
+<form asp-action="Create" class="js-validate">
+    <div>
+        <label asp-for="Title">@localizer["Title"]</label>
+        <input type="text" 
+               asp-for="Title"
+               placeholder="@localizer["Title"]"
+               required
+               autocomplete="off">
+    </div>
 
-            <div class="col-md-6 mb-3 mb-md-5">
-                <!-- Input -->
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="CountryCode">@localizer["Country"]</label>
-                    <div class="input-group">
-                        <select asp-for="CountryCode" asp-items="@Model.Countries" required data-msg="@localizer["Country is required"]" class="form-control"></select>
-                    </div>
-                </div>
-                <!-- End Input -->
-            </div>
-        </div>
+    <div>
+        <label asp-for="CountryCode">@localizer["Country"]</label>
+        <select asp-for="CountryCode"
+                asp-items="@Model.Countries"
+                required>
+        </select>
+    </div>
 
-        <div class="text-right">
-            <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Save"]</button>
-        </div>
-    </form>
-    <!-- End Apply Form -->
-</div>
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

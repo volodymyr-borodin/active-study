@@ -4,47 +4,38 @@
     ViewData["Title"] = localizer["Page Title"];
 }
 
-<div class="container space-2 space-lg-2">
-    <form asp-route="Login" class="js-validate w-md-75 w-lg-50 mx-md-auto">
-        <!-- Title -->
-        <div class="mb-5 mb-md-7">
-            <h1 class="h2 mb-0">@localizer["Welcome"]</h1>
-            <p>@localizer["Subtitle"]</p>
-        </div>
-        <!-- End Title -->
+<form asp-route="Login">
+    <div >
+        <h1>@localizer["Welcome"]</h1>
+        <p>@localizer["Subtitle"]</p>
+    </div>
 
-        <!-- Form Group -->
-        <div class="js-form-message form-group">
-            <label class="input-label" asp-for="Username">@localizer["Email"]</label>
-            <input type="email" class="form-control" asp-for="Username" placeholder="@localizer["Email"]" required
-                   data-msg="@localizer["Email is Required"]">
-        </div>
-        <!-- End Form Group -->
+    <div>
+        <label asp-for="Username">@localizer["Email"]</label>
+        <input type="email"
+               asp-for="Username"
+               placeholder="@localizer["Email"]"
+               required />
+    </div>
 
-        <!-- Form Group -->
-        <div class="js-form-message form-group">
-            <label class="input-label" asp-for="Password">
-                <span class="d-flex justify-content-between align-items-center">
-                    @localizer["Password"]
-                    <a class="link-underline text-capitalize font-weight-normal" asp-area="" asp-controller="Account" asp-action="ForgotPassword">@localizer["Forgot Password?"]</a>
-                </span>
-            </label>
-            <input type="password" class="form-control" asp-for="Password" placeholder="********" required
-                   data-msg="@localizer["Password is Required"]">
-        </div>
-        <!-- End Form Group -->
+    <div>
+        <label asp-for="Password">@localizer["Password"]</label>
+        <input type="password"
+               asp-for="Password"
+               placeholder="********"
+               required />
+    </div>
 
-        <!-- Button -->
-        <div class="row align-items-center mb-5">
-            <div class="col-sm-6 mb-3 mb-sm-0">
-                <span class="font-size-1 text-muted">@localizer["Don't have an account?"]</span>
-                <a class="font-size-1 font-weight-bold" asp-area="" asp-controller="Account" asp-action="Registration">@localizer["Sign Up"]</a>
-            </div>
-
-            <div class="col-sm-6 text-sm-right">
-                <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Get Started"]</button>
-            </div>
-        </div>
-        <!-- End Button -->
-    </form>
-</div>
+    <div>
+        <button type="submit">@localizer["Get Started"]</button>
+    </div>
+        
+    <div>
+        <a asp-controller="Account" asp-action="ForgotPassword">@localizer["Forgot Password?"]</a>
+    </div>
+        
+    <div>
+        <span>@localizer["Don't have an account?"]</span>
+        <a asp-controller="Account" asp-action="Registration">@localizer["Sign Up"]</a>
+    </div>
+</form>

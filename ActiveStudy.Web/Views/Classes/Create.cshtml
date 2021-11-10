@@ -15,48 +15,27 @@
 
 <vc:breadcrumb items="@breadcrumb" />
 
-<div class="container space-2">
-    <!-- Apply Form -->
-    <form asp-action="Create" class="js-validate">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <!-- Input -->
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="Label">@localizer["Label"]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" asp-for="Label" placeholder="@localizer["Label"]" required
-                               autocomplete="off" data-msg="@localizer["Label is required"]">
-                    </div>
-                </div>
-                <!-- End Input -->
-            </div>
+<form asp-action="Create">
+    <div>
+        <label asp-for="Label">@localizer["Label"]</label>
+        <input type="text"
+               asp-for="Label"
+               placeholder="@localizer["Label"]"
+               required
+               autocomplete="off">
+    </div>
 
-            <div class="col-md-6">
-                <!-- Input -->
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="Grade">@localizer["Grade"]</label>
-                    <div class="input-group">
-                        <select asp-for="Grade" asp-items="@Model.Grades" class="form-control"></select>
-                    </div>
-                </div>
-                <!-- End Input -->
-            </div>
-        </div>
+    <div>
+        <label asp-for="Grade">@localizer["Grade"]</label>
+        <select asp-for="Grade" asp-items="@Model.Grades"></select>
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="TeacherId">@localizer["Responsible Teacher"]</label>
-                    <div class="input-group">
-                        <select asp-for="TeacherId" asp-items="@Model.Teachers" class="form-control"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <label asp-for="TeacherId">@localizer["Responsible Teacher"]</label>
+        <select asp-for="TeacherId" asp-items="@Model.Teachers"></select>
+    </div>
 
-        <div class="text-right">
-            <button type="submit" class="btn btn-primary">@localizer["Save"]</button>
-        </div>
-    </form>
-    <!-- End Apply Form -->
-</div>
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

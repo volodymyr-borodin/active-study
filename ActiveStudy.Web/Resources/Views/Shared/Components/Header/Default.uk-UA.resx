@@ -21,4 +21,7 @@
     <data name="Sign In" xml:space="preserve">
         <value>Вхід</value>
     </data>
+    <data name="Sign out" xml:space="preserve">
+        <value>Вихід</value>
+    </data>
 </root>

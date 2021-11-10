@@ -16,81 +16,29 @@
 }
 
 <vc:breadcrumb items="@breadcrumb" />
-
-<div class="container space-top-1 space-bottom-lg-2">
-    <!-- Content -->
-    <div class="row">
-        <div class="col-md-4 col-lg-3 mb-9 mb-md-0">
-            <partial name="_MainInfo" for="@Model.School" />
-        </div>
-
-        <div class="col-md-8 col-lg-9 column-divider-md">
-            <div class="ml-lg-2">
-
-                <!-- Nav Classic -->
-                <ul class="nav nav-classic nav-rounded nav-justified border">
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Schedule"]</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold active" asp-controller="Classes" asp-action="Students" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Students"]</span>
-                            </div>
-                        </a>
-                    </li>
+<a asp-controller="Students"
+   asp-action="Create"
+   asp-route-schoolId="@Model.School.Id"
+   asp-route-classId="@Model.Id">@sharedLocalizer["Add Student"]</a>
+<ul>
+    @foreach (var student in Model.Students)
+    {
+        <li>
+            <a asp-controller="Students"
+               asp-action="Details"
+               asp-route-schoolId="@Model.School.Id"
+               asp-route-id="@student.Id">
+                @student.FullName
+            </a>
+            @if (student.Relatives.Any())
+            {
+                <ul>
+                    @foreach (var relative in student.Relatives)
+                    {
+                        <div>@relative.FullName @relative.Phone</div>
+                    }
                 </ul>
-                <!-- End Nav Classic -->
-
-                <!-- Tab Content -->
-                <div class="tab-content">
-                    <div class="tab-pane fade pt-6 active show">
-                        <div class="container d-flex align-items-center mx-0 mb-2">
-                            <h2>@sharedLocalizer["Students"]</h2>
-                            <a asp-controller="Students" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-classId="@Model.Id" class="ml-auto btn btn-soft-primary btn-sm">@sharedLocalizer["Add Student"]</a>
-                        </div>
-                        @foreach (var student in Model.Students)
-                        {
-                            <div class="container">
-                                <!-- Author -->
-                                <div class="border-top border-bottom py-4">
-                                    <div class="row align-items-md-center">
-                                        <div class="col-md-7 mb-5 mb-md-0">
-                                            <div class="media align-items-center">
-                                                <i class="fas fa-user-circle fa-3x text-primary"></i>
-                                                <div class="media-body font-size-1 ml-3">
-                                                    <span class="h6">
-                                                        <a asp-controller="Students" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@student.Id">@student.FullName</a>
-                                                    </span>
-                                                    @foreach (var relative in student.Relatives)
-                                                    {
-                                                        <div>@relative.FullName @relative.Phone</div>
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-5">
-                                            <div class="text-right">
-                                                <a class="btn btn-link" asp-controller="Relatives" asp-action="Create" asp-route-schoolId="@Model.School.Id" asp-route-studentId="@student.Id">
-                                                    <i class="far fa-user-plus mr-1"></i>
-                                                    <span>@localizer["Add Relative"]</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End Author -->
-                            </div>
-                        }
-                    </div>
-                </div>
-                <!-- End Tab Content -->
-            </div>
-        </div>
-    </div>
-    <!-- End Content -->
-</div>
+            }
+        </li>
+    }
+</ul>
