@@ -30,6 +30,11 @@
                asp-route-id="@student.Id">
                 @student.FullName
             </a>
+            <a asp-controller="Relatives"
+               asp-action="Create"
+               asp-route-schoolId="@Model.School.Id"
+               asp-route-studentId="@student.Id"
+               >@sharedLocalizer["Add Relative"]</a>
             @if (student.Relatives.Any())
             {
                 <ul>
