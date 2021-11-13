@@ -1,9 +1,21 @@
 @model ActiveStudy.Web.Models.Students.CreateStudentViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
 @inject IViewLocalizer localizer
+
 @{
     ViewData["Title"] = localizer["Page Title"];
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
+        BreadcrumbItem.Active(sharedLocalizer["Classes"].Value, Url.Action("List", "Classes", new {schoolId = Model.School.Id})),
+        BreadcrumbItem.Active(Model.Class.Title, Url.Action("Details", "Classes", new {schoolId = Model.School.Id, id = Model.Class.Id})),
+        BreadcrumbItem.InActive(sharedLocalizer["Add Student"].Value)
+    };
 }
 
+<vc:breadcrumb items="@breadcrumb" />
 <form asp-action="Create">
     <input type="hidden" asp-for="ClassId" />
     <div>
