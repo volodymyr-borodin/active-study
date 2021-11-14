@@ -1,0 +1,20 @@
+@model ActiveStudy.Web.Models.TestWorks.TestWorksListViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+
+@{
+    ViewData["Title"] = sharedLocalizer["Test Works"].Value;
+}
+
+<h2>@sharedLocalizer["Test Works"]</h2>
+
+<a asp-controller="TestWorks"
+   asp-action="Create">@sharedLocalizer["Add Test Work"]</a>
+
+<ul>
+    @foreach (var testWork in Model.Items)
+    {
+        <li>
+            <a asp-controller="TestWorks" asp-action="Details" asp-route-id="@testWork.Id">@testWork.Title</a>
+        </li>
+    }
+</ul>

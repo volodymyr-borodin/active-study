@@ -1,0 +1,56 @@
+@model ActiveStudy.Web.Models.TestWorks.CreateTestWorkViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+<form asp-action="Create">
+    <div>
+        <label asp-for="Title">@localizer["Title"]</label>
+        <input type="text"
+               asp-for="Title"
+               placeholder="@localizer["Title"]"
+               required
+               autocomplete="off">
+    </div>
+    
+    <div>
+        <label asp-for="Description">@localizer["Description"]</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    
+    <div>
+        <label asp-for="SubjectId">@localizer["Subject"]</label>
+        <select asp-for="SubjectId" asp-items="@Model.Subjects"></select>
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+    
+    @for (var variantIndex = 0; variantIndex < Model.Variants.Count; variantIndex++)
+    {
+        <fieldset>
+            <legend>Variant @(variantIndex + 1)</legend>
+            <ul>
+                @for (var questionIndex = 0; questionIndex < Model.Variants[variantIndex].Questions.Count; questionIndex++)
+                {
+                    <li>
+                        <label>Question</label>
+                        <input type="hidden" asp-for="@Model.Variants[variantIndex].Questions[questionIndex].Type" />
+                        <input type="text" asp-for="@Model.Variants[variantIndex].Questions[questionIndex].Text" />
+                        <fieldset>
+                            <legend>Options</legend>
+                            <ul>
+                                @for (var optionIndex = 0; optionIndex < Model.Variants[variantIndex].Questions[questionIndex].Options.Count; optionIndex++)
+                                {
+                                    <li>
+                                        <input type="text" asp-for="@Model.Variants[variantIndex].Questions[questionIndex].Options[optionIndex].Text "/>
+                                    </li>
+                                }
+                            </ul>
+                        </fieldset>
+                    </li>
+                }
+            </ul>
+        </fieldset>
+    }
+</form>
