@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Materials.TestWorks;
+using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.TestWorks;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ActiveStudy.Web.Controllers;
 
-[Route("materials"), Authorize]
+[Route("materials/test-works"), Authorize]
 public class TestWorksController : Controller
 {
     private readonly TestWorksService testWorksService;
@@ -57,7 +60,23 @@ public class TestWorksController : Controller
     {
         var subject = await subjectStorage.GetByIdAsync(model.SubjectId);
         var author = currentUserProvider.User.AsUser();
-        var variants = Enumerable.Empty<TestWorkVariant>();
+
+        var variants = new List<TestWorkVariant>();
+        foreach (var variant in model.Variants)
+        {
+            var questions = new List<Question>();
+            foreach (var question in variant.Questions)
+            {
+                var options = question.Options
+                    .Select(o => new SingleAnswerOption(Guid.NewGuid().ToString(), o.Text))
+                    .ToList();
+
+                questions.Add(new SingleAnswerQuestion(Guid.NewGuid().ToString(), question.Text, string.Empty, 1, options, options[question.CorrectOptionIndex].Id));
+            }
+            
+            variants.Add(new TestWorkVariant(Guid.NewGuid().ToString(), questions));
+        }
+
         var testWork = new TestWorkDetails(model.Title, model.Description, subject, author, variants, TestWorkStatus.Published);
 
         await testWorksService.CreateAsync(testWork);

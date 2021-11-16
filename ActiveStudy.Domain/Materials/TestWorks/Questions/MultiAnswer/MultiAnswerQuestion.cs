@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer;
 
 namespace ActiveStudy.Domain.Materials.TestWorks.Questions.MultiAnswer;
 
@@ -9,7 +8,7 @@ public record MultiAnswerQuestion(string Id,
     string Text,
     string Description,
     decimal MaxScore,
-    IEnumerable<SingleAnswerOption> Options,
+    IEnumerable<MultiAnswerOption> Options,
     IEnumerable<string> CorrectAnswerIds) : Question(Id, Text, Description, MaxScore)
 {
     public override decimal CalculateGainedScore(Answer answer) => answer switch

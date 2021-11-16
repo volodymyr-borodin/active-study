@@ -7,7 +7,7 @@ namespace ActiveStudy.Web.Models.TestWorks;
 
 public record TestWorkOption(string Text);
 
-public record TestWorkQuestion(string Text, string Type, List<TestWorkOption> Options);
+public record TestWorkQuestion(string Text, string Type, List<TestWorkOption> Options, int CorrectOptionIndex);
 
 public record TestWorkVariantInputModel(List<TestWorkQuestion> Questions);
 
@@ -32,9 +32,9 @@ public record CreateTestWorkViewModel(string Title,
         {
             new(new List<TestWorkQuestion>
             {
-                new(string.Empty, nameof(SingleAnswerQuestion), EmptyOptions(4)),
-                new(string.Empty, nameof(SingleAnswerQuestion), EmptyOptions(4)),
-                new(string.Empty, nameof(SingleAnswerQuestion), EmptyOptions(4))
+                new(string.Empty, nameof(SingleAnswerQuestion), EmptyOptions(4), 0),
+                new(string.Empty, nameof(SingleAnswerQuestion), EmptyOptions(4), 0),
+                new(string.Empty, nameof(SingleAnswerQuestion), EmptyOptions(4), 0)
             })
         }, subjects);
 }

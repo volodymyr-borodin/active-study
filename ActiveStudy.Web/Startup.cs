@@ -14,6 +14,7 @@ using ActiveStudy.Domain.Materials.TestWorks;
 using ActiveStudy.Storage.Mongo;
 using ActiveStudy.Storage.Mongo.Crm;
 using ActiveStudy.Storage.Mongo.Identity;
+using ActiveStudy.Storage.Mongo.Materials;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Services;
 using ActiveStudy.Web.Services.Email;
@@ -93,13 +94,13 @@ namespace ActiveStudy.Web
             services.AddScoped<CurrentUserProvider>();
 
             // common
-            services.AddScoped(provider => new CommonContext(mongoUrl));
+            services.AddScoped(_ => new CommonContext(mongoUrl));
             services.AddScoped<ISubjectStorage, InMemorySubjectStorage>();
             services.AddScoped<ICountryStorage, InMemoryCountryStorage>();
             services.AddScoped<IAuditStorage, AuditStorage>();
 
             // crm
-            services.AddScoped(provider => new CrmContext(mongoUrl));
+            services.AddScoped(_ => new CrmContext(mongoUrl));
             services.AddScoped<ISchoolStorage, SchoolStorage>();
             services.AddScoped<IClassStorage, ClassStorage>();
             services.AddScoped<ITeacherStorage, TeacherStorage>();
@@ -108,6 +109,8 @@ namespace ActiveStudy.Web
             services.AddScoped<ISchedulerStorage, SchedulerStorage>();
             
             // materials
+            services.AddScoped(_ => new MaterialsContext(mongoUrl));
+            services.AddScoped<ITestWorksStorage, TestWorksStorage>();
             services.AddScoped<TestWorksService>();
 
             services.Configure<RouteOptions>(options =>
