@@ -31,31 +31,53 @@
             <legend>Variant {{ variantIndex + 1 }}</legend>
             <ul>
                 <li v-for="(question, questionIndex) in variant.questions">
-                    
+
                     <div v-if="question.type === 'SingleAnswerQuestion'">
                         <label><button type="button" v-on:click="removeQuestion(variantIndex, questionIndex)">x</button>Question {{ questionIndex + 1 }}</label>
-                        <input type="hidden" v-model="question.type"/>
-                        <input type="text" v-model="question.text"/>
+                        <input type="hidden"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].type`"
+                               v-model="question.type"/>
+                        <input type="text"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].text`"
+                               v-model="question.text"/>
                         <fieldset>
                             <legend>Options</legend>
                             <ul>
                                 <li v-for="(option, optionIndex) in question.options">
-                                    <input type="radio" v-bind:value="optionIndex" v-model="question.correctOptionIndex"/>
-                                    <input type="text" v-model="option.text"/>
+                                    <input type="radio"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].correctOptionIndex`"
+                                           :value="optionIndex"
+                                           v-model="question.correctOptionIndex"/>
+                                    <input type="text"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].text`"
+                                           v-model="option.text"/>
                                 </li>
                             </ul>
                         </fieldset>
                     </div>
                     <div v-if="question.type === 'MultiAnswerQuestion'">
                         <label><button type="button" v-on:click="removeQuestion(variantIndex, questionIndex)">x</button>Question {{ questionIndex + 1 }}</label>
-                        <input type="hidden" v-model="question.type"/>
-                        <input type="text" v-model="question.text"/>
+                        <input type="hidden"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].type`"
+                               v-model="question.type"/>
+                        <input type="text"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].text`"
+                               v-model="question.text"/>
                         <fieldset>
                             <legend>Options</legend>
                             <ul>
                                 <li v-for="(option, optionIndex) in question.options">
-                                    <input type="checkbox" v-model="option.isCorrect"/>
-                                    <input type="text" v-model="option.text"/>
+                                    <input type="checkbox"
+                                           value="true"
+                                           :id="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].isCorrect`"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].isCorrect`"
+                                           v-model="option.isCorrect"/>
+                                    <input type="hidden"
+                                           value="false"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].isCorrect`"/>
+                                    <input type="text"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].text`"
+                                           v-model="option.text"/>
                                 </li>
                             </ul>
                         </fieldset>

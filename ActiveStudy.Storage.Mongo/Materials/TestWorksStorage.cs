@@ -73,11 +73,11 @@ public class TestWorksStorage : ITestWorksStorage
                         }.ToBsonDocument(),
                         MultiAnswerQuestion multiAnswerQuestion => new MultiAnswerInfoEntity
                         {
-                            CorrectAnswerIds = multiAnswerQuestion.CorrectAnswerIds,
                             Options = multiAnswerQuestion.Options.Select(o => new MultiAnswerOptionEntity
                                 {
                                     Id = o.Id,
-                                    Text = o.Text
+                                    Text = o.Text,
+                                    IsCorrect = o.IsCorrect
                                 }).ToList()
                         }.ToBsonDocument(),
                         _ => throw new ArgumentOutOfRangeException(nameof(q))

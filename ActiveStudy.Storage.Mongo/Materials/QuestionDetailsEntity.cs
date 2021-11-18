@@ -52,8 +52,7 @@ public class QuestionDetailsEntity
                     entity.Text,
                     entity.Description,
                     entity.MaxScore,
-                    info.Options.Select(o => (MultiAnswerOption)o).ToList(),
-                    info.CorrectAnswerIds);
+                    info.Options.Select(o => (MultiAnswerOption)o).ToList());
             }
         }
 
@@ -63,9 +62,6 @@ public class QuestionDetailsEntity
 
 public class MultiAnswerInfoEntity
 {
-    [BsonElement("correctAnswerIds")]
-    public IEnumerable<string> CorrectAnswerIds { get; set; }
-
     [BsonElement("options")]
     public IEnumerable<MultiAnswerOptionEntity> Options { get; set; }
 }
@@ -78,9 +74,12 @@ public class MultiAnswerOptionEntity
     [BsonElement("text")]
     public string Text { get; set; }
 
+    [BsonElement("isCorrect")]
+    public bool IsCorrect { get; set; }
+
     public static implicit operator MultiAnswerOption(MultiAnswerOptionEntity entity)
     {
-        return new MultiAnswerOption(entity.Id, entity.Text);
+        return new MultiAnswerOption(entity.Id, entity.Text, entity.IsCorrect);
     }
 }
 

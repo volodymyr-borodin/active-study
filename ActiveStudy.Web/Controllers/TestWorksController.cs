@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Materials.TestWorks;
+using ActiveStudy.Domain.Materials.TestWorks.Questions.MultiAnswer;
 using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.TestWorks;
@@ -67,11 +68,32 @@ public class TestWorksController : Controller
             var questions = new List<Question>();
             foreach (var question in variant.Questions)
             {
-                var options = question.Options
-                    .Select(o => new SingleAnswerOption(Guid.NewGuid().ToString(), o.Text))
-                    .ToList();
+                if (question.Type == nameof(SingleAnswerQuestion))
+                {
+                    var options = question.Options
+                        .Select(o => new SingleAnswerOption(Guid.NewGuid().ToString(), o.Text))
+                        .ToList();
 
-                questions.Add(new SingleAnswerQuestion(Guid.NewGuid().ToString(), question.Text, string.Empty, 1, options, options[question.CorrectOptionIndex].Id));
+                    questions.Add(new SingleAnswerQuestion(Guid.NewGuid().ToString(),
+                        question.Text,
+                        string.Empty,
+                        1,
+                        options,
+                        options[question.CorrectOptionIndex].Id));
+                }
+                else if (question.Type == nameof(MultiAnswerQuestion))
+                {
+                    var options = question.Options
+                        .Select(o => new MultiAnswerOption(Guid.NewGuid().ToString(), o.Text, o.IsCorrect))
+                        .ToList();
+
+                    questions.Add(new MultiAnswerQuestion(Guid.NewGuid().ToString(),
+                        question.Text,
+                        string.Empty,
+                        1,
+                        options));
+                }
+
             }
             
             variants.Add(new TestWorkVariant(Guid.NewGuid().ToString(), questions));
@@ -81,6 +103,6 @@ public class TestWorksController : Controller
 
         await testWorksService.CreateAsync(testWork);
 
-        return View(model);
+        return RedirectToAction("Index", "TestWorks");
     }
 }

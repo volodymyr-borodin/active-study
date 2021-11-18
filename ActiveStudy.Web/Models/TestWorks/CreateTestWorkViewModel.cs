@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ActiveStudy.Web.Models.TestWorks;
 
-public record TestWorkOption(string Text);
+public record TestWorkOption(string Text, bool IsCorrect);
 
 public record TestWorkQuestion(string Text, string Type, List<TestWorkOption> Options, int CorrectOptionIndex);
 
@@ -24,7 +24,7 @@ public record CreateTestWorkViewModel(string Title,
 {
     private static List<TestWorkOption> EmptyOptions(int count) =>
         Enumerable.Range(0, count)
-            .Select(i => new TestWorkOption(string.Empty))
+            .Select(i => new TestWorkOption(string.Empty, false))
             .ToList();
 
     public static CreateTestWorkViewModel Empty(IEnumerable<SelectListItem> subjects) => new CreateTestWorkViewModel(
