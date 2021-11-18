@@ -6,7 +6,6 @@ using ActiveStudy.Domain.Materials.TestWorks;
 using ActiveStudy.Domain.Materials.TestWorks.Questions.MultiAnswer;
 using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace ActiveStudy.Storage.Mongo.Materials;
@@ -31,9 +30,25 @@ public class TestWorksStorage : ITestWorksStorage
         return (TestWork)entity;
     }
 
-    public async Task<IEnumerable<TestWork>> FindAsync()
+    public async Task<IEnumerable<TestWork>> FindAsync(string categoryId)
     {
-        var filter = Builders<TestWorkEntity>.Filter.Empty;
+        var filter = Builders<TestWorkEntity>.Filter.Eq(tw => tw.Status, TestWorkStatus.Published);
+
+        if (!string.IsNullOrEmpty(categoryId))
+        {
+            filter &= Builders<TestWorkEntity>.Filter.Eq(tw => tw.Subject.Id, categoryId);
+        }
+        
+        var entities = await context.TestWorks
+            .Find(filter)
+            .ToListAsync();
+
+        return entities.Select(testWork => (TestWork)testWork).ToList();
+    }
+
+    public async Task<IEnumerable<TestWork>> FindByAuthorAsync(string authorId)
+    {
+        var filter = Builders<TestWorkEntity>.Filter.Eq(tw => tw.Author.UserId, authorId);
 
         var entities = await context.TestWorks
             .Find(filter)

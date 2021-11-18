@@ -7,9 +7,22 @@
 
 <h2>@sharedLocalizer["Test Works"]</h2>
 
-<a asp-controller="TestWorks"
-   asp-action="Create">@sharedLocalizer["Add Test Work"]</a>
+@if (Model.IsAuthenticated)
+{
+    <a asp-controller="MyTestWorks" asp-action="Index">Open My</a>
+}
 
+<h3>By Subjects</h3>
+<ul>
+    @foreach (var category in Model.Categories)
+    {
+        <li>
+            <a asp-controller="TestWorks" asp-action="Category" asp-route-categoryId="@category.Subject.Id">@category.Subject.Title</a> (@category.TestsCount)
+        </li>
+    }
+</ul>
+
+<h3>All Test Works</h3>
 <ul>
     @foreach (var testWork in Model.Items)
     {

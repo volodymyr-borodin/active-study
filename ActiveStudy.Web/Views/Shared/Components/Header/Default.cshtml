@@ -2,20 +2,28 @@
 @inject IViewLocalizer localizer
 
 <header>
-    @if (Model.IsAuthenticated)
-    {
-        <div>
-            <span>
-                @Model.AccountModel.FullName
-                (@Model.AccountModel.Username)
-                <a asp-controller="Account" asp-action="Logout">@localizer["Sign out"]</a>
-            </span>
-        </div>
-    }
-    else
-    {
-        <div>
-            <a asp-controller="Account" asp-action="Login">@localizer["Sign In"]</a>
-        </div>
-    }
+    <div>
+        @if (Model.IsAuthenticated)
+        {
+            <span>@Model.AccountModel.FullName</span>
+            <text> | </text>
+            <a asp-controller="Account"
+               asp-action="Logout">@localizer["Sign out"]</a>
+        }
+        else
+        {
+            <a asp-controller="Account"
+               asp-action="Login">@localizer["Sign In"]</a>
+            <text>or</text>
+            <a asp-controller="Account"
+               asp-action="Registration">@localizer["Start For Free"]</a>
+        }
+    </div>
+    <div>
+        <a asp-controller="TestWorks" asp-action="Index">Test works</a>
+        @if (Model.IsAuthenticated)
+        {
+            <a asp-controller="School" asp-action="List">Schools</a>
+        }
+    </div>
 </header>

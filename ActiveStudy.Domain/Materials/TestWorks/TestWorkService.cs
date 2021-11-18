@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer;
 using Domain;
 
 namespace ActiveStudy.Domain.Materials.TestWorks;
@@ -20,9 +18,14 @@ public class TestWorksService
         return storage.GetByIdAsync(id);
     }
 
-    public Task<IEnumerable<TestWork>> FindPublishedAsync()
+    public Task<IEnumerable<TestWork>> FindPublishedAsync(string categoryId)
     {
-        return storage.FindAsync();
+        return storage.FindAsync(categoryId);
+    }
+
+    public Task<IEnumerable<TestWork>> FindByAuthorAsync(string authorId)
+    {
+        return storage.FindByAuthorAsync(authorId);
     }
 
     public async Task<DomainResult> CreateAsync(TestWorkDetails testWork)

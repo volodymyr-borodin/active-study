@@ -2,7 +2,7 @@
 @inject IHtmlLocalizer<SharedResource> sharedLocalizer;
 @inject IViewLocalizer localizer
 
-<form asp-action="Create">
+<form asp-controller="MyTestWorks" asp-action="Create">
     <div>
         <label asp-for="Title">@localizer["Title"]</label>
         <input type="text"

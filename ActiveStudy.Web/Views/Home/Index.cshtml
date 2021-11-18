@@ -1,14 +1,5 @@
 ﻿@model ActiveStudy.Web.Models.Home.HomePageModel
 @inject IViewLocalizer localizer
-@inject CurrentUserProvider userProvider
 @{
     ViewData["Title"] = localizer["Home"];
 }
-
-    @if (!userProvider.IsAuthenticated)
-    {
-        <a asp-controller="Account"
-           asp-action="Registration">
-            @localizer["Start For Free"]
-        </a>
-    }
