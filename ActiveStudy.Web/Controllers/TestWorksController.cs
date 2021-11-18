@@ -48,11 +48,15 @@ public class TestWorksController : Controller
     public async Task<IActionResult> Create()
     {
         var subjects = await subjectStorage.SearchAsync("UA");
-        var subjectsSelect = subjects
+        var subjectsList = subjects
             .Select(subject => new SelectListItem(subject.Title, subject.Id))
             .ToList();
 
-        return View(CreateTestWorkViewModel.Empty(subjectsSelect));
+        var statusesList = ((TestWorkStatus[]) Enum.GetValues(typeof(TestWorkStatus)))
+            .Select(e => new SelectListItem(e.ToString(), ((int)e).ToString()))
+            .ToList();
+
+        return View(CreateTestWorkViewModel.Empty(subjectsList, statusesList));
     }
 
     [HttpPost("create")]
@@ -99,7 +103,7 @@ public class TestWorksController : Controller
             variants.Add(new TestWorkVariant(Guid.NewGuid().ToString(), questions));
         }
 
-        var testWork = new TestWorkDetails(model.Title, model.Description, subject, author, variants, TestWorkStatus.Published);
+        var testWork = new TestWorkDetails(model.Title, model.Description, subject, author, variants, model.Status);
 
         await testWorksService.CreateAsync(testWork);
 

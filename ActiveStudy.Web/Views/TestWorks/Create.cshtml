@@ -21,6 +21,11 @@
         <label asp-for="SubjectId">@localizer["Subject"]</label>
         <select asp-for="SubjectId" asp-items="@Model.Subjects"></select>
     </div>
+    
+    <div>
+        <label asp-for="Status">@localizer["Status"]</label>
+        <select asp-for="Status" asp-items="@Model.Statuses"></select>
+    </div>
 
     <div>
         <button type="submit">@localizer["Save"]</button>
