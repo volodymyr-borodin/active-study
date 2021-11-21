@@ -15,27 +15,30 @@
         <legend>Variant @id</legend>
         @foreach (var question in questions)
         {
-            <fieldset>
-                <legend>@question.Text</legend>
-                @if (question is SingleAnswerQuestion singleAnswerQuestion)
-                {
+            @if (question is SingleAnswerQuestion singleAnswerQuestion)
+            {
+                <fieldset>
+                    <legend>@question.Text</legend>
                     <ul>
                         @foreach (var option in singleAnswerQuestion.Options)
                         {
                             <li>@(option.Id == singleAnswerQuestion.CorrectAnswerId ? '✅' : '❌') @option.Text</li>
                         }
                     </ul>
-                }
-                @if (question is MultiAnswerQuestion multiAnswerQuestion)
-                {
+                </fieldset>
+            }
+            else if (question is MultiAnswerQuestion multiAnswerQuestion)
+            {
+                <fieldset>
+                    <legend>@question.Text</legend>
                     <ul>
                         @foreach (var option in multiAnswerQuestion.Options)
                         {
                             <li>@(option.IsCorrect ? '✅' : '❌') @option.Text</li>
                         }
                     </ul>
-                }
-            </fieldset>
+                </fieldset>
+            }
         }
     </fieldset>
 }

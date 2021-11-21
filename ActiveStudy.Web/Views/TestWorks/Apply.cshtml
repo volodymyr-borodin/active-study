@@ -1,0 +1,55 @@
+@using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer
+@using ActiveStudy.Domain.Materials.TestWorks.Questions.MultiAnswer
+@model ActiveStudy.Web.Models.TestWorks.TestFormViewModel
+
+@{
+    ViewData["Title"] = Model.TestWork.Title;
+}
+
+<h2>@Model.TestWork.Title</h2>
+
+<form asp-controller="TestWorks" asp-action="Apply">
+    <input type="hidden" asp-for="TestWorkId" />
+    <input type="hidden" asp-for="VariantId" />
+    <fieldset>
+        <legend>Variant @Model.VariantId></legend>
+        @for (var questionIndex = 0; questionIndex < Model.Questions.Length; questionIndex++)
+        {
+            <fieldset>
+                <legend>@Model.Questions[questionIndex].Text</legend>
+                <input type="hidden" name="Answers[@questionIndex].QuestionId" value="@Model.Questions[questionIndex].Id"/>
+                <input type="hidden" name="Answers[@questionIndex].Type" value="@Model.Questions[questionIndex].Type"/>
+
+                @switch (Model.Questions[questionIndex].Type)
+                {
+                    case nameof(SingleAnswerQuestion):
+                    {
+                        <ul>
+                            @foreach (var option in Model.Questions[questionIndex].Options)
+                            {
+                                <li>
+                                    <input type="radio" id="@option.Id" name="Answers[@questionIndex].OptionId" value="@option.Id" required>
+                                    @option.Text
+                                </li>
+                            }
+                        </ul>
+                        break;
+                    }
+                    case nameof(MultiAnswerQuestion):
+                    {
+                        <ul>
+                            @foreach (var option in Model.Questions[questionIndex].Options)
+                            {
+                                <input type="checkbox" name="Answers[@questionIndex].SelectedOptionIds" value="@option.Id" />
+                                //<input type="checkbox" name="Answers[@questionIndex].MultiselectOptions[@optionIndex].IsSelected" value="true" />
+                                <li>@option.Text</li>
+                            }
+                        </ul>
+                        break;
+                    }
+                }
+            </fieldset>
+        }
+    </fieldset>
+    <button type="submit">Submit</button>
+</form>

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Materials.TestWorks;
@@ -45,5 +46,19 @@ public class TestWorksController : Controller
     {
         var item = await testWorksService.GetByIdAsync(id);
         return View(item);
+    }
+
+    [HttpGet("{id}/submit")]
+    public async Task<IActionResult> Apply(string id)
+    {
+        var item = await testWorksService.GetByIdAsync(id);
+        return View(new TestFormViewModel(item, item.Variants.First().Id));
+    }
+
+    [HttpPost("{id}/apply")]
+    public async Task<IActionResult> Apply(SubmitTestViewModel model)
+    {
+        var item = await testWorksService.GetByIdAsync(model.TestWorkId);
+        return View(new TestFormViewModel(item, item.Variants.First().Id));
     }
 }
