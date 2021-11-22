@@ -6,7 +6,9 @@ using ActiveStudy.Domain;
 using ActiveStudy.Domain.Materials.TestWorks;
 using ActiveStudy.Domain.Materials.TestWorks.Questions.MultiAnswer;
 using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer;
+using ActiveStudy.Domain.Materials.TestWorks.Results;
 using ActiveStudy.Web.Models;
+using ActiveStudy.Web.Models.MyTestWorks;
 using ActiveStudy.Web.Models.TestWorks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,14 +20,16 @@ namespace ActiveStudy.Web.Controllers;
 public class MyTestWorksController : Controller
 {
     private readonly TestWorksService testWorksService;
+    private readonly ITestWorkResultsStorage testWorkResultsStorage;
     private readonly ISubjectStorage subjectStorage;
     private readonly CurrentUserProvider currentUserProvider;
 
-    public MyTestWorksController(TestWorksService testWorksService, ISubjectStorage subjectStorage, CurrentUserProvider currentUserProvider)
+    public MyTestWorksController(TestWorksService testWorksService, ISubjectStorage subjectStorage, CurrentUserProvider currentUserProvider, ITestWorkResultsStorage testWorkResultsStorage)
     {
         this.testWorksService = testWorksService;
         this.subjectStorage = subjectStorage;
         this.currentUserProvider = currentUserProvider;
+        this.testWorkResultsStorage = testWorkResultsStorage;
     }
 
     public async Task<IActionResult> Index()
@@ -101,5 +105,13 @@ public class MyTestWorksController : Controller
         await testWorksService.CreateAsync(testWork);
 
         return RedirectToAction("Index", "TestWorks");
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Details(string id)
+    {
+        var testWork = await testWorksService.GetByIdAsync(id);
+        var results = await testWorkResultsStorage.FindAsync(testWork.Id);
+        return View(new MyTestWorkDetailsViewModel(testWork, results));
     }
 }

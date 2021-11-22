@@ -19,6 +19,9 @@ public class TestWorkResultEntity
 
     [BsonElement("author")]
     public TestWorkResultAuthorEntity Author { get; set; }
+
+    [BsonElement("createdOn")]
+    public long CreatedOn { get; set; }
 }
 
 public class SingleAnswerTestWorkResultEntity
@@ -35,8 +38,8 @@ public class MultiAnswerTestWorkResultEntity
 
 public class TestWorkResultAnswerEntity
 {
-    [BsonElement("questionType")]
-    public string QuestionType { get; set; }
+    [BsonElement("questionId")]
+    public string QuestionId { get; set; }
 
     [BsonElement("info")]
     public BsonDocument Info { get; set; }
