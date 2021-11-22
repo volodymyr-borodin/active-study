@@ -1,5 +1,6 @@
 @using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer
 @using ActiveStudy.Domain.Materials.TestWorks.Questions.MultiAnswer
+@using ActiveStudy.Domain.Materials.TestWorks.Results
 @model ActiveStudy.Web.Models.MyTestWorks.MyTestWorkDetailsViewModel
 
 @{
@@ -49,13 +50,59 @@
     {
         <li>
             <h4>@result.Author.FirstName @result.Author.LastName (@result.Author.Email)</h4>
+            <p>Total score: @result.TotalScore/@result.MaxScore</p>
             <ul>
                 @foreach (var answer in result.Answers)
                 {
-                    <li>
-                        <p>@answer.Question.Text</p>
-                        <p>@answer.Scored/@answer.MaxScore</p>
-                    </li>
+                    switch (answer)
+                    {
+                        case TestWorkSingleQuestionResult singleQuestionResult:
+                        {
+                            <li>
+                                <p>@answer.Question.Text</p>
+                                <p>@answer.Scored/@answer.MaxScore</p>
+                                <ul>
+                                    @foreach (var option in singleQuestionResult.TypedQuestion.Options)
+                                    {
+                                        <li>
+                                            @if (option.Id == singleQuestionResult.OptionId)
+                                            {
+                                                @(option.Id == singleQuestionResult.TypedQuestion.CorrectAnswerId ? '✅' : '❌') @option.Text
+                                            }
+                                            else
+                                            {
+                                                @option.Text
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                            break;
+                        }
+                        case TestWorkMultiQuestionResult multiQuestionResult:
+                        {
+                            <li>
+                                <p>@answer.Question.Text</p>
+                                <p>@answer.Scored/@answer.MaxScore</p>
+                                <ul>
+                                        @foreach (var option in multiQuestionResult.TypedQuestion.Options)
+                                        {
+                                            <li>
+                                                @if (multiQuestionResult.OptionIds.Contains(option.Id))
+                                                {
+                                                    @(multiQuestionResult.TypedQuestion.Options.Any(o => o.Id == option.Id && o.IsCorrect)  ? '✅' : '❌') @option.Text
+                                                }
+                                                else
+                                                {
+                                                    @option.Text
+                                                }
+                                            </li>
+                                        }
+                                </ul>
+                            </li>
+                            break;
+                        }
+                    }
                 }
             </ul>
         </li>

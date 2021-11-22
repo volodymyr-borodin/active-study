@@ -38,7 +38,11 @@ public record TestWorkResult(string TestWorkId,
     string VariantId,
     IEnumerable<TestWorkQuestionResult> Answers,
     TestWorkResultAuthor Author,
-    DateTimeOffset CreateOn);
+    DateTimeOffset CreateOn)
+{
+    public decimal TotalScore => Answers.Sum(a => a.Scored);
+    public decimal MaxScore => Answers.Sum(a => a.MaxScore);
+}
 
 // public class TestWorkTextQuestionResult : TestWorkQuestionResult
 // {
