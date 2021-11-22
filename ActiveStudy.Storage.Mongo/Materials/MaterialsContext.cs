@@ -6,6 +6,7 @@ namespace ActiveStudy.Storage.Mongo.Materials
     {
         private readonly IMongoDatabase database;
         public IMongoCollection<TestWorkEntity> TestWorks => database.GetCollection<TestWorkEntity>("testWorks");
+        public IMongoCollection<TestWorkResultEntity> TestWorkResults => database.GetCollection<TestWorkResultEntity>("testWorkResults");
 
         public MaterialsContext(MongoUrl url)
         {

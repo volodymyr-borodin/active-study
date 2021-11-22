@@ -8,7 +8,7 @@
 
 <h2>@Model.TestWork.Title</h2>
 
-<form asp-controller="TestWorks" asp-action="Apply">
+<form asp-controller="TestWorks" asp-action="Submit">
     <input type="hidden" asp-for="TestWorkId" />
     <input type="hidden" asp-for="VariantId" />
     <fieldset>
@@ -50,6 +50,33 @@
                 }
             </fieldset>
         }
+    </fieldset>
+    <fieldset>
+        <legend>Contact information</legend>
+        <div>
+            <label asp-for="Author.FirstName">First Name</label>
+            <input type="text" 
+                   asp-for="Author.FirstName"
+                   placeholder="First Name"
+                   required
+                   autocomplete="off">
+        </div>
+        <div>
+            <label asp-for="Author.LastName">Last Name</label>
+            <input type="text" 
+                   asp-for="Author.LastName"
+                   placeholder="Last Name"
+                   required
+                   autocomplete="off">
+        </div>
+        <div>
+            <label asp-for="Author.Email">Email</label>
+            <input type="text" 
+                   asp-for="Author.Email"
+                   placeholder="Email"
+                   required
+                   autocomplete="off">
+        </div>
     </fieldset>
     <button type="submit">Submit</button>
 </form>

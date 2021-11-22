@@ -11,6 +11,7 @@ using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Domain.Materials.TestWorks;
+using ActiveStudy.Domain.Materials.TestWorks.Results;
 using ActiveStudy.Storage.Mongo;
 using ActiveStudy.Storage.Mongo.Crm;
 using ActiveStudy.Storage.Mongo.Identity;
@@ -111,6 +112,7 @@ namespace ActiveStudy.Web
             // materials
             services.AddScoped(_ => new MaterialsContext(mongoUrl));
             services.AddScoped<ITestWorksStorage, TestWorksStorage>();
+            services.AddScoped<ITestWorkResultsStorage, TestWorkResultsStorage>();
             services.AddScoped<TestWorksService>();
 
             services.Configure<RouteOptions>(options =>
