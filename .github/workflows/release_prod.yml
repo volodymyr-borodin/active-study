@@ -18,3 +18,10 @@ jobs:
 
       - name: Login into github container regestry
         run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to github container regestry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$SERVICE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          docker tag $SERVICE_NAME $IMAGE_ID
+          docker push $IMAGE_ID
