@@ -1,0 +1,33 @@
+@model ActiveStudy.Web.Models.TestWorks.TestWorksListViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+
+@{
+    ViewData["Title"] = sharedLocalizer["Test Works"].Value;
+}
+
+<h2>@sharedLocalizer["Test Works"]</h2>
+
+@if (Model.IsAuthenticated)
+{
+    <a asp-controller="MyTestWorks" asp-action="Index">Open My</a>
+}
+
+<h3>By Subjects</h3>
+<ul>
+    @foreach (var category in Model.Categories)
+    {
+        <li>
+            <a asp-controller="TestWorks" asp-action="Category" asp-route-categoryId="@category.Subject.Id">@category.Subject.Title</a> (@category.TestsCount)
+        </li>
+    }
+</ul>
+
+<h3>All Test Works</h3>
+<ul>
+    @foreach (var testWork in Model.Items)
+    {
+        <li>
+            <a asp-controller="TestWorks" asp-action="Details" asp-route-id="@testWork.Id">@testWork.Title</a>
+        </li>
+    }
+</ul>

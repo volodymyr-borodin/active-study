@@ -15,72 +15,50 @@
 
 <vc:breadcrumb items="@breadcrumb" />
 
-<div class="container space-2">
-    <!-- Apply Form -->
-    <form asp-action="Create" class="js-validate">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <!-- Input -->
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="FirstName">@localizer["FirstName"]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" asp-for="FirstName" placeholder="@localizer["FirstName"]" required
-                               autocomplete="off" data-msg="@localizer["FirstName is required"]">
-                    </div>
-                </div>
-                <!-- End Input -->
-            </div>
+<form asp-action="Create">
+    <div>
+        <label asp-for="FirstName">@localizer["FirstName"]</label>
+        <input type="text"
+               asp-for="FirstName"
+               placeholder="@localizer["FirstName"]"
+               required
+               autocomplete="off">
+    </div>
             
-            <div class="col-md-6">
-                <!-- Input -->
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="LastName">@localizer["LastName"]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" asp-for="LastName" placeholder="@localizer["LastName"]" required
-                               autocomplete="off" data-msg="@localizer["LastName is required"]">
-                    </div>
-                </div>
-                <!-- End Input -->
-            </div>
-        </div>
+    <div>
+        <label class="input-label" asp-for="LastName">@localizer["LastName"]</label>
+        <input type="text"
+               asp-for="LastName"
+               placeholder="@localizer["LastName"]"
+               required
+               autocomplete="off">
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="Email">@localizer["Middle Name"]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" asp-for="MiddleName" placeholder="@localizer["Middle Name"]" autocomplete="off">
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <label asp-for="Email">@localizer["Middle Name"]</label>
+        <input type="text"
+               asp-for="MiddleName"
+               placeholder="@localizer["Middle Name"]"
+               autocomplete="off">
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="Email">@localizer["Email"]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" asp-for="Email" placeholder="@localizer["Email"]" required
-                               autocomplete="off" data-msg="@localizer["Email is required"]">
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="SubjectIds">@localizer["Subjects"]</label>
-                    <div class="input-group">
-                        <select multiple asp-for="SubjectIds" asp-items="@Model.Subjects" class="form-control"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <label asp-for="Email">@localizer["Email"]</label>
+        <input type="text"
+               asp-for="Email"
+               placeholder="@localizer["Email"]"
+               required
+               autocomplete="off">
+    </div>
 
-        <div class="text-right">
-            <button type="submit" class="btn btn-primary">@localizer["Save"]</button>
-        </div>
-    </form>
-    <!-- End Apply Form -->
-</div>
+    <div>
+        <label asp-for="SubjectIds">@localizer["Subjects"]</label>
+        <select multiple
+                asp-for="SubjectIds"
+                asp-items="@Model.Subjects"></select>
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

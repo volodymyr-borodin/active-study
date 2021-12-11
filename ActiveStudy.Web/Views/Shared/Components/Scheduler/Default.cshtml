@@ -1,5 +1,5 @@
 @model ActiveStudy.Web.Components.Scheduler.SchedulerModel
-<div class="d-flex justify-content-between">
+<div>
     <a asp-controller="@ViewContext.RouteData.Values["Controller"].ToString()"
        asp-action="@ViewContext.RouteData.Values["Action"].ToString()"
        asp-route-schoolId="@ViewContext.RouteData.Values["schoolId"].ToString()"
@@ -11,13 +11,13 @@
        asp-route-id="@ViewContext.RouteData.Values["id"].ToString()"
        asp-route-scheduleDate="@Model.Schedule.Keys.First().AddDays(7).ToShortDateString()">@Model.Schedule.Keys.First().AddDays(7).ToShortDateString() - @Model.Schedule.Keys.First().AddDays(13).ToShortDateString() >></a>
 </div>
-<div class="table-responsive">
-    <table class="table">
+<div>
+    <table>
         <tr>
             <th></th>
             @foreach (var (day, _) in Model.Schedule)
             {
-                <th style="white-space: nowrap;" class="@(day == DateTime.Today ? "bg-light" : "")">@day.ToString("dd/MM (ddd)")</th>
+                <th style="white-space: nowrap;">@day.ToString("dd/MM (ddd)")</th>
             }
         </tr>
         @foreach (var lesson in Model.Lessons)
@@ -31,8 +31,9 @@
                     var e = events.FirstOrDefault(e => e.From == lesson.From && e.To == lesson.To);
                     @if (e == null)
                     {
-                        <td style="white-space: nowrap;" class="@(day == DateTime.Today ? "bg-light" : "")">
-                            <a class="link" asp-controller="Scheduler" asp-action="Create"
+                        <td style="white-space: nowrap;">
+                            <a asp-controller="Scheduler"
+                               asp-action="Create"
                                asp-route-schoolId="@Model.SchoolId"
                                asp-route-day="@day"
                                asp-route-time="@lesson.From.ToString("hh\\:mm") - @lesson.To.ToString("hh\\:mm")"
@@ -42,7 +43,7 @@
                     }
                     else
                     {
-                        <td style="white-space: nowrap;" class="@(e.Date.DayOfWeek == DayOfWeek.Saturday || e.Date.DayOfWeek == DayOfWeek.Sunday ? "bg-light" : "")">
+                        <td style="white-space: nowrap;">
                             <div>@e.Subject.Title</div>
                             <div>@e.Teacher.FullName</div>
                             <div>@e.Class.Title</div>

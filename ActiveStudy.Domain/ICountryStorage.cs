@@ -18,6 +18,8 @@ namespace ActiveStudy.Domain
             new Country("Россия", "RU")
         };
 
+        public Country Default { get; }
+
         public Task<Country> GetByCodeAsync(string countryCode)
         {
             return Task.FromResult(Countries.FirstOrDefault(c => c.Code == countryCode));

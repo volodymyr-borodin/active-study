@@ -48,9 +48,9 @@ namespace ActiveStudy.Web.Controllers
         }
 
         [HttpGet("create")]
-        public async Task<IActionResult> Create(string classId = null)
+        public async Task<IActionResult> Create(string schoolId, string classId)
         {
-            return View(await Build(classId));
+            return View(await Build(schoolId, classId));
         }
 
         [HttpPost("create")]
@@ -59,7 +59,7 @@ namespace ActiveStudy.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(await Build(model?.ClassId, model));
+                return View(await Build(schoolId, model?.ClassId, model));
             }
 
             // TODO: Validate create class access to school
@@ -88,16 +88,14 @@ namespace ActiveStudy.Web.Controllers
             return RedirectToAction("Details", "Classes", new { schoolId, id = model.ClassId });
         }
     
-        private async Task<CreateStudentViewModel> Build(string classId = null, CreateStudentInputModel input = null)
+        private async Task<CreateStudentViewModel> Build(string schoolId, string classId, CreateStudentInputModel input = null)
         {
-            ClassShortInfo classInfo = null;
-            if (!string.IsNullOrEmpty(classId))
-            {
-                var @class = await classStorage.GetByIdAsync(classId);
-                classInfo = new ClassShortInfo(@class.Id, @class.Title);
-            }
+            var school = await schoolStorage.GetByIdAsync(schoolId);
+            
+            var @class = await classStorage.GetByIdAsync(classId);
+            var classInfo = new ClassShortInfo(@class.Id, @class.Title);
 
-            return new CreateStudentViewModel(classInfo)
+            return new CreateStudentViewModel(school, classInfo)
             {
                 FirstName = input?.FirstName,
                 LastName = input?.LastName,

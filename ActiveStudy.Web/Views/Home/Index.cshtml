@@ -1,29 +1,5 @@
 ﻿@model ActiveStudy.Web.Models.Home.HomePageModel
 @inject IViewLocalizer localizer
-@inject CurrentUserProvider userProvider
 @{
     ViewData["Title"] = localizer["Home"];
 }
-<!-- Hero Section -->
-<div class="container space-2">
-  <div class="row align-items-md-center">
-    <div class="col-sm-10 col-md-6 mb-7 mb-md-0">
-      <img class="img-fluid" src="/svg/illustrations/knowledgebase-community-3.svg" alt="Image Description">
-    </div>
-
-    <div class="col-md-6">
-      <div class="ml-lg-6">
-        @* <div class="mb-5"> *@
-        @*   <p class="lead">With our platform, you can quantify your skills, grow in your role and stay relevant on critical topics.</p> *@
-        @* </div> *@
-
-        <div class="d-sm-flex align-items-sm-center flex-sm-wrap">
-          @if (!userProvider.IsAuthenticated)
-          {
-            <a class="btn btn-primary transition-3d-hover mb-2" asp-area="" asp-controller="Account" asp-action="Registration">@localizer["Start For Free"]</a>
-          }
-        </div>
-      </div>
-    </div>
-  </div>
-</div>

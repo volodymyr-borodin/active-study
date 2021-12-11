@@ -16,9 +16,7 @@ namespace ActiveStudy.Web.Components.Audit
 
         public async Task<IViewComponentResult> InvokeAsync(Dictionary<string, string> filter)
         {
-            var history = await auditStorage.SearchAnyAsync(filter);
-            
-            return View(history);
+            return View(await auditStorage.SearchAnyAsync(filter));
         }
     }
 }

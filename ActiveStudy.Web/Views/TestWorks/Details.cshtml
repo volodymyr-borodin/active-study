@@ -1,0 +1,44 @@
+@using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer
+@using ActiveStudy.Domain.Materials.TestWorks.Questions.MultiAnswer
+@model ActiveStudy.Domain.Materials.TestWorks.TestWork
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h2>@Model.Id) @Model.Title</h2>
+<p>@Model.Description</p>
+
+@foreach (var (id, questions) in Model.Variants)
+{
+    <fieldset>
+        <legend>Variant @id</legend>
+        @foreach (var question in questions)
+        {
+            @if (question is SingleAnswerQuestion singleAnswerQuestion)
+            {
+                <fieldset>
+                    <legend>@question.Text</legend>
+                    <ul>
+                        @foreach (var option in singleAnswerQuestion.Options)
+                        {
+                            <li>@(option.Id == singleAnswerQuestion.CorrectAnswerId ? '✅' : '❌') @option.Text</li>
+                        }
+                    </ul>
+                </fieldset>
+            }
+            else if (question is MultiAnswerQuestion multiAnswerQuestion)
+            {
+                <fieldset>
+                    <legend>@question.Text</legend>
+                    <ul>
+                        @foreach (var option in multiAnswerQuestion.Options)
+                        {
+                            <li>@(option.IsCorrect ? '✅' : '❌') @option.Text</li>
+                        }
+                    </ul>
+                </fieldset>
+            }
+        }
+    </fieldset>
+}

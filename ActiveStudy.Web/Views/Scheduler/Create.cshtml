@@ -5,86 +5,51 @@
     ViewData["Title"] = localizer["Page Title"];
 }
 
-<div class="container space-2">
-    <!-- Apply Form -->
-    <form asp-action="Create" class="js-validate">
-        <input type="hidden" asp-for="SchoolId">
-        <div class="row mb-3">
-            <div class="col-12">
-                <!-- Input -->
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="Description">@localizer["Description"]</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" asp-for="Description" placeholder="@localizer["Description"]" autocomplete="off">
-                    </div>
-                </div>
-                <!-- End Input -->
-            </div>
-        </div>
+<form asp-action="Create">
+    <input type="hidden" asp-for="SchoolId">
+    <div>
+        <label asp-for="Description">@localizer["Description"]</label>
+        <input type="text"
+               asp-for="Description"
+               placeholder="@localizer["Description"]"
+               autocomplete="off">
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="ClassId">@sharedLocalizer["Class"]</label>
-                    <div class="input-group">
-                        <select asp-for="ClassId" asp-items="@Model.Classes" class="form-control"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <label  asp-for="ClassId">@sharedLocalizer["Class"]</label>
+        <select asp-for="ClassId"
+                asp-items="@Model.Classes">
+        </select>
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="TeacherId">@sharedLocalizer["Teacher"]</label>
-                    <div class="input-group">
-                        <select asp-for="TeacherId" asp-items="@Model.Teachers" class="form-control"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <label asp-for="TeacherId">@sharedLocalizer["Teacher"]</label>
+        <select asp-for="TeacherId"
+                asp-items="@Model.Teachers">
+        </select>
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="SubjectId">@sharedLocalizer["Subject"]</label>
-                    <div class="input-group">
-                        <select asp-for="SubjectId" asp-items="@Model.Subjects" class="form-control"></select>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <label asp-for="SubjectId">@sharedLocalizer["Subject"]</label>
+        <select asp-for="SubjectId"
+                asp-items="@Model.Subjects">
+        </select>
+    </div>
 
-        <div class="row mb-3">
-            <div class="col-6">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="SubjectId">@localizer["Date"]</label>
-                    <div class="input-group">
-                        <input readonly asp-for="Date" class="form-control" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="SubjectId">@localizer["From"]</label>
-                    <div class="input-group">
-                        <input readonly asp-for="From" class="form-control" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="js-form-message">
-                    <label class="input-label" asp-for="SubjectId">@localizer["To"]</label>
-                    <div class="input-group">
-                        <input readonly asp-for="To" class="form-control" />
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div>
+        <label asp-for="SubjectId">@localizer["Date"]</label>
+        <input readonly asp-for="Date" />
+    </div>
+    <div>
+        <label asp-for="SubjectId">@localizer["From"]</label>
+        <input readonly asp-for="From" />
+    </div>
+    <div>
+        <label asp-for="SubjectId">@localizer["To"]</label>
+        <input readonly asp-for="To" />
+    </div>
 
-        <div class="text-right">
-            <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Save"]</button>
-        </div>
-    </form>
-    <!-- End Apply Form -->
-</div>
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

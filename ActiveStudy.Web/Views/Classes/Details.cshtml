@@ -15,49 +15,14 @@
 }
 
 <vc:breadcrumb items="@breadcrumb" />
-
-<div class="container space-top-1 space-bottom-lg-2">
-    <!-- Content -->
-    <div class="row">
-        <div class="col-md-4 col-lg-3 mb-9 mb-md-0">
-            <partial name="_MainInfo" for="@Model.School" />
-        </div>
-
-        <div class="col-md-8 col-lg-9 column-divider-md">
-            <div class="ml-lg-2">
-
-                <!-- Nav Classic -->
-                <ul class="nav nav-classic nav-rounded nav-justified border">
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold active" asp-controller="Classes" asp-action="Details" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Schedule"]</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link font-weight-bold" asp-controller="Classes" asp-action="Students" asp-route-schoolId="@Model.School.Id" asp-route-id="@Model.Id">
-                            <div class="d-md-flex justify-content-md-center align-items-md-center">
-                                <span>@sharedLocalizer["Students"]</span>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-                <!-- End Nav Classic -->
-
-                <!-- Tab Content -->
-                <div class="tab-content">
-                    <div class="tab-pane fade pt-6 active show">
-                        <vc:scheduler schedule="@Model.Schedule"
-                                      school-id="@Model.School.Id"
-                                      class-id="@Model.Id"
-                                      teacher-id="@null">
-                        </vc:scheduler>
-                    </div>
-                </div>
-                <!-- End Tab Content -->
-            </div>
-        </div>
-    </div>
-    <!-- End Content -->
-</div>
+<a asp-controller="Classes"
+   asp-action="Students"
+   asp-route-schoolId="@Model.School.Id"
+   asp-route-id="@Model.Id">
+    @sharedLocalizer["Students"]
+</a>
+<vc:scheduler schedule="@Model.Schedule"
+              school-id="@Model.School.Id"
+              class-id="@Model.Id"
+              teacher-id="@null">
+</vc:scheduler>

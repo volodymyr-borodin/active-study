@@ -60,6 +60,22 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return entity.Id.ToString();
         }
 
+        public async Task InsertManyAsync(IEnumerable<Student> students)
+        {
+            var entities = students.Select(student => new StudentEntity
+            {
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                Phone = student.Phone,
+                
+                Classes = student.Classes.Select(c => (ClassShortEntity)c).ToList(),
+                SchoolId = new ObjectId(student.SchoolId)
+            });
+
+            await context.Students.InsertManyAsync(entities);
+        }
+
         private static FilterDefinitionBuilder<StudentEntity> FilterBuilder => Builders<StudentEntity>.Filter;
     }
 }

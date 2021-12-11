@@ -21,4 +21,7 @@
     <data name="Sign In" xml:space="preserve">
         <value>Sign In</value>
     </data>
+    <data name="Sign out" xml:space="preserve">
+        <value>Sign out</value>
+    </data>
 </root>
