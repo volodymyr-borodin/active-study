@@ -22,6 +22,7 @@ using ActiveStudy.Web.Services.Email;
 using ActiveStudy.Web.Services.Email.Smtp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -52,6 +53,11 @@ namespace ActiveStudy.Web
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedHost;
+            });
+
             switch (Configuration["EMAIL_SENDER"])
             {
                 case "SMTP":
@@ -142,6 +148,7 @@ namespace ActiveStudy.Web
                 app.UseHsts();
             }
 
+            app.UseForwardedHeaders();
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
                 DefaultRequestCulture = DefaultRequestCulture,
