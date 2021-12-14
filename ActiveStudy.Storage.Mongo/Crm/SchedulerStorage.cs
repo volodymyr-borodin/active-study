@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveStudy.Domain;
+using ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
 using ActiveStudy.Domain.Crm.Scheduler;
 using MongoDB.Bson;
 using MongoDB.Driver;
