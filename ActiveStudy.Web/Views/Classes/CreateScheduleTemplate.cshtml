@@ -1,0 +1,29 @@
+@model ActiveStudy.Web.Models.Classes.ClassScheduleTemplateViewModel
+
+@{
+    ViewBag.Title = "title";
+}
+
+<table>
+    <tr>
+        <th></th>
+        @foreach (var dayOfWeek in Model.DayOfWeeks)
+        {
+            <th style="white-space: nowrap;">@dayOfWeek</th>
+        }
+    </tr>
+    @foreach (var lesson in Model.Periods)
+    {
+        <tr>
+            <td style="white-space: nowrap;">@lesson.Start.ToString("hh\\:mm") - @lesson.End.ToString("hh\\:mm")</td>
+            @foreach (var _ in Model.DayOfWeeks)
+            {
+                <td style="white-space: nowrap;">
+                    <input type="checkbox"/>
+                    <select asp-items="Model.Subjects"></select>
+                    <select asp-items="Model.Teachers"></select>
+                </td>
+            }
+        </tr>
+    }
+</table>

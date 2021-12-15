@@ -13,9 +13,9 @@ using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.Classes;
-using HandlebarsDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ActiveStudy.Web.Controllers
 {
@@ -27,6 +27,7 @@ namespace ActiveStudy.Web.Controllers
         private readonly IStudentStorage studentStorage;
         private readonly IRelativesStorage relativesStorage;
         private readonly ITeacherStorage teacherStorage;
+        private readonly ISubjectStorage subjectStorage;
         private readonly ClassManager classManager;
         private readonly IAuditStorage auditStorage;
         private readonly CurrentUserProvider currentUserProvider;
@@ -38,7 +39,7 @@ namespace ActiveStudy.Web.Controllers
             ITeacherStorage teacherStorage,
             ClassManager classManager,
             IAuditStorage auditStorage,
-            CurrentUserProvider currentUserProvider)
+            CurrentUserProvider currentUserProvider, ISubjectStorage subjectStorage)
         {
             this.classStorage = classStorage;
             this.studentStorage = studentStorage;
@@ -47,6 +48,7 @@ namespace ActiveStudy.Web.Controllers
             this.classManager = classManager;
             this.auditStorage = auditStorage;
             this.currentUserProvider = currentUserProvider;
+            this.subjectStorage = subjectStorage;
             this.schoolStorage = schoolStorage;
         }
 
@@ -101,27 +103,58 @@ namespace ActiveStudy.Web.Controllers
         [HttpGet("{id}/schedule-templates")]
         public async Task<IActionResult> ScheduleTemplates([Required] string id)
         {
+            return View();
         }
 
         [HttpGet("{id}/schedule-templates/create")]
         public async Task<IActionResult> CreateScheduleTemplate([Required] string id)
         {
+            var @class = await classStorage.GetByIdAsync(id);
+            var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
+            var subjects = await subjectStorage.SearchAsync(school.Country.Code);
+            var teachers = await teacherStorage.FindAsync(school.Id);
+
+            var defaultTemplate = new ClassScheduleTemplateViewModel(
+                teachers.Select(s => new SelectListItem(s.FullName, s.Id)),
+                subjects.Select(s => new SelectListItem(s.Title, s.Id)),
+                DateOnly.FromDateTime(DateTime.Today),
+                DateOnly.FromDateTime(DateTime.Today).AddDays(7),
+                new []
+                {
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(8, 30), new TimeOnly(9, 15)),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(9, 30), new TimeOnly(10, 15)),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(10, 30), new TimeOnly(11, 15)),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(11, 30), new TimeOnly(12, 15)),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(12, 30), new TimeOnly(13, 15))
+                },
+                Enumerable.Empty<ScheduleTemplateItemInputModel>()
+            );
             
+            return View(defaultTemplate);
         }
 
         [HttpPost("{id}/schedule-template/create")]
         public async Task<IActionResult> CreateScheduleTemplate([Required] string id,
             ClassScheduleTemplateInputModel model)
         {
-            
+            var @class = await classStorage.GetByIdAsync(id);
+            var periods = model.Periods.OrderBy(p => p.Start).ToList();
+
             var itemsByDayOfWeek = model.Items
                 .GroupBy(item => item.DayOfWeek)
                 .ToDictionary(grouping => grouping.Key, grouping => (IReadOnlyCollection<ScheduleTemplateItem>)
-                    grouping.Select(item => new ScheduleTemplateItem(item.Start, item.End, default, default, default)));
-            
-            var @class = await classStorage.GetByIdAsync(id);
+                    grouping
+                        .OrderBy(i => i.Order)
+                        .Select((lesson, lessonIndex) =>
+                        {
+                            var (start, end) = periods[lessonIndex];
+                            return new ScheduleTemplateItem(start, end, (ClassShortInfo) @class, default, default);
+                        }));
+
             var (schedule, _) = ClassScheduleTemplate.New(model.EffectiveFrom, model.EffectiveTo, itemsByDayOfWeek);
             await classManager.SaveScheduleTemplateAsync(@class, schedule);
+
+            return RedirectToAction("ScheduleTemplates");
         }
 
         [HttpGet("{id}/students")]
