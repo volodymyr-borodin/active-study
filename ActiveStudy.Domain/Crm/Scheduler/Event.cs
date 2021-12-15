@@ -4,7 +4,7 @@ namespace ActiveStudy.Domain.Crm.Scheduler
 {
     public class Event
     {
-        public Event(string id, string schoolId, string description, TeacherShortInfo teacher, Subject subject, ClassShortInfo @class, DateTime date, TimeSpan from, TimeSpan to)
+        public Event(string id, string schoolId, string description, TeacherShortInfo teacher, Subject subject, ClassShortInfo @class, DateOnly date, TimeOnly from, TimeOnly to)
         {
             Id = id;
             SchoolId = schoolId;
@@ -23,8 +23,8 @@ namespace ActiveStudy.Domain.Crm.Scheduler
         public TeacherShortInfo Teacher { get; }
         public Subject Subject { get; }
         public ClassShortInfo Class { get; }
-        public DateTime Date { get; }
-        public TimeSpan From { get; }
-        public TimeSpan To { get; }
+        public DateOnly Date { get; }
+        public TimeOnly From { get; }
+        public TimeOnly To { get; }
     }
 }

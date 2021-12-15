@@ -1,3 +1,4 @@
+using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -22,7 +23,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
 
         public static implicit operator Class(ClassEntity entity)
         {
-            return new Class(entity.Id.ToString(), entity.Grade, entity.Label, entity.Teacher, entity.SchoolId.ToString());
+            return new Class(entity.Id.ToString(), entity.Grade, entity.Label, (TeacherShortInfo) entity.Teacher, entity.SchoolId.ToString());
         }
     }
 }

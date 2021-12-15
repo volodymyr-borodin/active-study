@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ActiveStudy.Domain;
 using ActiveStudy.Domain.Materials.TestWorks;
 using ActiveStudy.Storage.Mongo.Crm;
 using MongoDB.Bson;
@@ -34,7 +35,7 @@ public class TestWorkEntity
         return new TestWork(entity.Id.ToString(),
             entity.Title,
             entity.Description,
-            entity.Subject,
+            (Subject) entity.Subject,
             entity.Author,
             entity.Variants.Select(v => (TestWorkVariant)v),
             entity.Status);

@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ActiveStudy.Domain;
-using ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
 using ActiveStudy.Domain.Crm.Scheduler;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -24,13 +22,13 @@ namespace ActiveStudy.Storage.Mongo.Crm
             var entity = new EventEntity
             {
                 Description = @event.Description,
-                Teacher = @event.Teacher,
-                Subject = @event.Subject,
+                Teacher = (TeacherShortEntity) @event.Teacher,
+                Subject = (SubjectEntity) @event.Subject,
                 SchoolId = ObjectId.Parse(@event.SchoolId),
-                Class = @event.Class,
-                Date = @event.Date,
-                From = @event.From,
-                To = @event.To
+                Class = (ClassShortEntity) @event.Class,
+                Date = @event.Date.ToDateTime(new TimeOnly()),
+                From = @event.From.ToTimeSpan(),
+                To = @event.To.ToTimeSpan()
             };
             
             await context.Events.InsertOneAsync(entity);
@@ -48,10 +46,10 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 .ToListAsync();
 
             var dict = DaysRange(from, to)
-                .ToDictionary(day => day, day => entities
+                .ToDictionary(DateOnly.FromDateTime, day => (IReadOnlyCollection<Event>) entities
                     .Where(e => e.Date == day)
                     .OrderBy(e => e.From)
-                    .Select(e => (Event)e));
+                    .Select(e => (Event) e));
 
             return new Schedule(dict);
         }
@@ -68,10 +66,10 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 .ToListAsync();
 
             var dict = DaysRange(from, to)
-                .ToDictionary(day => day, day => entities
+                .ToDictionary(DateOnly.FromDateTime, day => (IReadOnlyCollection<Event>) entities
                     .Where(e => e.Date == day)
                     .OrderBy(e => e.From)
-                    .Select(e => (Event)e));
+                    .Select(e => (Event) e));
 
             return new Schedule(dict);
         }

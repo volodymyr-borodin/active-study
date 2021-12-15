@@ -11,9 +11,9 @@ namespace ActiveStudy.Domain.Crm.Scheduler
         Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to);
     }
 
-    public class Schedule : Dictionary<DateTime, IEnumerable<Event>>
+    public class Schedule : Dictionary<DateOnly, IReadOnlyCollection<Event>>
     {
-        public Schedule(IDictionary<DateTime, IEnumerable<Event>> schedule) : base(schedule)
+        public Schedule(Dictionary<DateOnly, IReadOnlyCollection<Event>> schedule) : base(schedule)
         { }
     }
 }

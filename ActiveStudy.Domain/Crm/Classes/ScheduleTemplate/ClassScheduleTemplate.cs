@@ -10,7 +10,7 @@ public class ClassScheduleTemplate
     private ClassScheduleTemplate(
         DateOnly effectiveFrom,
         DateOnly effectiveTo,
-        IEnumerable<ScheduleTemplateDay> days)
+        IReadOnlyDictionary<DayOfWeek, ScheduleTemplateDay> days)
     {
         EffectiveFrom = effectiveFrom;
         EffectiveTo = effectiveTo;
@@ -22,7 +22,7 @@ public class ClassScheduleTemplate
         DateOnly effectiveTo,
         ICollection<ScheduleTemplateDay> days)
     {
-        if (effectiveFrom < effectiveTo)
+        if (effectiveFrom >= effectiveTo)
         {
             return (null, DomainResult.Error($"{nameof(effectiveFrom)} can't be greater than {nameof(effectiveTo)}"));
         }
@@ -38,11 +38,11 @@ public class ClassScheduleTemplate
         }
 
         return new(
-            new ClassScheduleTemplate(effectiveFrom, effectiveTo, days),
+            new ClassScheduleTemplate(effectiveFrom, effectiveTo, days.ToDictionary(d => d.DayOfWeek)),
             DomainResult.Success());
     }
 
     public DateOnly EffectiveFrom { get; }
     public DateOnly EffectiveTo { get; }
-    public IEnumerable<ScheduleTemplateDay> Days { get; }
+    public IReadOnlyDictionary<DayOfWeek, ScheduleTemplateDay> Days { get; }
 }

@@ -18,5 +18,10 @@ namespace ActiveStudy.Domain.Crm.Classes
             Teacher = teacher;
             SchoolId = schoolId;
         }
+
+        public static explicit operator ClassShortInfo(Class @class)
+        {
+            return new ClassShortInfo(@class.Id, @class.Title);
+        }
     }
 }

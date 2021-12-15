@@ -19,11 +19,11 @@ namespace ActiveStudy.Web.Components.Scheduler
                 TeacherId = teacherId,
                 Lessons = new[]
                 {
-                    new Lesson(TimeSpan.Parse("08:30"), TimeSpan.Parse("09:15")),
-                    new Lesson(TimeSpan.Parse("09:35"), TimeSpan.Parse("10:20")),
-                    new Lesson(TimeSpan.Parse("10:40"), TimeSpan.Parse("11:25")),
-                    new Lesson(TimeSpan.Parse("11:45"), TimeSpan.Parse("12:30")),
-                    new Lesson(TimeSpan.Parse("12:50"), TimeSpan.Parse("13:35"))
+                    new Lesson(TimeOnly.Parse("08:30"), TimeOnly.Parse("09:15")),
+                    new Lesson(TimeOnly.Parse("09:35"), TimeOnly.Parse("10:20")),
+                    new Lesson(TimeOnly.Parse("10:40"), TimeOnly.Parse("11:25")),
+                    new Lesson(TimeOnly.Parse("11:45"), TimeOnly.Parse("12:30")),
+                    new Lesson(TimeOnly.Parse("12:50"), TimeOnly.Parse("13:35"))
                 }
             });
         }

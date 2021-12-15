@@ -6,7 +6,6 @@ using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Relatives;
-using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
@@ -15,7 +14,7 @@ using ActiveStudy.Web.Models.Classes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ActiveStudy.Web.Areas.Schools.Controllers
+namespace ActiveStudy.Web.Controllers
 {
     [Route("school/{schoolId}/classes"), Authorize]
     public class ClassesController : Controller
@@ -25,7 +24,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly IStudentStorage studentStorage;
         private readonly IRelativesStorage relativesStorage;
         private readonly ITeacherStorage teacherStorage;
-        private readonly ISchedulerStorage scheduleStorage;
+        private readonly ClassManager classManager;
         private readonly IAuditStorage auditStorage;
         private readonly CurrentUserProvider currentUserProvider;
 
@@ -34,7 +33,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             IStudentStorage studentStorage,
             IRelativesStorage relativesStorage,
             ITeacherStorage teacherStorage,
-            ISchedulerStorage scheduleStorage,
+            ClassManager classManager,
             IAuditStorage auditStorage,
             CurrentUserProvider currentUserProvider)
         {
@@ -42,7 +41,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             this.studentStorage = studentStorage;
             this.relativesStorage = relativesStorage;
             this.teacherStorage = teacherStorage;
-            this.scheduleStorage = scheduleStorage;
+            this.classManager = classManager;
             this.auditStorage = auditStorage;
             this.currentUserProvider = currentUserProvider;
             this.schoolStorage = schoolStorage;
@@ -66,17 +65,17 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
 
-            var scheduleFrom = DateTime.Today.NearestMonday();
+            var scheduleFrom = DateOnly.FromDateTime(DateTime.Today).NearestMonday();
             if (!string.IsNullOrEmpty(scheduleDate))
             {
-                if (DateTime.TryParse(scheduleDate, out var sFrom))
+                if (DateOnly.TryParse(scheduleDate, out var sFrom))
                 {
                     scheduleFrom = sFrom;
                 }
             }
             var scheduleTo = scheduleFrom.AddDays(7);
 
-            var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
+            var schedule = await classManager.GetScheduleAsync(id, scheduleFrom, scheduleTo);
 
             var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
 
@@ -105,14 +104,17 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
             var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
 
-            var scheduleFrom = DateTime.Today.NearestMonday();
+            var scheduleFrom = DateOnly.FromDateTime(DateTime.Today).NearestMonday();
             if (!string.IsNullOrEmpty(scheduleDate))
             {
-                DateTime.TryParse(scheduleDate, out scheduleFrom);
+                if (DateOnly.TryParse(scheduleDate, out var sFrom))
+                {
+                    scheduleFrom = sFrom;
+                }
             }
             var scheduleTo = scheduleFrom.AddDays(7);
 
-            var schedule = await scheduleStorage.GetByClassAsync(id, scheduleFrom, scheduleTo);
+            var schedule = await classManager.GetScheduleAsync(id, scheduleFrom, scheduleTo);
 
             var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
 

@@ -14,14 +14,14 @@ namespace ActiveStudy.Storage.Mongo.Crm
         [BsonElement("userId")]
         public string UserId { get; set; }
 
-        public static implicit operator TeacherShortInfo(TeacherShortEntity entity)
+        public static explicit operator TeacherShortInfo(TeacherShortEntity entity)
         {
             return entity == null
                 ? null
                 : new TeacherShortInfo(entity.Id.ToString(), entity.FullName, entity.UserId);
         }
 
-        public static implicit operator TeacherShortEntity(TeacherShortInfo info)
+        public static explicit operator TeacherShortEntity(TeacherShortInfo info)
         {
             if (info == null)
             {
