@@ -14,30 +14,44 @@
             }
         </tr>
     </thead>
-    <tbody>
-    @foreach (var period in Model.Periods)
-    {
-        <tr>
-            <td style="white-space: nowrap;">@period.Start.ToString("hh\\:mm") - @period.End.ToString("hh\\:mm")</td>
-            @foreach (var _ in Model.DayOfWeeks)
-            {
-                <td style="white-space: nowrap; border: 1px solid black;">
-                    <schedule-item></schedule-item>
-                </td>
-            }
-        </tr>
-    }
-    </tbody>
+    <tr v-for="period in periods">
+        <td style="white-space: nowrap;">
+            <input type="time" v-model="period.start" min="00:00" max="24:00" />
+            <input type="time" v-model="period.end" min="00:00" max="24:00" />
+        </td>
+        @foreach (var _ in Model.DayOfWeeks)
+        {
+            <td style="white-space: nowrap; border: 1px solid black;">
+                <schedule-item></schedule-item>
+            </td>
+        }
+    </tr>
+    <tr>
+        <td>
+            <button v-on:click="addPeriod()">Add</button>
+        </td>
+    </tr>
 </table>
 
 @section Scripts
 {
     <script>
-        const app = Vue.createApp({});
+        const app = Vue.createApp({
+            data() {
+                return {
+                    periods: @Html.Raw(Json.Serialize(Model.Periods.Select(p => new {Start = p.Start.ToString("hh\\:mm"), End = p.End.ToString("hh\\:mm")})))
+                }
+            },
+            methods: {
+                addPeriod: function () {
+                    this.periods.push({})
+                }
+            }
+        });
         app.component('schedule-item', {
           data() {
             return {
-                enabled: true,
+                enabled: false,
                 teachers: @Html.Raw(Json.Serialize(Model.Teachers)),
                 subjects: @Html.Raw(Json.Serialize(Model.Subjects))
             }
