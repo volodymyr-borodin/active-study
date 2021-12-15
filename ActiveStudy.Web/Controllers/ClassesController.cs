@@ -1,16 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
 using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.Classes;
+using HandlebarsDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -93,6 +96,32 @@ namespace ActiveStudy.Web.Controllers
                 schedule);
 
             return View(model);
+        }
+
+        [HttpGet("{id}/schedule-templates")]
+        public async Task<IActionResult> ScheduleTemplates([Required] string id)
+        {
+        }
+
+        [HttpGet("{id}/schedule-templates/create")]
+        public async Task<IActionResult> CreateScheduleTemplate([Required] string id)
+        {
+            
+        }
+
+        [HttpPost("{id}/schedule-template/create")]
+        public async Task<IActionResult> CreateScheduleTemplate([Required] string id,
+            ClassScheduleTemplateInputModel model)
+        {
+            
+            var itemsByDayOfWeek = model.Items
+                .GroupBy(item => item.DayOfWeek)
+                .ToDictionary(grouping => grouping.Key, grouping => (IReadOnlyCollection<ScheduleTemplateItem>)
+                    grouping.Select(item => new ScheduleTemplateItem(item.Start, item.End, default, default, default)));
+            
+            var @class = await classStorage.GetByIdAsync(id);
+            var (schedule, _) = ClassScheduleTemplate.New(model.EffectiveFrom, model.EffectiveTo, itemsByDayOfWeek);
+            await classManager.SaveScheduleTemplateAsync(@class, schedule);
         }
 
         [HttpGet("{id}/students")]

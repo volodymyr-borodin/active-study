@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Domain;
 
 namespace ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
@@ -10,7 +9,7 @@ public class ClassScheduleTemplate
     private ClassScheduleTemplate(
         DateOnly effectiveFrom,
         DateOnly effectiveTo,
-        IReadOnlyDictionary<DayOfWeek, ScheduleTemplateDay> days)
+        IReadOnlyDictionary<DayOfWeek, IReadOnlyCollection<ScheduleTemplateItem>> days)
     {
         EffectiveFrom = effectiveFrom;
         EffectiveTo = effectiveTo;
@@ -20,7 +19,7 @@ public class ClassScheduleTemplate
     public static (ClassScheduleTemplate, DomainResult) New(
         DateOnly effectiveFrom,
         DateOnly effectiveTo,
-        ICollection<ScheduleTemplateDay> days)
+        IReadOnlyDictionary<DayOfWeek, IReadOnlyCollection<ScheduleTemplateItem>> days)
     {
         if (effectiveFrom >= effectiveTo)
         {
@@ -32,17 +31,12 @@ public class ClassScheduleTemplate
             return (null, DomainResult.Error("Days can't be empty"));
         }
 
-        if (days.Count != days.DistinctBy(d => d.DayOfWeek).Count())
-        {
-            return (null, DomainResult.Error("DayOfWeeks should be uniq"));
-        }
-
         return new(
-            new ClassScheduleTemplate(effectiveFrom, effectiveTo, days.ToDictionary(d => d.DayOfWeek)),
+            new ClassScheduleTemplate(effectiveFrom, effectiveTo, days),
             DomainResult.Success());
     }
 
     public DateOnly EffectiveFrom { get; }
     public DateOnly EffectiveTo { get; }
-    public IReadOnlyDictionary<DayOfWeek, ScheduleTemplateDay> Days { get; }
+    public IReadOnlyDictionary<DayOfWeek, IReadOnlyCollection<ScheduleTemplateItem>> Days { get; }
 }

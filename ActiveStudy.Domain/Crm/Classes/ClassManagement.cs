@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
 using ActiveStudy.Domain.Crm.Scheduler;
+using Domain;
 
 namespace ActiveStudy.Domain.Crm.Classes;
 
@@ -30,35 +31,41 @@ public class ClassManager
         var (scheduleTemplate, _) = ClassScheduleTemplate.New(
             new DateOnly(2021, 9, 1),
             new DateOnly(2022, 5, 30),
-            new []
+            new Dictionary<DayOfWeek, IReadOnlyCollection<ScheduleTemplateItem>>
             {
-                new ScheduleTemplateDay(DayOfWeek.Monday, new []
+                [DayOfWeek.Monday] = new []
                 {
                     new ScheduleTemplateItem(new TimeOnly(8, 30), new TimeOnly(9, 15), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-fizika")),
                     new ScheduleTemplateItem(new TimeOnly(9, 35), new TimeOnly(10, 20), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-himiya")),
                     new ScheduleTemplateItem(new TimeOnly(10, 40), new TimeOnly(11, 25), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-biologiya")),
                     new ScheduleTemplateItem(new TimeOnly(11, 45), new TimeOnly(12, 30), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-informatika"))
-                }),
-                new ScheduleTemplateDay(DayOfWeek.Tuesday, new []
+                },
+                [DayOfWeek.Tuesday] = new []
                 {
                     new ScheduleTemplateItem(new TimeOnly(8, 30), new TimeOnly(9, 15), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-fizika")),
                     new ScheduleTemplateItem(new TimeOnly(9, 35), new TimeOnly(10, 20), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-himiya")),
                     new ScheduleTemplateItem(new TimeOnly(10, 40), new TimeOnly(11, 25), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-biologiya")),
                     new ScheduleTemplateItem(new TimeOnly(11, 45), new TimeOnly(12, 30), classInfo, teacher, await subjectStorage.GetByIdAsync("ua-informatika"))
-                })
+                }
             });
 
         var dict = DaysRange(from, to)
             .ToDictionary(day => day, day =>
             {
                 // TODO: Validate EffectiveFrom/EffectiveTo dates
-                var templateEvents = scheduleTemplate.Days.GetValueOrDefault(day.DayOfWeek)?.Items ?? Enumerable.Empty<ScheduleTemplateItem>();
+                var templateEvents = scheduleTemplate.Days.GetValueOrDefault(day.DayOfWeek) ?? Enumerable.Empty<ScheduleTemplateItem>();
                 return (IReadOnlyCollection<Event>) templateEvents
                     .Select(i => @class.CreateEvent(day, i.Start, i.End, i.Teacher, i.Subject))
                     .ToList();
             });
 
         return new Schedule(dict);
+    }
+
+    public async Task<DomainResult> SaveScheduleTemplateAsync(Class @class, ClassScheduleTemplate schedule)
+    {
+        await classStorage.InsertScheduleTemplateAsync(@class.Id, schedule);
+        return DomainResult.Success();
     }
 
     private static IEnumerable<DateOnly> DaysRange(DateOnly from, DateOnly to)

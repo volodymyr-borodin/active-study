@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -56,6 +57,26 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 .Set(t => t.Teacher.UserId, userId);
 
             await context.Classes.UpdateOneAsync(idFilter, update);
+        }
+
+        public async Task InsertScheduleTemplateAsync(string classId, ClassScheduleTemplate schedule)
+        {
+            var entity = new ScheduleTemplateEntity
+            {
+                EffectiveFrom = schedule.EffectiveFrom,
+                EffectiveTo = schedule.EffectiveTo,
+                Items = schedule.Days.SelectMany(d => d.Value.Select(i => new ScheduleTemplateItemEntity
+                {
+                    DayOfWeek = d.Key,
+                    Start = i.Start,
+                    End = i.End,
+                    Class = (ClassShortEntity) i.Class,
+                    Teacher = (TeacherShortEntity) i.Teacher,
+                    Subject = (SubjectEntity) i.Subject
+                })).ToList()
+            };
+
+            await context.ScheduleTemplates.InsertOneAsync(entity);
         }
 
         private static FilterDefinitionBuilder<ClassEntity> FilterBuilder => Builders<ClassEntity>.Filter;
