@@ -115,8 +115,8 @@ namespace ActiveStudy.Web.Controllers
             var teachers = await teacherStorage.FindAsync(school.Id);
 
             var defaultTemplate = new ClassScheduleTemplateViewModel(
-                teachers.Select(s => new SelectListItem(s.FullName, s.Id)),
-                subjects.Select(s => new SelectListItem(s.Title, s.Id)),
+                teachers.Select(teacher => (TeacherShortInfo) teacher),
+                subjects,
                 DateOnly.FromDateTime(DateTime.Today),
                 DateOnly.FromDateTime(DateTime.Today).AddDays(7),
                 new []

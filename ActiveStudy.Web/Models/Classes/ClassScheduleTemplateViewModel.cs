@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using ActiveStudy.Domain;
+using ActiveStudy.Domain.Crm;
 
 namespace ActiveStudy.Web.Models.Classes;
 
 public record ClassScheduleTemplateViewModel(
-    IEnumerable<SelectListItem> Teachers,
-    IEnumerable<SelectListItem> Subjects,
+    IEnumerable<TeacherShortInfo> Teachers,
+    IEnumerable<Subject> Subjects,
     DateOnly EffectiveFrom,
     DateOnly EffectiveTo,
     IEnumerable<ScheduleTemplateEventPeriodInputModel> Periods,
