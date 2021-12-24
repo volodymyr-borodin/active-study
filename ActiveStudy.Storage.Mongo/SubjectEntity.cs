@@ -11,12 +11,12 @@ namespace ActiveStudy.Storage.Mongo
         [BsonElement("title")]
         public string Title { get; set; }
 
-        public static implicit operator Subject(SubjectEntity entity)
+        public static explicit operator Subject(SubjectEntity entity)
         {
             return new Subject(entity.Id, entity.Title);
         }
 
-        public static implicit operator SubjectEntity(Subject entity)
+        public static explicit operator SubjectEntity(Subject entity)
         {
             return new SubjectEntity
             {

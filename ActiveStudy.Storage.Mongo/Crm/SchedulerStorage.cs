@@ -22,13 +22,13 @@ namespace ActiveStudy.Storage.Mongo.Crm
             var entity = new EventEntity
             {
                 Description = @event.Description,
-                Teacher = @event.Teacher,
-                Subject = @event.Subject,
+                Teacher = (TeacherShortEntity) @event.Teacher,
+                Subject = (SubjectEntity) @event.Subject,
                 SchoolId = ObjectId.Parse(@event.SchoolId),
-                Class = @event.Class,
-                Date = @event.Date,
-                From = @event.From,
-                To = @event.To
+                Class = (ClassShortEntity) @event.Class,
+                Date = @event.Date.ToDateTime(new TimeOnly()),
+                From = @event.From.ToTimeSpan(),
+                To = @event.To.ToTimeSpan()
             };
             
             await context.Events.InsertOneAsync(entity);
@@ -46,12 +46,12 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 .ToListAsync();
 
             var dict = DaysRange(from, to)
-                .ToDictionary(day => day, day => entities
+                .ToDictionary(DateOnly.FromDateTime, day => (IReadOnlyCollection<Event>) entities
                     .Where(e => e.Date == day)
                     .OrderBy(e => e.From)
-                    .Select(e => (Event)e));
+                    .Select(e => (Event) e));
 
-            return new Schedule(dict);
+            return new Schedule(new Dictionary<DateOnly, IReadOnlyCollection<Event>>(), new SchedulePeriod[]{});
         }
 
         public async Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to)
@@ -66,12 +66,12 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 .ToListAsync();
 
             var dict = DaysRange(from, to)
-                .ToDictionary(day => day, day => entities
+                .ToDictionary(DateOnly.FromDateTime, day => (IReadOnlyCollection<Event>) entities
                     .Where(e => e.Date == day)
                     .OrderBy(e => e.From)
-                    .Select(e => (Event)e));
+                    .Select(e => (Event) e));
 
-            return new Schedule(dict);
+            return new Schedule(new Dictionary<DateOnly, IReadOnlyCollection<Event>>(), new SchedulePeriod[]{});
         }
 
         private static IEnumerable<DateTime> DaysRange(DateTime from, DateTime to)

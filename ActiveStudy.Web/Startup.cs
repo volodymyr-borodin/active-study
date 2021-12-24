@@ -110,11 +110,12 @@ namespace ActiveStudy.Web
             services.AddScoped(_ => new CrmContext(mongoUrl));
             services.AddScoped<ISchoolStorage, SchoolStorage>();
             services.AddScoped<IClassStorage, ClassStorage>();
+            services.AddScoped<ClassManager>();
             services.AddScoped<ITeacherStorage, TeacherStorage>();
             services.AddScoped<IStudentStorage, StudentStorage>();
             services.AddScoped<IRelativesStorage, RelativesStorage>();
             services.AddScoped<ISchedulerStorage, SchedulerStorage>();
-            
+
             // materials
             services.AddScoped(_ => new MaterialsContext(mongoUrl));
             services.AddScoped<ITestWorksStorage, TestWorksStorage>();
@@ -126,7 +127,7 @@ namespace ActiveStudy.Web
                 options.LowercaseUrls = true;
             });
 
-            services.AddControllersWithViews()
+            services.AddControllersWithViews(options => options.UseDateOnlyTimeOnlyStringConverters())
                 .AddRazorOptions(options => { options.ViewLocationFormats.Add("/{0}.cshtml"); })
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization(options => {

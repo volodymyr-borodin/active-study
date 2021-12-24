@@ -11,7 +11,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
         [BsonElement("title")]
         public string Title { get; set; }
 
-        public static implicit operator ClassShortInfo(ClassShortEntity entity)
+        public static explicit operator ClassShortInfo(ClassShortEntity entity)
         {
             if (entity == null)
             {
@@ -21,7 +21,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return new ClassShortInfo(entity.Id.ToString(), entity.Title);
         }
 
-        public static implicit operator ClassShortEntity(ClassShortInfo info)
+        public static explicit operator ClassShortEntity(ClassShortInfo info)
         {
             if (info == null)
             {

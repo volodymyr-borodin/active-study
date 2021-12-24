@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ActiveStudy.Domain.Crm.Scheduler
@@ -11,9 +12,32 @@ namespace ActiveStudy.Domain.Crm.Scheduler
         Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to);
     }
 
-    public class Schedule : Dictionary<DateTime, IEnumerable<Event>>
+    public record SchedulePeriod(TimeOnly Start, TimeOnly End);
+    
+    public class Schedule : Dictionary<DateOnly, IReadOnlyCollection<Event>>
     {
-        public Schedule(IDictionary<DateTime, IEnumerable<Event>> schedule) : base(schedule)
-        { }
+        public IEnumerable<SchedulePeriod> Periods { get; }
+
+        public Schedule(Dictionary<DateOnly, IReadOnlyCollection<Event>> schedule,
+            IEnumerable<SchedulePeriod> periods) : base(schedule)
+        {
+            Periods = periods;
+        }
+
+        public static Schedule Empty(DateOnly from, DateOnly to)
+        {
+            return new Schedule(DaysRange(@from, to)
+                .ToDictionary(r => r, d => new List<Event>() as IReadOnlyCollection<Event>),
+                new List<SchedulePeriod>());
+        }
+
+        private static IEnumerable<DateOnly> DaysRange(DateOnly from, DateOnly to)
+        {
+            while (from < to)
+            {
+                yield return from;
+                from = from.AddDays(1);
+            }
+        }
     }
 }

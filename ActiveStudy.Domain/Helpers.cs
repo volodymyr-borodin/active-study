@@ -13,5 +13,15 @@ namespace ActiveStudy.Domain
 
             return day;
         }
+
+        public static DateOnly NearestMonday(this DateOnly day)
+        {
+            while (day.DayOfWeek != DayOfWeek.Monday)
+            {
+                day = day.AddDays(-1);
+            }
+
+            return day;
+        }
     }
 }

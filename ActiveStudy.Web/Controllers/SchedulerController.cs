@@ -44,7 +44,7 @@ namespace ActiveStudy.Web.Controllers
         {
             var model = await Build(schoolId);
 
-            if (DateTime.TryParse(day, out var pDay))
+            if (DateOnly.TryParse(day, out var pDay))
             {
                 model.Date = pDay;
                 model.DateLocked = true;
@@ -52,8 +52,8 @@ namespace ActiveStudy.Web.Controllers
 
             var timeArray = time.Split(" - ");
             if (timeArray.Length == 2
-                && TimeSpan.TryParse(timeArray[0], out var from)
-                && TimeSpan.TryParse(timeArray[1], out var to))
+                && TimeOnly.TryParse(timeArray[0], out var from)
+                && TimeOnly.TryParse(timeArray[1], out var to))
             {
                 model.From = from;
                 model.To = to;
@@ -89,7 +89,7 @@ namespace ActiveStudy.Web.Controllers
             var @event = new Event(string.Empty, model.SchoolId, model.Description,
                 new TeacherShortInfo(teacher.Id, teacher.FullName, teacher.UserId), subject,
                 new ClassShortInfo(@class.Id, @class.Title),
-                new DateTime(model.Date.Date.Ticks, DateTimeKind.Utc), model.From, model.To);
+                model.Date, model.From, model.To);
             await schedulerStorage.CreateAsync(@event);
 
             return RedirectToAction("Details", "Classes", new { schoolId, id = @class.Id });
@@ -109,9 +109,9 @@ namespace ActiveStudy.Web.Controllers
                 TeacherId = input?.TeacherId,
                 ClassId = input?.ClassId,
                 Description = input?.Description,
-                Date = input?.Date ?? DateTime.Today,
-                From = input?.From ?? TimeSpan.Zero,
-                To = input?.To ?? TimeSpan.Zero
+                Date = input?.Date ?? DateOnly.FromDateTime(DateTime.Today),
+                From = input?.From ?? TimeOnly.MinValue,
+                To = input?.To ?? TimeOnly.MinValue
             };
         }
     }

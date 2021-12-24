@@ -1,4 +1,6 @@
 using System;
+using ActiveStudy.Domain;
+using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Scheduler;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -33,15 +35,17 @@ namespace ActiveStudy.Storage.Mongo.Crm
         [BsonElement("to")]
         public TimeSpan To { get; set; }
 
-        public static implicit operator Event(EventEntity @event)
+        public static explicit operator Event(EventEntity @event)
         {
             return new Event(@event.Id.ToString(),
                 @event.SchoolId.ToString(),
                 @event.Description,
-                @event.Teacher,
-                @event.Subject,
-                @event.Class,
-                @event.Date, @event.From, @event.To);
+                (TeacherShortInfo) @event.Teacher,
+                (Subject) @event.Subject,
+                (ClassShortInfo) @event.Class,
+                DateOnly.FromDateTime(@event.Date),
+                TimeOnly.FromTimeSpan(@event.From),
+                TimeOnly.FromTimeSpan(@event.To));
         }
     }
 }

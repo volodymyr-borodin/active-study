@@ -1,56 +1,63 @@
 @model ActiveStudy.Web.Components.Scheduler.SchedulerModel
-<div>
-    <a asp-controller="@ViewContext.RouteData.Values["Controller"].ToString()"
-       asp-action="@ViewContext.RouteData.Values["Action"].ToString()"
-       asp-route-schoolId="@ViewContext.RouteData.Values["schoolId"].ToString()"
-       asp-route-id="@ViewContext.RouteData.Values["id"].ToString()"
-       asp-route-scheduleDate="@Model.Schedule.Keys.First().AddDays(-7).ToShortDateString()"><< @Model.Schedule.Keys.First().AddDays(-7).ToShortDateString() - @Model.Schedule.Keys.First().AddDays(-1).ToShortDateString()</a>
-    <a asp-controller="@ViewContext.RouteData.Values["Controller"].ToString()"
-       asp-action="@ViewContext.RouteData.Values["Action"].ToString()"
-       asp-route-schoolId="@ViewContext.RouteData.Values["schoolId"].ToString()"
-       asp-route-id="@ViewContext.RouteData.Values["id"].ToString()"
-       asp-route-scheduleDate="@Model.Schedule.Keys.First().AddDays(7).ToShortDateString()">@Model.Schedule.Keys.First().AddDays(7).ToShortDateString() - @Model.Schedule.Keys.First().AddDays(13).ToShortDateString() >></a>
-</div>
-<div>
-    <table>
-        <tr>
-            <th></th>
-            @foreach (var (day, _) in Model.Schedule)
-            {
-                <th style="white-space: nowrap;">@day.ToString("dd/MM (ddd)")</th>
-            }
-        </tr>
-        @foreach (var lesson in Model.Lessons)
-        {
+@if (!Model.Periods.Any())
+{
+    <div>No schedule for class specified</div>
+}
+else
+{
+    <div>
+        <a asp-controller="@ViewContext.RouteData.Values["Controller"].ToString()"
+           asp-action="@ViewContext.RouteData.Values["Action"].ToString()"
+           asp-route-schoolId="@ViewContext.RouteData.Values["schoolId"].ToString()"
+           asp-route-id="@ViewContext.RouteData.Values["id"].ToString()"
+           asp-route-scheduleDate="@Model.Schedule.Keys.First().AddDays(-7).ToShortDateString()">&#60;&#60; @Model.Schedule.Keys.First().AddDays(-7).ToShortDateString() - @Model.Schedule.Keys.First().AddDays(-1).ToShortDateString()</a>
+        <a asp-controller="@ViewContext.RouteData.Values["Controller"].ToString()"
+           asp-action="@ViewContext.RouteData.Values["Action"].ToString()"
+           asp-route-schoolId="@ViewContext.RouteData.Values["schoolId"].ToString()"
+           asp-route-id="@ViewContext.RouteData.Values["id"].ToString()"
+           asp-route-scheduleDate="@Model.Schedule.Keys.First().AddDays(7).ToShortDateString()">@Model.Schedule.Keys.First().AddDays(7).ToShortDateString() - @Model.Schedule.Keys.First().AddDays(13).ToShortDateString() &#62;&#62;</a>
+    </div>
+    <div>
+        <table>
             <tr>
-                <td style="white-space: nowrap;">
-                    @lesson.From.ToString("hh\\:mm") - @lesson.To.ToString("hh\\:mm")
-                </td>
-                @foreach (var (day, events) in Model.Schedule)
+                <th></th>
+                @foreach (var (day, _) in Model.Schedule)
                 {
-                    var e = events.FirstOrDefault(e => e.From == lesson.From && e.To == lesson.To);
-                    @if (e == null)
-                    {
-                        <td style="white-space: nowrap;">
-                            <a asp-controller="Scheduler"
-                               asp-action="Create"
-                               asp-route-schoolId="@Model.SchoolId"
-                               asp-route-day="@day"
-                               asp-route-time="@lesson.From.ToString("hh\\:mm") - @lesson.To.ToString("hh\\:mm")"
-                               asp-route-classId="@Model.ClassId"
-                               asp-route-teacherId="@Model.TeacherId">Add</a>
-                        </td>
-                    }
-                    else
-                    {
-                        <td style="white-space: nowrap;">
-                            <div>@e.Subject.Title</div>
-                            <div>@e.Teacher.FullName</div>
-                            <div>@e.Class.Title</div>
-                        </td>
-                    }
+                    <th style="white-space: nowrap;">@day.ToString("dd/MM (ddd)")</th>
                 }
             </tr>
-        }
-    </table>
-</div>
+            @foreach (var lesson in Model.Periods)
+            {
+                <tr>
+                    <td style="white-space: nowrap;">
+                        @lesson.Start.ToString("hh\\:mm") - @lesson.End.ToString("hh\\:mm")
+                    </td>
+                    @foreach (var (day, events) in Model.Schedule)
+                    {
+                        var e = events.FirstOrDefault(e => e != null && e.From == lesson.Start && e.To == lesson.End);
+                        @if (e == null)
+                        {
+                            <td style="white-space: nowrap;border: 1px solid black;">
+                                @* <a asp-controller="Scheduler" *@
+                                @*    asp-action="Create" *@
+                                @*    asp-route-schoolId="@Model.SchoolId" *@
+                                @*    asp-route-day="@day" *@
+                                @*    asp-route-time="@lesson.Start.ToString("hh\\:mm") - @lesson.End.ToString("hh\\:mm")" *@
+                                @*    asp-route-classId="@Model.ClassId" *@
+                                @*    asp-route-teacherId="@Model.TeacherId">Add</a> *@
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="white-space: nowrap;border: 1px solid black;">
+                                <div>@e.Subject.Title</div>
+                                <div>@e.Teacher.FullName</div>
+                                <div>@e.Class.Title</div>
+                            </td>
+                        }
+                    }
+                </tr>
+            }
+        </table>
+    </div>
+}

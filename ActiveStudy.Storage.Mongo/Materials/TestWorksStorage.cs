@@ -63,7 +63,7 @@ public class TestWorksStorage : ITestWorksStorage
         {
             Title = testWork.Title,
             Description = testWork.Description,
-            Subject = testWork.Subject,
+            Subject = (SubjectEntity) testWork.Subject,
             Author = testWork.Author,
             Variants = testWork.Variants.Select(v => new TestWorkVariantEntity
             {
