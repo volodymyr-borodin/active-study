@@ -34,8 +34,7 @@ public class ClassManager
             {
                 // TODO: Validate EffectiveFrom/EffectiveTo dates
                 return (IReadOnlyCollection<Event>) scheduleTemplate.Periods
-                    .Where(p => p.Lessons.ContainsKey(day.DayOfWeek))
-                    .Select(p => @class.CreateEvent(day, p.Start, p.End, p.Lessons[day.DayOfWeek].Teacher, p.Lessons[day.DayOfWeek].Subject))
+                    .Select(p => p.Lessons[day.DayOfWeek] == null ? null : @class.CreateEvent(day, p.Start, p.End, p.Lessons[day.DayOfWeek].Teacher, p.Lessons[day.DayOfWeek].Subject))
                     .ToList();
             });
 
@@ -44,7 +43,7 @@ public class ClassManager
 
     public async Task<DomainResult> SaveScheduleTemplateAsync(Class @class, ClassScheduleTemplate schedule)
     {
-        await classStorage.InsertScheduleTemplateAsync(@class.Id, schedule);
+        await classStorage.SaveScheduleTemplateAsync(@class.Id, schedule);
         return DomainResult.Success();
     }
 

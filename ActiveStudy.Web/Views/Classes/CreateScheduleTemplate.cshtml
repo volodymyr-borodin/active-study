@@ -31,8 +31,8 @@
                 {
                     <td style="white-space: nowrap; border: 1px solid black;">
                         <div style="display: flex;flex-direction: column;">
-                            <select name="Periods[@i].Lessons[@dayOfWeek].TeacherId" asp-items="@Model.Teachers"></select>
-                            <select name="Periods[@i].Lessons[@dayOfWeek].SubjectId" asp-items="@Model.Subjects"></select>
+                            <select asp-for="Periods[i].Lessons[dayOfWeek].TeacherId" asp-items="@Model.Teachers"></select>
+                            <select asp-for="Periods[i].Lessons[dayOfWeek].SubjectId" asp-items="@Model.Subjects"></select>
                         </div>
                     </td>
                 }

@@ -34,7 +34,7 @@ else
                     </td>
                     @foreach (var (day, events) in Model.Schedule)
                     {
-                        var e = events.FirstOrDefault(e => e.From == lesson.Start && e.To == lesson.End);
+                        var e = events.FirstOrDefault(e => e != null && e.From == lesson.Start && e.To == lesson.End);
                         @if (e == null)
                         {
                             <td style="white-space: nowrap;border: 1px solid black;">

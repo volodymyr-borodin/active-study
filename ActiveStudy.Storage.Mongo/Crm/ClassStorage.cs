@@ -62,7 +62,20 @@ namespace ActiveStudy.Storage.Mongo.Crm
             await context.Classes.UpdateOneAsync(idFilter, update);
         }
 
-        public async Task InsertScheduleTemplateAsync(string classId, ClassScheduleTemplate schedule)
+        public async Task SaveScheduleTemplateAsync(string classId, ClassScheduleTemplate schedule)
+        {
+            var filter = Builders<ScheduleTemplateEntity>.Filter.Eq(s => s.ClassId, ObjectId.Parse(classId));
+            if (await context.ScheduleTemplates.Find(filter).AnyAsync())
+            {
+                await UpdateAsync(classId, schedule);
+            }
+            else
+            {
+                await InsertAsync(classId, schedule);
+            }
+        }
+
+        private async Task InsertAsync(string classId, ClassScheduleTemplate schedule)
         {
             var schedulePeriods = new List<ScheduleTemplatePeriodEntity>();
             foreach (var p in schedule.Periods)
@@ -101,6 +114,43 @@ namespace ActiveStudy.Storage.Mongo.Crm
             await context.ScheduleTemplates.InsertOneAsync(entity);
         }
 
+        private async Task UpdateAsync(string classId, ClassScheduleTemplate schedule)
+        {
+            var schedulePeriods = new List<ScheduleTemplatePeriodEntity>();
+            foreach (var p in schedule.Periods)
+            {
+                var period = new ScheduleTemplatePeriodEntity
+                {
+                    Start = p.Start.ToTimeSpan(),
+                    End = p.End.ToTimeSpan(),
+                    Lessons = new Dictionary<string, ScheduleTemplateLessonEntity>()
+                };
+
+                foreach (var (dayOfWeek, lesson) in p.Lessons)
+                {
+                    if (lesson.Subject == null || lesson.Teacher == null)
+                    {
+                        continue;
+                    }
+
+                    period.Lessons[dayOfWeek.ToString()] = new ScheduleTemplateLessonEntity
+                    {
+                        Teacher = (TeacherShortEntity) lesson.Teacher,
+                        Subject = (SubjectEntity) lesson.Subject
+                    };
+                }
+                schedulePeriods.Add(period);
+            }
+
+            var filter = Builders<ScheduleTemplateEntity>.Filter.Eq(s => s.ClassId, ObjectId.Parse(classId));
+            var update = Builders<ScheduleTemplateEntity>.Update
+                .Set(s => s.EffectiveFrom, schedule.EffectiveFrom.ToDateTime(new TimeOnly()))
+                .Set(s => s.EffectiveTo, schedule.EffectiveTo.ToDateTime(new TimeOnly()))
+                .Set(s => s.Periods, schedulePeriods);
+
+            await context.ScheduleTemplates.UpdateOneAsync(filter, update);
+        }
+
         public async Task<ClassScheduleTemplate> GetScheduleTemplateAsync(string classId)
         {
             var filter = Builders<ScheduleTemplateEntity>.Filter.Eq(s => s.ClassId, ObjectId.Parse(classId));
@@ -114,7 +164,16 @@ namespace ActiveStudy.Storage.Mongo.Crm
             var schedulePeriods = new List<SchedulePeriod>();
             foreach (var periodEntity in entity.Periods)
             {
-                var lessons = new Dictionary<DayOfWeek, ScheduleTemplateLesson>();
+                var lessons = new Dictionary<DayOfWeek, ScheduleTemplateLesson>
+                {
+                    [DayOfWeek.Monday] = null,
+                    [DayOfWeek.Tuesday] = null,
+                    [DayOfWeek.Wednesday] = null,
+                    [DayOfWeek.Thursday] = null,
+                    [DayOfWeek.Friday] = null,
+                    [DayOfWeek.Saturday] = null,
+                    [DayOfWeek.Sunday] = null
+                };
                 foreach (var (dayOfWeek, lesson) in periodEntity.Lessons)
                 {
                     lessons[Enum.Parse<DayOfWeek>(dayOfWeek)] = new ScheduleTemplateLesson(
