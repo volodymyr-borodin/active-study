@@ -115,43 +115,55 @@ namespace ActiveStudy.Web.Controllers
             var teachers = await teacherStorage.FindAsync(school.Id);
 
             var defaultTemplate = new ClassScheduleTemplateViewModel(
-                teachers.Select(teacher => (TeacherShortInfo) teacher),
-                subjects,
+                @class,
+                teachers.Select(teacher => new SelectListItem(teacher.FullName, teacher.Id)).Append(new SelectListItem("", null, true)),
+                subjects.Select(subject => new SelectListItem(subject.Title, subject.Id)).Append(new SelectListItem("", null, true)),
                 DateOnly.FromDateTime(DateTime.Today),
                 DateOnly.FromDateTime(DateTime.Today).AddDays(7),
-                new []
+                new List<ScheduleTemplateEventPeriodInputModel>
                 {
-                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(8, 30), new TimeOnly(9, 15)),
-                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(9, 30), new TimeOnly(10, 15)),
-                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(10, 30), new TimeOnly(11, 15)),
-                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(11, 30), new TimeOnly(12, 15)),
-                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(12, 30), new TimeOnly(13, 15))
-                },
-                Enumerable.Empty<ScheduleTemplateItemInputModel>()
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(8, 30), new TimeOnly(9, 15), new Dictionary<DayOfWeek, ScheduleTemplateItemInputModel>()),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(9, 30), new TimeOnly(10, 15), new Dictionary<DayOfWeek, ScheduleTemplateItemInputModel>()),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(10, 30), new TimeOnly(11, 15), new Dictionary<DayOfWeek, ScheduleTemplateItemInputModel>()),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(11, 30), new TimeOnly(12, 15), new Dictionary<DayOfWeek, ScheduleTemplateItemInputModel>()),
+                    new ScheduleTemplateEventPeriodInputModel(new TimeOnly(12, 30), new TimeOnly(13, 15), new Dictionary<DayOfWeek, ScheduleTemplateItemInputModel>())
+                }
             );
             
             return View(defaultTemplate);
         }
 
-        [HttpPost("{id}/schedule-template/create")]
+        [HttpPost("{id}/schedule-templates/create")]
         public async Task<IActionResult> CreateScheduleTemplate([Required] string id,
             ClassScheduleTemplateInputModel model)
         {
             var @class = await classStorage.GetByIdAsync(id);
-            var periods = model.Periods.OrderBy(p => p.Start).ToList();
+            var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
+            var classInfo = (ClassShortInfo) @class;
 
-            var itemsByDayOfWeek = model.Items
-                .GroupBy(item => item.DayOfWeek)
-                .ToDictionary(grouping => grouping.Key, grouping => (IReadOnlyCollection<ScheduleTemplateItem>)
-                    grouping
-                        .OrderBy(i => i.Order)
-                        .Select((lesson, lessonIndex) =>
-                        {
-                            var (start, end) = periods[lessonIndex];
-                            return new ScheduleTemplateItem(start, end, (ClassShortInfo) @class, default, default);
-                        }));
+            var schedulePeriods = new List<SchedulePeriod>();
+            var teachers = await teacherStorage.FindAsync(@class.SchoolId);
+            var subjects = await subjectStorage.SearchAsync(school.Country.Code);
+            foreach (var p in model.Periods)
+            {
+                var period = new SchedulePeriod(p.Start, p.End, new Dictionary<DayOfWeek, ScheduleTemplateLesson>());
 
-            var (schedule, _) = ClassScheduleTemplate.New(model.EffectiveFrom, model.EffectiveTo, itemsByDayOfWeek);
+                foreach (var (dayOfWeek, lesson) in p.Lessons)
+                {
+                    if (lesson.SubjectId == null || lesson.TeacherId == null)
+                    {
+                        continue;
+                    }
+
+                    var teacher = teachers.First(t => t.Id == lesson.TeacherId);
+                    var subject = subjects.First(t => t.Id == lesson.SubjectId);
+                    
+                    period.Lessons[dayOfWeek] = new ScheduleTemplateLesson(classInfo, (TeacherShortInfo)teacher, subject);
+                }
+                schedulePeriods.Add(period);
+            }
+
+            var (schedule, result) = ClassScheduleTemplate.New(model.EffectiveFrom, model.EffectiveTo, schedulePeriods);
             await classManager.SaveScheduleTemplateAsync(@class, schedule);
 
             return RedirectToAction("ScheduleTemplates");

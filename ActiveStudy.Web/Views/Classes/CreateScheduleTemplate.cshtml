@@ -4,8 +4,13 @@
     ViewBag.Title = "title";
 }
 
-<table id="app" class="table">
-    <thead>
+<form asp-action="CreateScheduleTemplate"
+      asp-route-schoolId="@Model.Class.SchoolId"
+      asp-route-id="@Model.Class.Id">
+    <input asp-for="EffectiveFrom" />
+    <input asp-for="EffectiveTo" />
+    <table class="table">
+        <thead>
         <tr>
             <th></th>
             @foreach (var dayOfWeek in Model.DayOfWeeks)
@@ -13,63 +18,60 @@
                 <th style="white-space: nowrap;">@dayOfWeek</th>
             }
         </tr>
-    </thead>
-    <tr v-for="period in periods">
-        <td style="white-space: nowrap;">
-            <input type="time" v-model="period.start" min="00:00" max="24:00" />
-            <input type="time" v-model="period.end" min="00:00" max="24:00" />
-        </td>
-        @foreach (var _ in Model.DayOfWeeks)
+        </thead>
+        @for (var i = 0; i < Model.Periods.Count; i++)
         {
-            <td style="white-space: nowrap; border: 1px solid black;">
-                <schedule-item></schedule-item>
-            </td>
+            var period = Model.Periods[i];
+            <tr>
+                <td style="white-space: nowrap;">
+                    <input type="time" name="Periods[@i].Start" value="@period.Start.ToString("hh\\:mm")" min="00:00" max="24:00"/>
+                    <input type="time" name="Periods[@i].End" value="@period.End.ToString("hh\\:mm")" min="00:00" max="24:00"/>
+                </td>
+                @foreach (var dayOfWeek in Model.DayOfWeeks)
+                {
+                    <td style="white-space: nowrap; border: 1px solid black;">
+                        <div style="display: flex;flex-direction: column;">
+                            <select name="Periods[@i].Lessons[@dayOfWeek].TeacherId" asp-items="@Model.Teachers"></select>
+                            <select name="Periods[@i].Lessons[@dayOfWeek].SubjectId" asp-items="@Model.Subjects"></select>
+                        </div>
+                    </td>
+                }
+            </tr>
         }
-    </tr>
-    <tr>
-        <td>
-            <button v-on:click="addPeriod()">Add</button>
-        </td>
-    </tr>
-</table>
+        <tr>
+            <td>
+                <button type="submit">Save</button>
+            </td>
+        </tr>
+    </table>
+</form>
 
-@section Scripts
-{
-    <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    periods: @Html.Raw(Json.Serialize(Model.Periods.Select(p => new {Start = p.Start.ToString("hh\\:mm"), End = p.End.ToString("hh\\:mm")})))
-                }
-            },
-            methods: {
-                addPeriod: function () {
-                    this.periods.push({})
-                }
-            }
-        });
-        app.component('schedule-item', {
-          data() {
-            return {
-                enabled: false,
-                teachers: @Html.Raw(Json.Serialize(Model.Teachers)),
-                subjects: @Html.Raw(Json.Serialize(Model.Subjects))
-            }
-          },
-          methods: {
-          },
-          template: `
-<input type="checkbox" v-model="enabled" />
-<div v-if="enabled" style="display: flex;flex-direction: column;">
-    <select>
-      <option v-for="teacher in teachers" :value="teacher.id">{{ teacher.fullName }}</option>
-    </select>
-    <select>
-      <option v-for="subject in subjects" :value="subject.id">{{ subject.title }}</option>
-    </select>
-</div>`
-        });
-
-        app.mount('#app')
-    </script>
-}
+@* @section Scripts *@
+@* { *@
+@*     <script> *@
+@*         const app = Vue.createApp({}); *@
+@*         app.component('schedule-item', { *@
+@*           data() { *@
+@*             return { *@
+@*                 enabled: false, *@
+@*                 teachers: @Html.Raw(Json.Serialize(Model.Teachers)), *@
+@*                 subjects: @Html.Raw(Json.Serialize(Model.Subjects)) *@
+@*             } *@
+@*           }, *@
+@*           methods: { *@
+@*           }, *@
+@*           template: ` *@
+@* <input type="checkbox" v-model="enabled" /> *@
+@* <div v-if="enabled" style="display: flex;flex-direction: column;"> *@
+@*     <select> *@
+@*       <option v-for="teacher in teachers" :value="teacher.id">{{ teacher.fullName }}</option> *@
+@*     </select> *@
+@*     <select> *@
+@*       <option v-for="subject in subjects" :value="subject.id">{{ subject.title }}</option> *@
+@*     </select> *@
+@* </div>` *@
+@*         }); *@
+@* *@
+@*         app.mount('#app') *@
+@*     </script> *@
+@* } *@

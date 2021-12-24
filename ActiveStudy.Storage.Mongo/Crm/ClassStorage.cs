@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveStudy.Domain;
+using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
 using MongoDB.Bson;
@@ -61,22 +64,71 @@ namespace ActiveStudy.Storage.Mongo.Crm
 
         public async Task InsertScheduleTemplateAsync(string classId, ClassScheduleTemplate schedule)
         {
+            var schedulePeriods = new List<ScheduleTemplatePeriodEntity>();
+            foreach (var p in schedule.Periods)
+            {
+                var period = new ScheduleTemplatePeriodEntity
+                {
+                    Start = p.Start.ToTimeSpan(),
+                    End = p.End.ToTimeSpan(),
+                    Lessons = new Dictionary<string, ScheduleTemplateLessonEntity>()
+                };
+
+                foreach (var (dayOfWeek, lesson) in p.Lessons)
+                {
+                    if (lesson.Subject == null || lesson.Teacher == null)
+                    {
+                        continue;
+                    }
+
+                    period.Lessons[dayOfWeek.ToString()] = new ScheduleTemplateLessonEntity
+                    {
+                        Teacher = (TeacherShortEntity) lesson.Teacher,
+                        Subject = (SubjectEntity) lesson.Subject
+                    };
+                }
+                schedulePeriods.Add(period);
+            }
+            
             var entity = new ScheduleTemplateEntity
             {
-                EffectiveFrom = schedule.EffectiveFrom,
-                EffectiveTo = schedule.EffectiveTo,
-                Items = schedule.Days.SelectMany(d => d.Value.Select(i => new ScheduleTemplateItemEntity
-                {
-                    DayOfWeek = d.Key,
-                    Start = i.Start,
-                    End = i.End,
-                    Class = (ClassShortEntity) i.Class,
-                    Teacher = (TeacherShortEntity) i.Teacher,
-                    Subject = (SubjectEntity) i.Subject
-                })).ToList()
+                ClassId = ObjectId.Parse(classId),
+                EffectiveFrom = schedule.EffectiveFrom.ToDateTime(new TimeOnly()),
+                EffectiveTo = schedule.EffectiveTo.ToDateTime(new TimeOnly()),
+                Periods = schedulePeriods
             };
 
             await context.ScheduleTemplates.InsertOneAsync(entity);
+        }
+
+        public async Task<ClassScheduleTemplate> GetScheduleTemplateAsync(string classId)
+        {
+            var filter = Builders<ScheduleTemplateEntity>.Filter.Eq(s => s.ClassId, ObjectId.Parse(classId));
+            var entity = await context.ScheduleTemplates.Find(filter).FirstOrDefaultAsync();
+            if (entity == null)
+            {
+                return null;
+            }
+
+            var @class = await GetByIdAsync(classId);
+            var schedulePeriods = new List<SchedulePeriod>();
+            foreach (var periodEntity in entity.Periods)
+            {
+                var lessons = new Dictionary<DayOfWeek, ScheduleTemplateLesson>();
+                foreach (var (dayOfWeek, lesson) in periodEntity.Lessons)
+                {
+                    lessons[Enum.Parse<DayOfWeek>(dayOfWeek)] = new ScheduleTemplateLesson(
+                        (ClassShortInfo) @class,
+                        (TeacherShortInfo) lesson.Teacher,
+                        (Subject) lesson.Subject);
+                }
+
+                schedulePeriods.Add(new SchedulePeriod(TimeOnly.FromTimeSpan(periodEntity.Start), TimeOnly.FromTimeSpan(periodEntity.End), lessons));
+            }
+
+            var (scheduleTemplate, _) = ClassScheduleTemplate.New(DateOnly.FromDateTime(entity.EffectiveFrom), DateOnly.FromDateTime(entity.EffectiveTo), schedulePeriods);
+
+            return scheduleTemplate;
         }
 
         private static FilterDefinitionBuilder<ClassEntity> FilterBuilder => Builders<ClassEntity>.Filter;

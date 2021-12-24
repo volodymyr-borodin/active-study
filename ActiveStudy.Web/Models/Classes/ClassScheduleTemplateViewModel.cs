@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
-using ActiveStudy.Domain;
-using ActiveStudy.Domain.Crm;
+using ActiveStudy.Domain.Crm.Classes;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ActiveStudy.Web.Models.Classes;
 
 public record ClassScheduleTemplateViewModel(
-    IEnumerable<TeacherShortInfo> Teachers,
-    IEnumerable<Subject> Subjects,
+    Class Class,
+    IEnumerable<SelectListItem> Teachers,
+    IEnumerable<SelectListItem> Subjects,
     DateOnly EffectiveFrom,
     DateOnly EffectiveTo,
-    IEnumerable<ScheduleTemplateEventPeriodInputModel> Periods,
-    IEnumerable<ScheduleTemplateItemInputModel> Items) : ClassScheduleTemplateInputModel(EffectiveFrom, EffectiveTo,
-    Periods, Items)
+    List<ScheduleTemplateEventPeriodInputModel> Periods) : ClassScheduleTemplateInputModel(EffectiveFrom, EffectiveTo,
+    Periods)
 {
     public IEnumerable<DayOfWeek> DayOfWeeks => new[]
     {

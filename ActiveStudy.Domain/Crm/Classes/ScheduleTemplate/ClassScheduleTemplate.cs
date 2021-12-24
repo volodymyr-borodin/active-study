@@ -9,34 +9,29 @@ public class ClassScheduleTemplate
     private ClassScheduleTemplate(
         DateOnly effectiveFrom,
         DateOnly effectiveTo,
-        IReadOnlyDictionary<DayOfWeek, IReadOnlyCollection<ScheduleTemplateItem>> days)
+        List<SchedulePeriod> periods)
     {
         EffectiveFrom = effectiveFrom;
         EffectiveTo = effectiveTo;
-        Days = days;
+        Periods = periods;
     }
 
     public static (ClassScheduleTemplate, DomainResult) New(
         DateOnly effectiveFrom,
         DateOnly effectiveTo,
-        IReadOnlyDictionary<DayOfWeek, IReadOnlyCollection<ScheduleTemplateItem>> days)
+        List<SchedulePeriod> periods)
     {
         if (effectiveFrom >= effectiveTo)
         {
             return (null, DomainResult.Error($"{nameof(effectiveFrom)} can't be greater than {nameof(effectiveTo)}"));
         }
 
-        if (days.Count == 0)
-        {
-            return (null, DomainResult.Error("Days can't be empty"));
-        }
-
         return new(
-            new ClassScheduleTemplate(effectiveFrom, effectiveTo, days),
+            new ClassScheduleTemplate(effectiveFrom, effectiveTo, periods),
             DomainResult.Success());
     }
 
     public DateOnly EffectiveFrom { get; }
     public DateOnly EffectiveTo { get; }
-    public IReadOnlyDictionary<DayOfWeek, IReadOnlyCollection<ScheduleTemplateItem>> Days { get; }
+    public List<SchedulePeriod> Periods { get; }
 }

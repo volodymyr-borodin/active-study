@@ -127,7 +127,7 @@ namespace ActiveStudy.Web
                 options.LowercaseUrls = true;
             });
 
-            services.AddControllersWithViews()
+            services.AddControllersWithViews(options => options.UseDateOnlyTimeOnlyStringConverters())
                 .AddRazorOptions(options => { options.ViewLocationFormats.Add("/{0}.cshtml"); })
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization(options => {

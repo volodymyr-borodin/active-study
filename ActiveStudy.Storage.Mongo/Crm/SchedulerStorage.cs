@@ -51,7 +51,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
                     .OrderBy(e => e.From)
                     .Select(e => (Event) e));
 
-            return new Schedule(dict);
+            return new Schedule(new Dictionary<DateOnly, IReadOnlyCollection<Event>>(), new SchedulePeriod[]{});
         }
 
         public async Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to)
@@ -71,7 +71,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
                     .OrderBy(e => e.From)
                     .Select(e => (Event) e));
 
-            return new Schedule(dict);
+            return new Schedule(new Dictionary<DateOnly, IReadOnlyCollection<Event>>(), new SchedulePeriod[]{});
         }
 
         private static IEnumerable<DateTime> DaysRange(DateTime from, DateTime to)

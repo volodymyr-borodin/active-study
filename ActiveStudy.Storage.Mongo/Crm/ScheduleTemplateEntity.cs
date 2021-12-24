@@ -9,12 +9,15 @@ public class ScheduleTemplateEntity
 {
     public ObjectId Id { get; set; }
 
-    [BsonElement("EffectiveFrom")]
-    public DateOnly EffectiveFrom { get; set; }
+    [BsonElement("classId")]
+    public ObjectId ClassId { get; set; }
+    
+    [BsonElement("effectiveFrom")]
+    public DateTime EffectiveFrom { get; set; }
 
     [BsonElement("effectiveTo")]
-    public DateOnly EffectiveTo { get; set; }
+    public DateTime EffectiveTo { get; set; }
 
     [BsonElement("items")]
-    public List<ScheduleTemplateItemEntity> Items { get; set; }
+    public List<ScheduleTemplatePeriodEntity> Periods { get; set; }
 }

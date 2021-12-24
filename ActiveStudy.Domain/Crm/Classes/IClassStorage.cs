@@ -11,6 +11,8 @@ namespace ActiveStudy.Domain.Crm.Classes
         Task<IEnumerable<Class>> FindAsync(string schoolId);
         Task<string> InsertAsync(Class @class);
         Task SetTeacherUserIdAsync(string teacherId, string userId);
+
         Task InsertScheduleTemplateAsync(string classId, ClassScheduleTemplate schedule);
+        Task<ClassScheduleTemplate> GetScheduleTemplateAsync(string classId);
     }
 }

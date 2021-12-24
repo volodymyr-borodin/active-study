@@ -21,6 +21,12 @@
    asp-route-id="@Model.Id">
     @sharedLocalizer["Students"]
 </a>
+<a asp-controller="Classes"
+   asp-action="CreateScheduleTemplate"
+   asp-route-schoolId="@Model.School.Id"
+   asp-route-id="@Model.Id">
+    Edit schedule
+</a>
 <vc:scheduler schedule="@Model.Schedule"
               school-id="@Model.School.Id"
               class-id="@Model.Id"
