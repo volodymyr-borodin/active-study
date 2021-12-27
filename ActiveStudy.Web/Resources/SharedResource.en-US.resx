@@ -74,7 +74,7 @@
         <value>Confirm your email</value>
     </data>
     <data name="EmailTemplate_InvitationEmail_Body" xml:space="preserve">
-        <value>&lt;p&gt;{{invitor.firstName}} {{invitor.lastName}} was invited to {school.title} school.&lt;/p&gt;&lt;p&gt;Please accept invitation clicking this link: &lt;a href="{{completeInvitationUrl}}"&gt;link&lt;/a&gt;&lt;/p&gt;</value>
+        <value>&lt;p&gt;{{invitor.firstName}} {{invitor.lastName}} was invited to {{school.title}} school.&lt;/p&gt;&lt;p&gt;Please accept invitation clicking this link: &lt;a href="{{completeInvitationUrl}}"&gt;link&lt;/a&gt;&lt;/p&gt;</value>
     </data>
     <data name="EmailTemplate_EmailConfirmation_Body" xml:space="preserve">
         <value>Please confirm your account by clicking this link: &lt;a href="{{confirmEmailUrl}}"&gt;link&lt;/a&gt;</value>

@@ -67,7 +67,7 @@
         <value>Підтвердьте свою електронну адресу</value>
     </data>
     <data name="EmailTemplate_InvitationEmail_Body" xml:space="preserve">
-        <value>&lt;p&gt;{{invitor.firstName}} {{invitor.lastName}} запрошено до школи {school.title}.&lt;/p&gt;&lt;p&gt; Прийміть запрошення, натиснувши це посилання: &lt;a href="{{completeInvitationUrl}}"&gt;посилання&lt;/a&gt;&lt;/p&gt;</value>
+        <value>&lt;p&gt;{{invitor.firstName}} {{invitor.lastName}} запрошено до школи {{school.title}}.&lt;/p&gt;&lt;p&gt; Прийміть запрошення, натиснувши це посилання: &lt;a href="{{completeInvitationUrl}}"&gt;посилання&lt;/a&gt;&lt;/p&gt;</value>
     </data>
     <data name="EmailTemplate_EmailConfirmation_Body" xml:space="preserve">
         <value>Підтвердьте свій обліковий запис, натиснувши це посилання: &lt;a href="{{confirmEmailUrl}}"&gt;посилання&lt;/a&gt;</value>
