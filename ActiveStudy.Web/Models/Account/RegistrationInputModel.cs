@@ -4,7 +4,7 @@ namespace ActiveStudy.Web.Models.Account
 {
     public class RegistrationInputModel
     {
-        [Required]
+        [Required, EmailAddress, DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
         [Required]
@@ -13,8 +13,7 @@ namespace ActiveStudy.Web.Models.Account
         [Required]
         public string LastName { get; set; }
 
-        [Required]
-        [DataType(DataType.Password)]
+        [Required, DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

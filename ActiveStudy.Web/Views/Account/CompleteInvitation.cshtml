@@ -4,30 +4,22 @@
     ViewData["Title"] = localizer["Page Title"];
 }
 
-<div class="container space-2 space-lg-2">
-    <form asp-route="CompleteInvitation" class="js-validate w-md-75 w-lg-50 mx-md-auto">
-        <input type="hidden" asp-for="UserId" />
-        <!-- Title -->
-        <div class="mb-5 mb-md-7">
-            <h1 class="h2 mb-0">@localizer["Welcome"]</h1>
-            <p>@localizer["Subtitle"]</p>
-        </div>
-        <!-- End Title -->
+<form asp-route="CompleteInvitation">
+    <input type="hidden" asp-for="UserId" />
+    <div>
+        <h1>@localizer["Welcome"]</h1>
+        <p>@localizer["Subtitle"]</p>
+    </div>
+    @Html.ValidationSummary()
 
-        <!-- Form Group -->
-        <div class="js-form-message form-group">
-            <label class="input-label" asp-for="Password">@localizer["Password"]</label>
-            <input type="password" class="form-control" asp-for="Password" placeholder="********" aria-label="********" required
-                   data-msg="@localizer["Password is Required"]">
-        </div>
-        <!-- End Form Group -->
+    <div>
+        <label asp-for="Password">@localizer["Password"]</label>
+        <input type="password" asp-for="Password" placeholder="********"
+               aria-label="********" required
+               data-msg="@localizer["Password is Required"]">
+    </div>
 
-        <!-- Button -->
-        <div class="row align-items-center mb-5">
-            <div class="col-12 text-sm-right">
-                <button type="submit" class="btn btn-primary transition-3d-hover">@localizer["Sign Up"]</button>
-            </div>
-        </div>
-        <!-- End Button -->
-    </form>
-</div>
+    <div>
+        <button type="submit">@localizer["Sign Up"]</button>
+    </div>
+</form>

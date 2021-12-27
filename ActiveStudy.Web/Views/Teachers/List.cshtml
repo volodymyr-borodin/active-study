@@ -23,12 +23,23 @@
                asp-action="Details"
                asp-route-schoolId="@Model.School.Id"
                asp-route-id="@teacher.Id">
-                <span>@teacher.FullName</span>
+                <span>@teacher.FullName (@teacher.Email)</span>
                 @if (teacher.Subjects.Any())
                 {
                     <span>(@string.Join(", ", teacher.Subjects.Select(s => s.Title)))</span>
                 }
             </a>
+            @if (!teacher.IsInvited)
+            {
+                <text>| </text> 
+                <form asp-action="Invite" asp-route-schoolId="@Model.School.Id" asp-route-id="@teacher.Id">
+                    <button>Invite</button>
+                </form>
+            }
+            else
+            {
+                <text>Invited</text>
+            }
         </li>
     }
 </ul>
