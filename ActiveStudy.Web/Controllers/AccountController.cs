@@ -32,7 +32,11 @@ namespace ActiveStudy.Web.Controllers
         public async Task<IActionResult> ConfirmEmail(string userId, string code)
         {
             var user = await userManager.FindByIdAsync(userId);
-            // TODO: user not found
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found");
+                return View();
+            }
 
             var result = await userManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
@@ -41,7 +45,11 @@ namespace ActiveStudy.Web.Controllers
                 return View();
             }
 
-            // return page with errors
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
             return View();
         }
 
@@ -50,7 +58,11 @@ namespace ActiveStudy.Web.Controllers
         public async Task<IActionResult> CompleteInvitation(string userId, string code)
         {
             var user = await userManager.FindByIdAsync(userId);
-            // TODO: user not found
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found");
+                return View();
+            }
 
             var result = await userManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
@@ -62,7 +74,11 @@ namespace ActiveStudy.Web.Controllers
                 });
             }
 
-            // return page with errors
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
             return View();
         }
 
@@ -71,7 +87,11 @@ namespace ActiveStudy.Web.Controllers
         public async Task<IActionResult> CompleteInvitation(CompleteInvitationInputModel model)
         {
             var user = await userManager.FindByIdAsync(model.UserId);
-            // TODO: user not found
+            if (user == null)
+            {
+                ModelState.AddModelError(string.Empty, "User not found");
+                return View();
+            }
 
             var result = await userManager.AddPasswordAsync(user, model.Password);
             if (result.Succeeded)
@@ -81,11 +101,15 @@ namespace ActiveStudy.Web.Controllers
                 {
                     return RedirectToAction("Index", "Home");
                 }
-                // email confirmed
+
                 return View();
             }
 
-            // return page with errors
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
             return View();
         }
 
