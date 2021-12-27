@@ -138,22 +138,18 @@ namespace ActiveStudy.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
+                return View(model);
             }
             
-            // TODO: Validation error
-
-            return View(new LoginInputModel
+            var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+            if (result.Succeeded)
             {
-                Username = model.Username,
-                RememberLogin = model.RememberLogin
-            });
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(model);
         }
 
         [HttpGet]
