@@ -149,6 +149,8 @@ namespace ActiveStudy.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            ModelState.AddModelError(string.Empty, "Invalid login or password");
+
             return View(model);
         }
 
