@@ -172,11 +172,15 @@ namespace ActiveStudy.Web.Controllers
             if (result.Succeeded)
             {
                 await SendConfirmationEmail(user);
-                
-                return RedirectToAction("PostRegistration");
+
+                return View("PostRegistration");
             }
 
-            // TODO: return error on !Succeeded
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
             return View(model);
         }
 
@@ -231,13 +235,6 @@ namespace ActiveStudy.Web.Controllers
 
             // TODO: return error on !Succeeded
             return View(model);
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult PostRegistration()
-        {
-            return View();
         }
 
         [HttpGet]

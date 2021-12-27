@@ -86,6 +86,10 @@ namespace ActiveStudy.Web
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.SignIn.RequireConfirmedEmail = true;
+
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireLowercase = false;
                 })
                 .AddMongoDbStores<IdentityContext>(mongoUrl)
                 .AddDefaultTokenProviders();
