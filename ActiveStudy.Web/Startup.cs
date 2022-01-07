@@ -17,6 +17,8 @@ using ActiveStudy.Storage.Mongo;
 using ActiveStudy.Storage.Mongo.Crm;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Storage.Mongo.Materials;
+using ActiveStudy.Storage.Mongo.Materials.FlashCards;
+using ActiveStudy.Storage.Mongo.Materials.TestWorks;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Services;
 using ActiveStudy.Web.Services.Email;

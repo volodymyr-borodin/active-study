@@ -8,7 +8,7 @@ using ActiveStudy.Domain.Materials.TestWorks.Questions.SingleAnswer;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace ActiveStudy.Storage.Mongo.Materials;
+namespace ActiveStudy.Storage.Mongo.Materials.TestWorks;
 
 public class TestWorksStorage : ITestWorksStorage
 {

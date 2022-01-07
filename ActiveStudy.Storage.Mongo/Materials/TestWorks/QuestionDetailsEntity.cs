@@ -7,7 +7,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ActiveStudy.Storage.Mongo.Materials;
+namespace ActiveStudy.Storage.Mongo.Materials.TestWorks;
 
 public class QuestionDetailsEntity
 {

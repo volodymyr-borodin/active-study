@@ -10,7 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
-namespace ActiveStudy.Storage.Mongo.Materials;
+namespace ActiveStudy.Storage.Mongo.Materials.TestWorks;
 
 public class TestWorkResultsStorage : ITestWorkResultsStorage
 {

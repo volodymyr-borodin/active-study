@@ -3,7 +3,7 @@ using System.Linq;
 using ActiveStudy.Domain.Materials.TestWorks;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace ActiveStudy.Storage.Mongo.Materials;
+namespace ActiveStudy.Storage.Mongo.Materials.TestWorks;
 
 public class TestWorkVariantEntity
 {
