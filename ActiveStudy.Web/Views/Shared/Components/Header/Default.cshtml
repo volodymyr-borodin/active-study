@@ -21,9 +21,10 @@
     </div>
     <div>
         <a asp-controller="TestWorks" asp-action="Index">Test works</a>
+        | <a asp-controller="FlashCards" asp-action="Index">Flash cards</a>
         @if (Model.IsAuthenticated)
         {
-            <a asp-controller="School" asp-action="List">Schools</a>
+            <text>| </text><a asp-controller="School" asp-action="List">Schools</a>
         }
     </div>
 </header>

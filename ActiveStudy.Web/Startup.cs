@@ -10,6 +10,7 @@ using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
+using ActiveStudy.Domain.Materials.FlashCards;
 using ActiveStudy.Domain.Materials.TestWorks;
 using ActiveStudy.Domain.Materials.TestWorks.Results;
 using ActiveStudy.Storage.Mongo;
@@ -125,6 +126,9 @@ namespace ActiveStudy.Web
             services.AddScoped<ITestWorksStorage, TestWorksStorage>();
             services.AddScoped<ITestWorkResultsStorage, TestWorkResultsStorage>();
             services.AddScoped<TestWorksService>();
+
+            services.AddScoped<IFlashCardsStorage, FlashCardsStorage>();
+            services.AddScoped<FlashCardsService>();
 
             services.Configure<RouteOptions>(options =>
             {

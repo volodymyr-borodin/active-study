@@ -1,0 +1,19 @@
+@model ActiveStudy.Domain.Materials.FlashCards.FlashCardSetDetails
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h2>@Model.Id) @Model.Title</h2>
+
+@foreach (var card in Model.Cards)
+{
+    <fieldset>
+        <legend>@card.Term</legend>
+        <p>@card.Definition</p>
+        @foreach (var clue in card.Clues)
+        {
+            <p><i>@clue.Text</i></p>
+        }
+    </fieldset>
+}
