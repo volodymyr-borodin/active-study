@@ -5,9 +5,10 @@ on:
     branches: [ master ]
 env:
   SERVICE_NAME: activestudy
+  API_SERVICE_NAME: apiactivestudy
 
 jobs:
-  push-image:
+  push-web-image:
     runs-on: ubuntu-20.04
 
     steps:
@@ -24,4 +25,23 @@ jobs:
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$SERVICE_NAME
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
           docker tag $SERVICE_NAME $IMAGE_ID
+          docker push $IMAGE_ID
+
+  push-api-image:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build . --file ApiDockerfile --tag $API_SERVICE_NAME
+
+      - name: Login into github container regestry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image to github container regestry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$API_SERVICE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          docker tag $API_SERVICE_NAME $IMAGE_ID
           docker push $IMAGE_ID

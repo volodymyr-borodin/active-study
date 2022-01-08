@@ -11,8 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ActiveStudy.Domain\ActiveStudy.Domain.csproj" />
-      <ProjectReference Include="..\ActiveStudy.Storage.Mongo\ActiveStudy.Storage.Mongo.csproj" />
+        <ProjectReference Include="..\ActiveStudy.Storage.Mongo\ActiveStudy.Storage.Mongo.csproj" />
     </ItemGroup>
 
 </Project>
