@@ -10,8 +10,7 @@ public record LearningRound(FlashCardSetDetails Set, IEnumerable<LearningRoundIt
 
     public IEnumerable<FlashCard> GetSelectOptions(FlashCard card)
     {
-        return Items
-            .Select(c => c.Card)
+        return Set.Cards
             .Where(c => c.Id != card.Id)
             .OrderBy(c => random.Next())
             .Take(3)
