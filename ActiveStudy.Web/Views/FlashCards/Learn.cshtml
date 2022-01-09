@@ -1,0 +1,44 @@
+@model ActiveStudy.Domain.Materials.FlashCards.Progress.LearningRound
+
+@{
+    ViewData["Title"] = Model.Set.Title;
+}
+
+<h2>@Model.Set.Title</h2>
+    @if (Model.Items.Any())
+    {
+
+        var i = 0;
+        <form asp-controller="FlashCards" asp-action="Learn" asp-route-id="@Model.Set.Id">
+            @foreach (var card in Model.Items)
+            {
+                <fieldset>
+                    <input type="hidden" name="Answers[@i].TermId" value="@card.Card.Id" required/>
+                    <p>@card.Card.Definition</p>
+                    @if (card.CurrentProgress < 5)
+                    {
+                        <div>
+                            @foreach (var option in Model.GetSelectOptions(card.Card))
+                            {
+                                <label for="@option.Id">@option.Term</label>
+                                <input type="radio" id="@option.Id" name="Answers[@i].Answer" value="@option.Term" required/>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <input type="text" name="Answers[@i].Answer" required/>
+                        </div>
+                    }
+                </fieldset>
+                i++;
+            }
+            <button type="submit">Submit</button>
+        </form>
+    }
+    else
+    {
+        <p>You have learned everything!</p>
+        <a asp-action="Details" asp-route-id="@Model.Set.Id">Back to set</a>
+    }

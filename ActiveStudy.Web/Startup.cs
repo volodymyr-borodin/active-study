@@ -11,6 +11,7 @@ using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Domain.Materials.FlashCards;
+using ActiveStudy.Domain.Materials.FlashCards.Progress;
 using ActiveStudy.Domain.Materials.TestWorks;
 using ActiveStudy.Domain.Materials.TestWorks.Results;
 using ActiveStudy.Storage.Mongo;
@@ -131,6 +132,8 @@ namespace ActiveStudy.Web
 
             services.AddScoped<IFlashCardsStorage, FlashCardsStorage>();
             services.AddScoped<FlashCardsService>();
+            services.AddScoped<IProgressStorage, ProgressStorage>();
+            services.AddScoped<LearningProgressService>();
 
             services.Configure<RouteOptions>(options =>
             {

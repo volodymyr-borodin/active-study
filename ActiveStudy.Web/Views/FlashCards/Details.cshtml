@@ -1,12 +1,17 @@
-@model ActiveStudy.Domain.Materials.FlashCards.FlashCardSetDetails
+@model ActiveStudy.Web.Models.FlashCards.FlashCardsDetailsViewModel
+@inject CurrentUserProvider currentUserProvider
 
 @{
-    ViewData["Title"] = Model.Title;
+    ViewData["Title"] = Model.Set.Title;
 }
 
-<h2>@Model.Id) @Model.Title</h2>
+<h2>@Model.Set.Title</h2>
+@if (currentUserProvider.IsAuthenticated)
+{
+    <a asp-action="Learn" asp-route-id="@Model.Set.Id">Learn</a>
+}
 
-@foreach (var card in Model.Cards)
+@foreach (var card in Model.Set.Cards)
 {
     <fieldset>
         <legend>@card.Term</legend>
@@ -16,4 +21,13 @@
             <p><i>@clue.Text</i></p>
         }
     </fieldset>
+}
+
+@if (Model.CardsProgress.Any())
+{
+    <h3>My Progress</h3>
+    @foreach (var card in Model.CardsProgress)
+    {
+        <p>@card.Card.Term (@card.Progress / 10)</p>
+    }
 }
