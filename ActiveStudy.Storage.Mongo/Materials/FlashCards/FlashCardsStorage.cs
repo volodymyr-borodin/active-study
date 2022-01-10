@@ -28,7 +28,7 @@ public class FlashCardsStorage : IFlashCardsStorage
         }
 
         var cards = entity.Cards.Select(card =>
-            new FlashCard(card.Id.ToString(), card.Term, card.Definition, card.Clues.Select(clue => new Clue(clue.Text))));
+            new FlashCard(card.Id.ToString(), card.Term, card.Definition, card.Clues?.Select(clue => new Clue(clue.Text)) ?? Enumerable.Empty<Clue>()));
 
         return new FlashCardSetDetails(entity.Id.ToString(), entity.Title, cards);
     }
