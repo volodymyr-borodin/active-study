@@ -64,4 +64,13 @@ public class FlashCardsController : Controller
 
         return RedirectToAction("Details", new {id});
     }
+
+    [Authorize]
+    [HttpPost("{id}/reset")]
+    public async Task<IActionResult> Reset(string id)
+    {
+        await learningProgressService.ResetProgressAsync(currentUserProvider.User.Id, id);
+
+        return RedirectToAction("Details", new {id});
+    }
 }

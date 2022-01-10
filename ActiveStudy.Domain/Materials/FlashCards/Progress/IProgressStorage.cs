@@ -7,4 +7,5 @@ public interface IProgressStorage
     Task<CardLearningProgress> GetCardProgressAsync(string userId, FlashCard card);
     Task IncreaseProgressAsync(string userId, FlashCard card);
     Task DecreaseProgressAsync(string userId, FlashCard card);
+    Task ClearProgressAsync(string userId, FlashCard card);
 }

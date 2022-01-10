@@ -7,7 +7,6 @@
 <h2>@Model.Set.Title</h2>
     @if (Model.Items.Any())
     {
-
         var i = 0;
         <form asp-controller="FlashCards" asp-action="Learn" asp-route-id="@Model.Set.Id">
             @foreach (var card in Model.Items)
@@ -41,4 +40,7 @@
     {
         <p>You have learned everything!</p>
         <a asp-action="Details" asp-route-id="@Model.Set.Id">Back to set</a>
+        <form asp-action="Reset" asp-route-id="@Model.Set.Id">
+            <button type="submit">Clear progress</button>
+        </form>
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ public class LearningProgressService
                 continue;
             }
 
-            if (card.Term == answer.Answer)
+            if (card.Term.Equals(answer.Answer.Trim(), StringComparison.InvariantCultureIgnoreCase))
             {
                 await progressStorage.IncreaseProgressAsync(userId, card);
             }
@@ -60,6 +61,16 @@ public class LearningProgressService
             {
                 await progressStorage.DecreaseProgressAsync(userId, card);
             }
+        }
+    }
+
+    public async Task ResetProgressAsync(string userId, string cardSetId)
+    {
+        var set = await flashCardsService.GetByIdAsync(cardSetId);
+
+        foreach (var card in set.Cards)
+        {
+            await progressStorage.ClearProgressAsync(userId, card);
         }
     }
 }
