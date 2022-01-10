@@ -60,9 +60,11 @@ public class FlashCardsController : Controller
     [HttpPost("{id}/learn")]
     public async Task<IActionResult> Learn(string id, LearnInput model)
     {
-        await learningProgressService.UpdateProgressAsync(currentUserProvider.User.Id, id, model.Answers);
+        var result = await learningProgressService.UpdateProgressAsync(currentUserProvider.User.Id, id, model.Answers);
 
-        return RedirectToAction("Details", new {id});
+        var item = await flashCardsService.GetByIdAsync(id);
+        var finished = await learningProgressService.IsFinishedAsync(currentUserProvider.User.Id, id);
+        return View("LearnResult", new LearningRoundResult(item, result, finished));
     }
 
     [Authorize]

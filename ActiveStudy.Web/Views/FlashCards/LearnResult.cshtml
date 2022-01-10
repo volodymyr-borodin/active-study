@@ -1,0 +1,34 @@
+@model ActiveStudy.Domain.Materials.FlashCards.Progress.LearningRoundResult
+
+@{
+    ViewData["Title"] = Model.Set.Title;
+}
+
+<h2>@Model.Set.Title</h2>
+<p>Results</p>
+<ul>
+    @foreach (var result in Model.Results)
+    {
+        if (result.IsCorrect)
+        {
+            <li>
+                <p>@result.Card.Definition</p>
+                <p><span style="color: forestgreen">@result.Answer.Answer</span> = @result.Card.Term</p>
+            </li>
+        }
+        else
+        {
+            <li>
+                <p>@result.Card.Definition</p>
+                <p><span style="color: darkred">@result.Answer.Answer</span> = @result.Card.Term</p>
+            </li>
+        }
+    }
+</ul>
+
+<a asp-action="Details" asp-route-id="@Model.Set.Id">Back to Set</a>
+
+@if (!Model.Finished)
+{
+    <a asp-action="Learn" asp-route-id="@Model.Set.Id">Next Round</a>
+}

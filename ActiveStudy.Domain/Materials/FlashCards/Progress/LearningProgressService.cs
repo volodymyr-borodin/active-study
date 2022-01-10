@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,10 +40,19 @@ public class LearningProgressService
         return new LearningRound(set, learning);
     }
 
-    public async Task UpdateProgressAsync(string userId, string cardSetId, IEnumerable<NewAnswer> answers)
+    public async Task<bool> IsFinishedAsync(string userId, string cardSetId)
+    {
+        var set = await flashCardsService.GetByIdAsync(cardSetId);
+        var process = await GetProgressAsync(userId, set);
+
+        return process.CardsProgress.All(cardProgress => cardProgress.Learned);
+    }
+    
+    public async Task<IEnumerable<AnswerResult>> UpdateProgressAsync(string userId, string cardSetId, IEnumerable<NewAnswer> answers)
     {
         var set = await flashCardsService.GetByIdAsync(cardSetId);
 
+        var result = new List<AnswerResult>(answers.Count());
         foreach (var answer in answers)
         {
             var card = set.Cards.FirstOrDefault(c => c.Id == answer.TermId);
@@ -53,7 +61,8 @@ public class LearningProgressService
                 continue;
             }
 
-            if (card.Term.Equals(answer.Answer.Trim(), StringComparison.InvariantCultureIgnoreCase))
+            var a = new AnswerResult(answer, card);
+            if (a.IsCorrect)
             {
                 await progressStorage.IncreaseProgressAsync(userId, card);
             }
@@ -61,7 +70,11 @@ public class LearningProgressService
             {
                 await progressStorage.DecreaseProgressAsync(userId, card);
             }
+
+            result.Add(a);
         }
+
+        return result;
     }
 
     public async Task ResetProgressAsync(string userId, string cardSetId)
