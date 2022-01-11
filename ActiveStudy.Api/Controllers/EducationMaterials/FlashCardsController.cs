@@ -1,4 +1,5 @@
 using ActiveStudy.Domain.Materials.FlashCards;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActiveStudy.Api.Controllers.EducationMaterials;

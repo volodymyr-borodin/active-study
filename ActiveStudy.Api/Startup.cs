@@ -9,10 +9,12 @@ namespace ActiveStudy.Api
     public class Startup
     {
         private readonly IConfiguration configuration;
+        private readonly IHostEnvironment environment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostEnvironment environment)
         {
             this.configuration = configuration;
+            this.environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -27,6 +29,14 @@ namespace ActiveStudy.Api
                     Version = "1.0.0"
                 });
             });
+
+            services.AddAuthentication("Bearer")
+                .AddIdentityServerAuthentication("Bearer", options =>
+                {
+                    options.RequireHttpsMetadata = !environment.IsDevelopment();
+                    options.ApiName = "api";
+                    options.Authority = configuration["AUTHORITY"];
+                });
 
             var mongoUrl = MongoUrl.Create(configuration["MONGO_CONNECTION"]);
 
@@ -52,6 +62,9 @@ namespace ActiveStudy.Api
                 .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod());
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
