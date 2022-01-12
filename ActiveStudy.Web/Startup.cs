@@ -59,7 +59,7 @@ namespace ActiveStudy.Web
         {
             services.Configure<ForwardedHeadersOptions>(options =>
             {
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedHost;
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto;
             });
 
             switch (Configuration["EMAIL_SENDER"])
