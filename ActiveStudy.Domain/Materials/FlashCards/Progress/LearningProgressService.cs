@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ namespace ActiveStudy.Domain.Materials.FlashCards.Progress;
 
 public class LearningProgressService
 {
+    private readonly Random random = new Random(DateTime.UtcNow.Millisecond);
     private readonly FlashCardsService flashCardsService;
     private readonly IProgressStorage progressStorage;
 
@@ -33,6 +35,7 @@ public class LearningProgressService
         var learning = process.CardsProgress
             .Where(cardProgress => !cardProgress.Learned)
             .OrderBy(cardProgress => cardProgress.Progress)
+            .ThenBy(progress => random.Next())
             .Take(5)
             .Select(cardProgress => new LearningRoundItem(cardProgress.Progress, cardProgress.Card))
             .ToList();
