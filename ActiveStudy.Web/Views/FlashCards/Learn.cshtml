@@ -19,8 +19,10 @@
                         <div>
                             @foreach (var option in Model.GetSelectOptions(card.Card))
                             {
-                                <label for="@option.Id">@option.Term</label>
-                                <input type="radio" id="@option.Id" name="Answers[@i].Answer" value="@option.Term" required/>
+                                <div>
+                                    <input type="radio" id="@(card.Card.Id + "_" + option.Id)" name="Answers[@i].Answer" value="@option.Term" required/>
+                                    <label for="@(card.Card.Id + "_" + option.Id)">@option.Term</label>
+                                </div>
                             }
                         </div>
                     }

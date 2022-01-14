@@ -7,4 +7,5 @@ public interface IFlashCardsStorage
 {
     Task<FlashCardSetDetails> GetByIdAsync(string id);
     Task<IEnumerable<FlashCardSet>> FindAsync();
+    Task InsertAsync(FlashCardSetDetails set);
 }

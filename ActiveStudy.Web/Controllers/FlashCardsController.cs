@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Materials.FlashCards;
@@ -32,6 +31,23 @@ public class FlashCardsController : Controller
         var items = await flashCardsService.FindAsync();
 
         return View(new FlashCardsViewModel(items));
+    }
+
+    [Authorize]
+    [HttpGet("create")]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    [Authorize]
+    [HttpPost("create")]
+    public IActionResult Create(FlashCardSetCreateInputModel input)
+    {
+        var cards = input.Cards.Select(c => new FlashCard(string.Empty, c.Term, c.Definition, Enumerable.Empty<Clue>()));
+        flashCardsService.CreateAsync(new FlashCardSetDetails(string.Empty, input.Title, cards));
+
+        return RedirectToAction("Index");
     }
 
     [HttpGet("{id}")]

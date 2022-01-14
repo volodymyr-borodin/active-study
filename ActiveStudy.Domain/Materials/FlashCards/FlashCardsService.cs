@@ -21,4 +21,9 @@ public class FlashCardsService
     {
         return flashCardsStorage.FindAsync();
     }
+
+    public Task CreateAsync(FlashCardSetDetails set)
+    {
+        return flashCardsStorage.InsertAsync(set);
+    }
 }

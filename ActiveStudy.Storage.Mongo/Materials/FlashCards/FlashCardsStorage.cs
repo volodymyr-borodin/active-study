@@ -41,4 +41,22 @@ public class FlashCardsStorage : IFlashCardsStorage
 
         return entities.Select(e => new FlashCardSet(e.Id.ToString(), e.Title));
     }
+
+    public async Task InsertAsync(FlashCardSetDetails set)
+    {
+        await context.FlashCardsSets.InsertOneAsync(new FlashCardsSetEntity
+        {
+            Title = set.Title,
+            Cards = set.Cards.Select(c => new FlashCardEntity
+            {
+                Id = ObjectId.GenerateNewId(),
+                Term = c.Term,
+                Definition = c.Definition,
+                Clues = c.Clues.Select(cl => new ClueEntity
+                {
+                    Text = cl.Text
+                })
+            })
+        });
+    }
 }
