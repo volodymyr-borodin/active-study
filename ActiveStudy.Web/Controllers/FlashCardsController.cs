@@ -42,10 +42,10 @@ public class FlashCardsController : Controller
 
     [Authorize]
     [HttpPost("create")]
-    public IActionResult Create(FlashCardSetCreateInputModel input)
+    public async Task<IActionResult> Create(FlashCardSetCreateInputModel input)
     {
         var cards = input.Cards.Select(c => new FlashCard(string.Empty, c.Term, c.Definition, Enumerable.Empty<Clue>()));
-        flashCardsService.CreateAsync(new FlashCardSetDetails(string.Empty, input.Title, cards));
+        await flashCardsService.CreateAsync(new FlashCardSetDetails(string.Empty, input.Title, cards));
 
         return RedirectToAction("Index");
     }
