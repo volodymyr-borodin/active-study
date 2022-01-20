@@ -73,7 +73,7 @@ public class ProgressStorage : IProgressStorage
         {
             if (userProgress.Progress.ContainsKey(card.Id))
             {
-                userProgress.Progress[card.Id] = Math.Max(userProgress.Progress[card.Id] - 5, 0);
+                userProgress.Progress[card.Id] = Math.Max(userProgress.Progress[card.Id] - 3, 0);
                 await context.FlashCardsProgress
                     .ReplaceOneAsync(Builders<UserFlashCardsProgressEntity>.Filter.Eq(progress => progress.UserId, userId), userProgress);
             }

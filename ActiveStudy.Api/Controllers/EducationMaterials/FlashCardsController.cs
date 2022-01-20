@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using ActiveStudy.Domain.Materials.FlashCards;
+using ActiveStudy.Domain.Materials.FlashCards.Progress;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +11,14 @@ namespace ActiveStudy.Api.Controllers.EducationMaterials;
 public class FlashCardsController : ControllerBase
 {
     private readonly FlashCardsService flashCardsService;
+    private readonly LearningProgressService learningProgressService;
 
-    public FlashCardsController(FlashCardsService flashCardsService)
+    public FlashCardsController(
+        FlashCardsService flashCardsService,
+        LearningProgressService learningProgressService)
     {
         this.flashCardsService = flashCardsService;
+        this.learningProgressService = learningProgressService;
     }
 
     [HttpGet]
@@ -30,4 +36,20 @@ public class FlashCardsController : ControllerBase
 
         return Ok(item);
     }
+
+    [Authorize(Policy = "Education/FlashCards")]
+    [HttpGet("{id}/learn")]
+    public async Task<IActionResult> Learn(string id)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var item = await learningProgressService.GetNextRoundAsync(userId, id);
+        if (item == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(new LearningRound(item.Items));
+    }
+
+    public record LearningRound(IEnumerable<LearningRoundItem> CardsToLearn);
 }

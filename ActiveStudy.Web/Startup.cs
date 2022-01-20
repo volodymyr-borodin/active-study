@@ -118,7 +118,7 @@ namespace ActiveStudy.Web
                         ClientId = "ios_client",
                         ClientName = "IOS client",
                         AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                        AllowedScopes = new[] {new IdentityResources.OpenId().Name, "api"},
+                        AllowedScopes = new[] {new IdentityResources.OpenId().Name, "education:flash-cards"},
                         ClientSecrets = new[] {new Secret("41240356-7459-4EAA-92BD-E483FA068AEC".Sha256())}
                     }
                 })
@@ -128,7 +128,7 @@ namespace ActiveStudy.Web
                 })
                 .AddInMemoryApiScopes(new[]
                 {
-                    new ApiScope("api", "Main API")
+                    new ApiScope("education:flash-cards", "Education Materials/Flash Cards")
                 })
                 .AddAspNetIdentity<ActiveStudyUserEntity>();
 

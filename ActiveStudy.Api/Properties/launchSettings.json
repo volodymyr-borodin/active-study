@@ -9,6 +9,7 @@
       "applicationUrl": "http://localhost:5088",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "AUTHORITY": "http://localhost:5080",
         "MONGO_CONNECTION": "mongodb://localhost:27017/activestudy?retryWrites=true&w=majority"
       }
     }
