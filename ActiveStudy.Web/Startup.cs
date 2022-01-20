@@ -24,6 +24,7 @@ using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Services;
 using ActiveStudy.Web.Services.Email;
 using ActiveStudy.Web.Services.Email.Smtp;
+using Duende.IdentityServer.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -107,6 +108,29 @@ namespace ActiveStudy.Web
             });
 
             services.AddScoped<CurrentUserProvider>();
+            
+            // oauth
+            services.AddIdentityServer()
+                .AddInMemoryClients(new[]
+                {
+                    new Client
+                    {
+                        ClientId = "ios_client",
+                        ClientName = "IOS client",
+                        AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                        AllowedScopes = new[] {new IdentityResources.OpenId().Name, "api"},
+                        ClientSecrets = new[] {new Secret("41240356-7459-4EAA-92BD-E483FA068AEC".Sha256())}
+                    }
+                })
+                .AddInMemoryIdentityResources(new[]
+                {
+                    new IdentityResources.OpenId()
+                })
+                .AddInMemoryApiScopes(new[]
+                {
+                    new ApiScope("api", "Main API")
+                })
+                .AddAspNetIdentity<ActiveStudyUserEntity>();
 
             // common
             services.AddScoped(_ => new CommonContext(mongoUrl));
@@ -172,11 +196,11 @@ namespace ActiveStudy.Web
                 SupportedUICultures = SupportedCultures
             });
 
-            // app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRequestLocalization();
             app.UseRouting();
+            app.UseIdentityServer();
 
             app.UseAuthentication();
             app.UseAuthorization();
