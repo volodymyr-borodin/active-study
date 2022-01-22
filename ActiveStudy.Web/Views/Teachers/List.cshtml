@@ -34,7 +34,7 @@
                     <span>(@string.Join(", ", teacher.Subjects.Select(s => s.Title)))</span>
                 }
             </a>
-            @if (!teacher.IsInvited)
+            @if (!teacher.IsInvited && await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers))
             {
                 <text>| </text> 
                 <form asp-action="Invite" asp-route-schoolId="@Model.School.Id" asp-route-id="@teacher.Id">
