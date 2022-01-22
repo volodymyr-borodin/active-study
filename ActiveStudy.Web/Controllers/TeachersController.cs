@@ -28,6 +28,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly CurrentUserProvider currentUserProvider;
         private readonly UserManager userManager;
         private readonly NotificationManager notificationManager;
+        private readonly IAccessResolver accessResolver;
 
         public TeachersController(ITeacherStorage teacherStorage,
             ISchoolStorage schoolStorage,
@@ -37,7 +38,8 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             IAuditStorage auditStorage,
             CurrentUserProvider currentUserProvider,
             UserManager userManager,
-            NotificationManager notificationManager)
+            NotificationManager notificationManager,
+            IAccessResolver accessResolver)
         {
             this.teacherStorage = teacherStorage;
             this.schoolStorage = schoolStorage;
@@ -48,6 +50,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             this.currentUserProvider = currentUserProvider;
             this.userManager = userManager;
             this.notificationManager = notificationManager;
+            this.accessResolver = accessResolver;
         }
     
         [HttpGet]
@@ -90,6 +93,11 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         [HttpGet("create")]
         public async Task<IActionResult> Create([Required]string schoolId)
         {
+            if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Teachers))
+            {
+                return Forbid();
+            }
+
             return View(await Build(schoolId));
         }
 
@@ -97,6 +105,11 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Required]string schoolId, CreateTeacherInputModel model)
         {
+            if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Teachers))
+            {
+                return Forbid();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(await Build(schoolId));
@@ -120,6 +133,11 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         [HttpPost("{id}/delete")]
         public async Task<IActionResult> Delete([Required] string schoolId, [Required] string id)
         {
+            if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Teachers))
+            {
+                return Forbid();
+            }
+
             var teacher = await teacherStorage.GetByIdAsync(id);
 
             // TODO: Add validation. Teacher can be assigned to class
@@ -136,6 +154,11 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         [HttpPost("{id}/invite")]
         public async Task<IActionResult> Invite([Required] string schoolId, [Required] string id)
         {
+            if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Teachers))
+            {
+                return Forbid();
+            }
+
             var teacher = await teacherStorage.GetByIdAsync(id);
             var school = await schoolStorage.GetByIdAsync(schoolId);
 
