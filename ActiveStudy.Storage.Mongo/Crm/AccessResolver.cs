@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Crm.Identity;
 using ActiveStudy.Storage.Mongo.Identity;
@@ -25,6 +26,13 @@ public class AccessResolver : IAccessResolver
         return userRoles.Any(role => role.Access[Sections.Teachers] == AccessLevel.Full);
     }
 
+    public async Task<bool> HasFullAccessAsync(ClaimsPrincipal user, string schoolId, Guid section)
+    {
+        var userRoles = await GetUserRoleInSchoolAsync(user, schoolId);
+
+        return userRoles.Any(role => role.Access[Sections.Teachers] == AccessLevel.Full);
+    }
+
     public async Task<bool> HasReadAccessAsync(string userId, string schoolId, Guid section)
     {
         var userRoles = await GetUserRoleInSchoolAsync(userId, schoolId);
@@ -33,10 +41,26 @@ public class AccessResolver : IAccessResolver
                                      || role.Access[Sections.Teachers] == AccessLevel.Full);
     }
 
+    public async Task<bool> HasReadAccessAsync(ClaimsPrincipal user, string schoolId, Guid section)
+    {
+        var userRoles = await GetUserRoleInSchoolAsync(user, schoolId);
+
+        return userRoles.Any(role => role.Access[Sections.Teachers] == AccessLevel.Readonly
+                                     || role.Access[Sections.Teachers] == AccessLevel.Full);
+    }
+
     private async Task<IEnumerable<Role>> GetUserRoleInSchoolAsync(string userId, string schoolId)
     {
-        var user = await userManager.FindByIdAsync(userId);
+        return await GetUserRoleInSchoolAsync(await userManager.FindByIdAsync(userId), schoolId);
+    }
 
+    private async Task<IEnumerable<Role>> GetUserRoleInSchoolAsync(ClaimsPrincipal user, string schoolId)
+    {
+        return await GetUserRoleInSchoolAsync(await userManager.GetUserAsync(user), schoolId);
+    }
+
+    private async Task<IEnumerable<Role>> GetUserRoleInSchoolAsync(ActiveStudyUserEntity user, string schoolId)
+    {
         var rolesName = await userManager.GetRolesAsync(user);
         var roles = new List<Role>(rolesName.Count);
         foreach (var roleName in await userManager.GetRolesAsync(user))
