@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
+using ActiveStudy.Domain.Crm.Identity;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.Schools;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActiveStudy.Web.Controllers
@@ -20,7 +20,8 @@ namespace ActiveStudy.Web.Controllers
         private readonly ICountryStorage countryStorage;
         private readonly ISchoolStorage schoolStorage;
         private readonly CurrentUserProvider currentUserProvider;
-        private readonly UserManager<ActiveStudyUserEntity> userManager;
+        private readonly UserManager userManager;
+        private readonly RoleManager roleManager;
 
         private readonly ITeacherStorage teacherStorage;
         private readonly IAuditStorage auditStorage;
@@ -28,7 +29,8 @@ namespace ActiveStudy.Web.Controllers
         public SchoolController(ISchoolStorage schoolStorage,
             ICountryStorage countryStorage,
             CurrentUserProvider currentUserProvider,
-            UserManager<ActiveStudyUserEntity> userManager,
+            UserManager userManager,
+            RoleManager roleManager,
             ITeacherStorage teacherStorage,
             IAuditStorage auditStorage)
         {
@@ -36,6 +38,7 @@ namespace ActiveStudy.Web.Controllers
             this.countryStorage = countryStorage;
             this.currentUserProvider = currentUserProvider;
             this.userManager = userManager;
+            this.roleManager = roleManager;
             this.teacherStorage = teacherStorage;
             this.auditStorage = auditStorage;
         }
@@ -60,9 +63,10 @@ namespace ActiveStudy.Web.Controllers
             var school = new School(null, model.Title, country, user);
 
             var schoolId = await schoolStorage.CreateAsync(school);
+            await roleManager.AddDefaultAsync(schoolId);
             await auditStorage.LogSchoolCreateAsync(schoolId, school.Title, user);
-            
-            await userManager.AddSchoolClaimAsync(await userManager.GetUserAsync(User), schoolId);
+
+            await userManager.AddToRoleAsync(currentUserProvider.User, Role.Principal, schoolId);
 
             var teacher = new Teacher(string.Empty, currentUserProvider.User.FirstName,
                 currentUserProvider.User.LastName, string.Empty, currentUserProvider.User.Email, Enumerable.Empty<Subject>(),

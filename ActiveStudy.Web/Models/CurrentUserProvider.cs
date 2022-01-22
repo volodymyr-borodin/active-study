@@ -3,19 +3,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Storage.Mongo.Identity;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 
 namespace ActiveStudy.Web.Models
 {
     public class CurrentUserProvider
     {
-        private readonly UserManager<ActiveStudyUserEntity> userManager;
+        private readonly UserManager userManager;
+        private readonly RoleManager roleManager;
 
-        public CurrentUserProvider(UserManager<ActiveStudyUserEntity> userManager, IHttpContextAccessor contextAccessor)
+        public CurrentUserProvider(UserManager userManager,
+            RoleManager roleManager,
+            IHttpContextAccessor contextAccessor)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
 
-            if (contextAccessor.HttpContext.User?.Identity?.IsAuthenticated ?? false)
+            if (contextAccessor.HttpContext?.User.Identity?.IsAuthenticated ?? false)
             {
                 User = userManager.GetUserAsync(contextAccessor.HttpContext.User).GetAwaiter().GetResult();
             }
@@ -30,9 +33,18 @@ namespace ActiveStudy.Web.Models
             {
                 return Enumerable.Empty<string>();
             }
-            
-            var schoolClaims = await userManager.GetSchoolClaimsAsync(User);
-            return schoolClaims.Select(c => c.Value).ToList();
+
+            var claims = (await userManager.GetClaimsAsync(User)).ToList();
+            foreach (var roleName in await userManager.GetRolesAsync(User))
+            {
+                var role = await roleManager.FindByNameAsync(roleName);
+                claims.AddRange(await roleManager.GetClaimsAsync(role));
+            }
+
+            return claims
+                .Where(c => c.Type == CustomClaimTypes.School)
+                .Select(c => c.Value)
+                .ToList();
         }
     }
 }

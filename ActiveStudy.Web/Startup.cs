@@ -5,6 +5,7 @@ using System.Linq;
 using ActiveStudy.AspNetCore.Identity.Mongo;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Identity;
 using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
@@ -98,6 +99,10 @@ namespace ActiveStudy.Web
                 })
                 .AddMongoDbStores<IdentityContext>(mongoUrl)
                 .AddDefaultTokenProviders();
+
+            services.AddScoped<UserManager>();
+            services.AddScoped<RoleManager>();
+            services.AddScoped<IAccessResolver, AccessResolver>();
 
             services.AddLocalization(options => options.ResourcesPath = ResourcesPath);
             services.Configure<RequestLocalizationOptions>(options =>

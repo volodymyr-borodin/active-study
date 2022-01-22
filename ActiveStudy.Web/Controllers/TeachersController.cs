@@ -1,19 +1,17 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Identity;
 using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Models;
-using ActiveStudy.Web.Models.Classes;
 using ActiveStudy.Web.Models.Teachers;
 using ActiveStudy.Web.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActiveStudy.Web.Areas.Schools.Controllers
@@ -28,7 +26,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
         private readonly IAuditStorage auditStorage;
         private readonly ISchedulerStorage scheduleStorage;
         private readonly CurrentUserProvider currentUserProvider;
-        private readonly UserManager<ActiveStudyUserEntity> userManager;
+        private readonly UserManager userManager;
         private readonly NotificationManager notificationManager;
 
         public TeachersController(ITeacherStorage teacherStorage,
@@ -38,7 +36,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             ISchedulerStorage scheduleStorage,
             IAuditStorage auditStorage,
             CurrentUserProvider currentUserProvider,
-            UserManager<ActiveStudyUserEntity> userManager,
+            UserManager userManager,
             NotificationManager notificationManager)
         {
             this.teacherStorage = teacherStorage;
@@ -152,14 +150,14 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
             var existingUser = await userManager.FindByNameAsync(user.UserName);
             if (existingUser != null)
             {
-                var schoolIds = await userManager.GetSchoolClaimsAsync(existingUser);
-                if (schoolIds.Any(s => s.Value == schoolId))
-                {
-                    // TODO: Show error
-                    return RedirectToAction("List", new {schoolId});
-                }
+                // var schoolIds = await userManager.GetSchoolClaimsAsync(existingUser);
+                // if (schoolIds.Any(s => s.Value == schoolId))
+                // {
+                //     // TODO: Show error
+                //     return RedirectToAction("List", new {schoolId});
+                // }
 
-                await userManager.AddSchoolClaimAsync(existingUser, schoolId);
+                await userManager.AddToRoleAsync(existingUser, Role.Teacher, schoolId);
                 await SendInvitationEmail(school, existingUser);
                 await teacherStorage.SetUserIdAsync(teacher.Id, existingUser.Id);
                 await classStorage.SetTeacherUserIdAsync(teacher.Id, existingUser.Id);
@@ -169,7 +167,7 @@ namespace ActiveStudy.Web.Areas.Schools.Controllers
                 var result = await userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    await userManager.AddSchoolClaimAsync(user, schoolId);
+                    await userManager.AddToRoleAsync(user, Role.Teacher, schoolId);
                     await SendInvitationEmail(school, user);
                     await teacherStorage.SetUserIdAsync(teacher.Id, user.Id);
                     await classStorage.SetTeacherUserIdAsync(teacher.Id, user.Id);
