@@ -1,0 +1,23 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Teachers.TeacherDetailsViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = $"{Model.FullName} | {Model.School.Title}";
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
+        BreadcrumbItem.Active(sharedLocalizer["Teachers"].Value, Url.Action("List", "Teachers", new {schoolId = Model.School.Id})),
+        BreadcrumbItem.InActive(Model.FullName)
+    };
+}
+
+<vc:breadcrumb items="@breadcrumb" />
+
+<vc:scheduler schedule="@Model.Schedule"
+              school-id="@Model.School.Id"
+              class-id="@null"
+              teacher-id="@Model.Id">
+</vc:scheduler>

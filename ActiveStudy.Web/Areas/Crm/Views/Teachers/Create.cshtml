@@ -1,0 +1,64 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Teachers.CreateTeacherViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = localizer["Page Title"];
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
+        BreadcrumbItem.InActive(localizer["New Teacher"].Value)
+    };
+}
+
+<vc:breadcrumb items="@breadcrumb" />
+
+<form asp-action="Create">
+    <div>
+        <label asp-for="FirstName">@localizer["FirstName"]</label>
+        <input type="text"
+               asp-for="FirstName"
+               placeholder="@localizer["FirstName"]"
+               required
+               autocomplete="off">
+    </div>
+            
+    <div>
+        <label class="input-label" asp-for="LastName">@localizer["LastName"]</label>
+        <input type="text"
+               asp-for="LastName"
+               placeholder="@localizer["LastName"]"
+               required
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="Email">@localizer["Middle Name"]</label>
+        <input type="text"
+               asp-for="MiddleName"
+               placeholder="@localizer["Middle Name"]"
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="Email">@localizer["Email"]</label>
+        <input type="text"
+               asp-for="Email"
+               placeholder="@localizer["Email"]"
+               required
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="SubjectIds">@localizer["Subjects"]</label>
+        <select multiple
+                asp-for="SubjectIds"
+                asp-items="@Model.Subjects"></select>
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

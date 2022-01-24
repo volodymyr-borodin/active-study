@@ -1,0 +1,39 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Schools.CreateSchoolModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = sharedLocalizer["New School"].Value;
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.InActive(sharedLocalizer["New School"].Value)
+    };
+}
+
+<vc:breadcrumb items="@breadcrumb" />
+
+<h1>Create new school</h1>
+<form asp-action="Create" class="js-validate">
+    <div>
+        <label asp-for="Title">@localizer["Title"]</label>
+        <input type="text" 
+               asp-for="Title"
+               placeholder="@localizer["Title"]"
+               required
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="CountryCode">@localizer["Country"]</label>
+        <select asp-for="CountryCode"
+                asp-items="@Model.Countries"
+                required>
+        </select>
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

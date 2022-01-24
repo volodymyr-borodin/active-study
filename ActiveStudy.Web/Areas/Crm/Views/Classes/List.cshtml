@@ -1,0 +1,36 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Classes.ClassesListPageModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = sharedLocalizer["Classes"].Value + " | " + Model.School.Title;
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
+        BreadcrumbItem.InActive(sharedLocalizer["Classes"].Value)
+    };
+}
+
+<vc:breadcrumb items="@breadcrumb" />
+<a asp-area="Crm"
+   asp-controller="Classes"
+   asp-action="Create"
+   asp-route-schoolId="@Model.School.Id">
+    @sharedLocalizer["Add Class"]
+</a>
+<ul>
+    @foreach (var cls in Model.Classes)
+    {
+        <li>
+            <a asp-area="Crm"
+               asp-controller="Classes"
+               asp-action="Details"
+               asp-route-schoolId="@Model.School.Id"
+               asp-route-id="@cls.Id">
+                <span>@cls.Title (@(cls.Teacher?.FullName ?? "-"))</span>
+            </a>
+        </li>
+    }
+</ul>

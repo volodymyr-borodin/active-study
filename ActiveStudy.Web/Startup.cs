@@ -37,185 +37,193 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MongoDB.Driver;
+using static ActiveStudy.Web.Consts;
 
-namespace ActiveStudy.Web
+namespace ActiveStudy.Web;
+
+public class Startup
 {
-    public class Startup
+    private const string ResourcesPath = "Resources";
+    private static readonly IList<CultureInfo> SupportedCultures = new List<CultureInfo>
     {
-        private const string ResourcesPath = "Resources";
-        private static readonly IList<CultureInfo> SupportedCultures = new List<CultureInfo>
-        {
-            new CultureInfo("uk-UA"),
-            new CultureInfo("en-US")
-        };
-        private static RequestCulture DefaultRequestCulture => new RequestCulture(SupportedCultures.First().Name);
+        new CultureInfo("uk-UA"),
+        new CultureInfo("en-US")
+    };
+    private static RequestCulture DefaultRequestCulture => new RequestCulture(SupportedCultures.First().Name);
 
-        public Startup(IConfiguration configuration)
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
+    private IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.Configure<ForwardedHeadersOptions>(options =>
         {
-            Configuration = configuration;
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto;
+        });
+
+        switch (Configuration["EMAIL_SENDER"])
+        {
+            case "SMTP":
+                services.AddScoped<IEmailService>(provider => new SmtpEmailService(
+                    new SmtpClientConfiguration(
+                        Configuration["SMTP_HOST"],
+                        Configuration.GetValue<int>("SMTP_POST"),
+                        Configuration.GetValue<bool>("SMTP_SSL_ENABLED"),
+                        Configuration["SMTP_USERNAME"],
+                        Configuration["SMTP_PASSWORD"],
+                        Configuration["SMTP_DISPLAY_NAME"],
+                        Configuration["SMTP_EMAIL"])));
+                break;
+            case "CONSOLE":
+                services.AddScoped<IEmailService, NullEmailService>();
+                break;
+            default:
+                throw new Exception("Unknown EMAIL_SENDER");
         }
 
-        private IConfiguration Configuration { get; }
+        services.AddScoped<NotificationManager>();
 
-        public void ConfigureServices(IServiceCollection services)
+        var mongoUrl = MongoUrl.Create(Configuration["MONGO_CONNECTION"]);
+
+        services.AddIdentity<ActiveStudyUserEntity, ActiveStudyRoleEntity>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.SignIn.RequireConfirmedEmail = true;
+
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            })
+            .AddMongoDbStores<IdentityContext>(mongoUrl)
+            .AddDefaultTokenProviders();
+
+        services.AddScoped<UserManager>();
+        services.AddScoped<RoleManager>();
+        services.AddScoped<IAccessResolver, AccessResolver>();
+
+        services.AddLocalization(options => options.ResourcesPath = ResourcesPath);
+        services.Configure<RequestLocalizationOptions>(options =>
         {
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedHost | ForwardedHeaders.XForwardedProto;
-            });
+            options.DefaultRequestCulture = DefaultRequestCulture;
+            options.SupportedCultures = SupportedCultures;
+            options.SupportedUICultures = SupportedCultures;
+        });
 
-            switch (Configuration["EMAIL_SENDER"])
-            {
-                case "SMTP":
-                    services.AddScoped<IEmailService>(provider => new SmtpEmailService(
-                        new SmtpClientConfiguration(
-                            Configuration["SMTP_HOST"],
-                            Configuration.GetValue<int>("SMTP_POST"),
-                            Configuration.GetValue<bool>("SMTP_SSL_ENABLED"),
-                            Configuration["SMTP_USERNAME"],
-                            Configuration["SMTP_PASSWORD"],
-                            Configuration["SMTP_DISPLAY_NAME"],
-                            Configuration["SMTP_EMAIL"])));
-                    break;
-                case "CONSOLE":
-                    services.AddScoped<IEmailService, NullEmailService>();
-                    break;
-                default:
-                    throw new Exception("Unknown EMAIL_SENDER");
-            }
-
-            services.AddScoped<NotificationManager>();
-
-            var mongoUrl = MongoUrl.Create(Configuration["MONGO_CONNECTION"]);
-
-            services.AddIdentity<ActiveStudyUserEntity, ActiveStudyRoleEntity>(options =>
-                {
-                    options.SignIn.RequireConfirmedAccount = true;
-                    options.SignIn.RequireConfirmedEmail = true;
-
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireLowercase = false;
-                })
-                .AddMongoDbStores<IdentityContext>(mongoUrl)
-                .AddDefaultTokenProviders();
-
-            services.AddScoped<UserManager>();
-            services.AddScoped<RoleManager>();
-            services.AddScoped<IAccessResolver, AccessResolver>();
-
-            services.AddLocalization(options => options.ResourcesPath = ResourcesPath);
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                options.DefaultRequestCulture = DefaultRequestCulture;
-                options.SupportedCultures = SupportedCultures;
-                options.SupportedUICultures = SupportedCultures;
-            });
-
-            services.AddScoped<CurrentUserProvider>();
+        services.AddScoped<CurrentUserProvider>();
             
-            // oauth
-            services.AddIdentityServer()
-                .AddInMemoryClients(new[]
-                {
-                    new Client
-                    {
-                        ClientId = "ios_client",
-                        ClientName = "IOS client",
-                        AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                        AllowedScopes = new[] {new IdentityResources.OpenId().Name, "education:flash-cards"},
-                        ClientSecrets = new[] {new Secret("41240356-7459-4EAA-92BD-E483FA068AEC".Sha256())}
-                    }
-                })
-                .AddInMemoryIdentityResources(new[]
-                {
-                    new IdentityResources.OpenId()
-                })
-                .AddInMemoryApiScopes(new[]
-                {
-                    new ApiScope("education:flash-cards", "Education Materials/Flash Cards")
-                })
-                .AddAspNetIdentity<ActiveStudyUserEntity>();
-
-            // common
-            services.AddScoped(_ => new CommonContext(mongoUrl));
-            services.AddScoped<ISubjectStorage, InMemorySubjectStorage>();
-            services.AddScoped<ICountryStorage, InMemoryCountryStorage>();
-            services.AddScoped<IAuditStorage, AuditStorage>();
-
-            // crm
-            services.AddScoped(_ => new CrmContext(mongoUrl));
-            services.AddScoped<ISchoolStorage, SchoolStorage>();
-            services.AddScoped<IClassStorage, ClassStorage>();
-            services.AddScoped<ClassManager>();
-            services.AddScoped<ITeacherStorage, TeacherStorage>();
-            services.AddScoped<IStudentStorage, StudentStorage>();
-            services.AddScoped<IRelativesStorage, RelativesStorage>();
-            services.AddScoped<ISchedulerStorage, SchedulerStorage>();
-
-            // materials
-            services.AddScoped(_ => new MaterialsContext(mongoUrl));
-            services.AddScoped<ITestWorksStorage, TestWorksStorage>();
-            services.AddScoped<ITestWorkResultsStorage, TestWorkResultsStorage>();
-            services.AddScoped<TestWorksService>();
-
-            services.AddScoped<IFlashCardsStorage, FlashCardsStorage>();
-            services.AddScoped<FlashCardsService>();
-            services.AddScoped<IProgressStorage, ProgressStorage>();
-            services.AddScoped<LearningProgressService>();
-
-            services.Configure<RouteOptions>(options =>
+        // oauth
+        services.AddIdentityServer()
+            .AddInMemoryClients(new[]
             {
-                options.LowercaseUrls = true;
-            });
+                new Client
+                {
+                    ClientId = "ios_client",
+                    ClientName = "IOS client",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedScopes = new[] {new IdentityResources.OpenId().Name, "education:flash-cards"},
+                    ClientSecrets = new[] {new Secret("41240356-7459-4EAA-92BD-E483FA068AEC".Sha256())}
+                }
+            })
+            .AddInMemoryIdentityResources(new[]
+            {
+                new IdentityResources.OpenId()
+            })
+            .AddInMemoryApiScopes(new[]
+            {
+                new ApiScope("education:flash-cards", "Education Materials/Flash Cards")
+            })
+            .AddAspNetIdentity<ActiveStudyUserEntity>();
 
-            services.AddControllersWithViews(options => options.UseDateOnlyTimeOnlyStringConverters())
-                .AddRazorOptions(options => { options.ViewLocationFormats.Add("/{0}.cshtml"); })
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-                .AddDataAnnotationsLocalization(options => {
-                    options.DataAnnotationLocalizerProvider = (type, factory) =>
-                        factory.Create(typeof(SharedResource));
-                });
+        // common
+        services.AddScoped(_ => new CommonContext(mongoUrl));
+        services.AddScoped<ISubjectStorage, InMemorySubjectStorage>();
+        services.AddScoped<ICountryStorage, InMemoryCountryStorage>();
+        services.AddScoped<IAuditStorage, AuditStorage>();
 
-            services.AddAuthentication();
-        }
+        // crm
+        services.AddScoped(_ => new CrmContext(mongoUrl));
+        services.AddScoped<ISchoolStorage, SchoolStorage>();
+        services.AddScoped<IClassStorage, ClassStorage>();
+        services.AddScoped<ClassManager>();
+        services.AddScoped<ITeacherStorage, TeacherStorage>();
+        services.AddScoped<IStudentStorage, StudentStorage>();
+        services.AddScoped<IRelativesStorage, RelativesStorage>();
+        services.AddScoped<ISchedulerStorage, SchedulerStorage>();
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        // materials
+        services.AddScoped(_ => new MaterialsContext(mongoUrl));
+        services.AddScoped<ITestWorksStorage, TestWorksStorage>();
+        services.AddScoped<ITestWorkResultsStorage, TestWorkResultsStorage>();
+        services.AddScoped<TestWorksService>();
+
+        services.AddScoped<IFlashCardsStorage, FlashCardsStorage>();
+        services.AddScoped<FlashCardsService>();
+        services.AddScoped<IProgressStorage, ProgressStorage>();
+        services.AddScoped<LearningProgressService>();
+
+        services.Configure<RouteOptions>(options =>
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            options.LowercaseUrls = true;
+        });
 
-            app.UseForwardedHeaders();
-            app.UseRequestLocalization(new RequestLocalizationOptions
-            {
-                DefaultRequestCulture = DefaultRequestCulture,
-                SupportedCultures = SupportedCultures,
-                SupportedUICultures = SupportedCultures
+        services.AddControllersWithViews(options => options.UseDateOnlyTimeOnlyStringConverters())
+            .AddRazorOptions(options => { options.ViewLocationFormats.Add("/{0}.cshtml"); })
+            .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+            .AddDataAnnotationsLocalization(options => {
+                options.DataAnnotationLocalizerProvider = (type, factory) =>
+                    factory.Create(typeof(SharedResource));
             });
 
-            app.UseStaticFiles();
+        services.AddAuthentication();
+    }
 
-            app.UseRequestLocalization();
-            app.UseRouting();
-            app.UseIdentityServer();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
         }
+        else
+        {
+            app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+        }
+
+        app.UseForwardedHeaders();
+        app.UseRequestLocalization(new RequestLocalizationOptions
+        {
+            DefaultRequestCulture = DefaultRequestCulture,
+            SupportedCultures = SupportedCultures,
+            SupportedUICultures = SupportedCultures
+        });
+
+        app.UseStaticFiles();
+
+        app.UseRequestLocalization();
+        app.UseRouting();
+        app.UseIdentityServer();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
+            endpoints.MapAreaControllerRoute(
+                areaName: Area.Crm,
+                name: "school",
+                pattern: "{area:exists}/{controller=School}/{action=List}/{id?}");
+            endpoints.MapAreaControllerRoute(
+                areaName: Area.EducationMaterials,
+                name: "materials",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        });
     }
 }

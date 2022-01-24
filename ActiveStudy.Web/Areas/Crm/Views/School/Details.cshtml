@@ -1,0 +1,30 @@
+@using ActiveStudy.Domain.Crm.Identity
+@model ActiveStudy.Web.Areas.Crm.Models.Schools.SchoolHomePageModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+@inject IAccessResolver accessResolver
+
+@{
+    ViewData["Title"] = Model.School.Title;
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.InActive(Model.School.Title)
+    };
+}
+
+<vc:breadcrumb items="@breadcrumb" />
+
+<div>
+    @if (await accessResolver.HasReadAccessAsync(User, Model.School.Id, Sections.Teachers))
+    {
+        <a asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
+            @sharedLocalizer["Teachers"]
+        </a>
+        <text>|</text>
+    }
+    <a asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
+        @sharedLocalizer["Classes"]
+    </a>
+</div>

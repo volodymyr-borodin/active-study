@@ -1,0 +1,50 @@
+@using ActiveStudy.Domain.Crm.Identity
+@model ActiveStudy.Web.Areas.Crm.Models.Teachers.TeachersListPageModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer
+@inject IViewLocalizer localizer
+@inject IAccessResolver accessResolver
+
+@{
+    ViewData["Title"] = sharedLocalizer["Teachers"].Value + " | " + Model.School.Title;
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
+        BreadcrumbItem.InActive(sharedLocalizer["Teachers"].Value)
+    };
+}
+
+<vc:breadcrumb items="@breadcrumb" />
+@if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers))
+{
+    <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Add Teacher"]</a>
+}
+<ul>
+    @foreach (var teacher in Model.Teachers)
+    {
+        <li>
+            <a asp-controller="Teachers"
+               asp-action="Details"
+               asp-route-schoolId="@Model.School.Id"
+               asp-route-id="@teacher.Id">
+                <span>@teacher.FullName (@teacher.Email)</span>
+                @if (teacher.Subjects.Any())
+                {
+                    <span>(@string.Join(", ", teacher.Subjects.Select(s => s.Title)))</span>
+                }
+            </a>
+            @if (!teacher.IsInvited && await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers))
+            {
+                <text>| </text> 
+                <form asp-action="Invite" asp-route-schoolId="@Model.School.Id" asp-route-id="@teacher.Id">
+                    <button>Invite</button>
+                </form>
+            }
+            else
+            {
+                <text>Invited</text>
+            }
+        </li>
+    }
+</ul>

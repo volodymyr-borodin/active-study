@@ -1,0 +1,58 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Students.CreateStudentViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = localizer["Page Title"];
+
+    var breadcrumb = new List<BreadcrumbItem>
+    {
+        BreadcrumbItem.Active(sharedLocalizer["Schools"].Value, Url.Action("List", "School")),
+        BreadcrumbItem.Active(Model.School.Title, Url.Action("Details", "School", new {id = Model.School.Id})),
+        BreadcrumbItem.Active(sharedLocalizer["Classes"].Value, Url.Action("List", "Classes", new {schoolId = Model.School.Id})),
+        BreadcrumbItem.Active(Model.Class.Title, Url.Action("Details", "Classes", new {schoolId = Model.School.Id, id = Model.Class.Id})),
+        BreadcrumbItem.InActive(sharedLocalizer["Add Student"].Value)
+    };
+}
+
+<vc:breadcrumb items="@breadcrumb" />
+<form asp-action="Create">
+    <input type="hidden" asp-for="ClassId" />
+    <div>
+        <label asp-for="FirstName">@localizer["FirstName"]</label>
+        <input type="text"
+               asp-for="FirstName"
+               placeholder="@localizer["FirstName"]"
+               required
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="LastName">@localizer["LastName"]</label>
+        <input type="text"
+               asp-for="LastName"
+               placeholder="@localizer["LastName"]"
+               required
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="Email">@localizer["Email"]</label>
+        <input type="text"
+               asp-for="Email"
+               placeholder="@localizer["Email"]"
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="Phone">@localizer["Phone"]</label>
+        <input type="text"
+               asp-for="Phone"
+               placeholder="@localizer["Phone"]"
+               autocomplete="off">
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

@@ -1,0 +1,141 @@
+@using ActiveStudy.Web
+@using Microsoft.AspNetCore.Mvc.Localization
+@model ActiveStudy.Web.Areas.EducationMaterials.Models.TestWorks.CreateTestWorkViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+<form asp-controller="MyTestWorks" asp-action="Create">
+    <div>
+        <label asp-for="Title">@localizer["Title"]</label>
+        <input type="text"
+               asp-for="Title"
+               placeholder="@localizer["Title"]"
+               required
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label asp-for="Description">@localizer["Description"]</label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+    
+    <div>
+        <label asp-for="SubjectId">@localizer["Subject"]</label>
+        <select asp-for="SubjectId" asp-items="@Model.Subjects"></select>
+    </div>
+    
+    <div>
+        <label asp-for="Status">@localizer["Status"]</label>
+        <select asp-for="Status" asp-items="@Model.Statuses"></select>
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+
+    <div id="test">
+        <fieldset v-for="(variant, variantIndex) in variants">
+            <legend>Variant {{ variantIndex + 1 }}</legend>
+            <ul>
+                <li v-for="(question, questionIndex) in variant.questions">
+
+                    <div v-if="question.type === 'SingleAnswerQuestion'">
+                        <label><button type="button" v-on:click="removeQuestion(variantIndex, questionIndex)">x</button>Question {{ questionIndex + 1 }}</label>
+                        <input type="hidden"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].type`"
+                               v-model="question.type"/>
+                        <input type="text"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].text`"
+                               v-model="question.text"/>
+                        <fieldset>
+                            <legend>Options</legend>
+                            <ul>
+                                <li v-for="(option, optionIndex) in question.options">
+                                    <input type="radio"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].correctOptionIndex`"
+                                           :value="optionIndex"
+                                           v-model="question.correctOptionIndex"/>
+                                    <input type="text"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].text`"
+                                           v-model="option.text"/>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                    <div v-if="question.type === 'MultiAnswerQuestion'">
+                        <label><button type="button" v-on:click="removeQuestion(variantIndex, questionIndex)">x</button>Question {{ questionIndex + 1 }}</label>
+                        <input type="hidden"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].type`"
+                               v-model="question.type"/>
+                        <input type="text"
+                               :name="`variants[${variantIndex}].questions[${questionIndex}].text`"
+                               v-model="question.text"/>
+                        <fieldset>
+                            <legend>Options</legend>
+                            <ul>
+                                <li v-for="(option, optionIndex) in question.options">
+                                    <input type="checkbox"
+                                           value="true"
+                                           :id="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].isCorrect`"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].isCorrect`"
+                                           v-model="option.isCorrect"/>
+                                    <input type="hidden"
+                                           value="false"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].isCorrect`"/>
+                                    <input type="text"
+                                           :name="`variants[${variantIndex}].questions[${questionIndex}].options[${optionIndex}].text`"
+                                           v-model="option.text"/>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </li>
+            </ul>
+            <button type="button" v-on:click="addSingleAnswerQuestion(variantIndex)">Add Single Answer Question</button>
+            <button type="button" v-on:click="addMultiAnswerQuestion(variantIndex)">Add Multi Answer Question</button>
+        </fieldset>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script>
+        const Counter = {
+          data() {
+            return {
+              variants: @Html.Raw(Json.Serialize(Model.Variants))
+            }
+          },
+          methods: {
+            removeQuestion(variantIndex, questionIndex) {
+              this.variants[variantIndex].questions.splice(questionIndex, 1);
+            },
+            addSingleAnswerQuestion(variantIndex) {
+              this.variants[variantIndex].questions.push({
+                type: 'SingleAnswerQuestion',
+                correctOptionIndex: 0,
+                options: [
+                  { text: '' },
+                  { text: '' },
+                  { text: '' },
+                  { text: '' }
+                ]
+              });
+            },
+            addMultiAnswerQuestion(variantIndex) {
+              this.variants[variantIndex].questions.push({
+                type: 'MultiAnswerQuestion',
+                options: [
+                  { text: '', isCorrect: false },
+                  { text: '', isCorrect: false },
+                  { text: '', isCorrect: false },
+                  { text: '', isCorrect: false }
+                ]
+              });
+            }
+          }
+        }
+
+        Vue.createApp(Counter).mount('#test')
+    </script>
+}

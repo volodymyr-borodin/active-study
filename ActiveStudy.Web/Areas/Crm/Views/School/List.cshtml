@@ -1,0 +1,24 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Schools.SchoolListPageModel
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["Your schools"];
+}
+<h1>My schools</h1>
+@if (Model.Schools.Any())
+{
+    <ul>
+        @foreach (var school in Model.Schools)
+        {
+            <li>
+                <a asp-controller="School"
+                   asp-action="Details"
+                   asp-route-id="@school.Id">@school.Title</a>
+            </li>
+        }
+    </ul>
+}
+<div>
+    <a asp-area="Crm"
+       asp-controller="School"
+       asp-action="Create">Create new</a>
+</div>

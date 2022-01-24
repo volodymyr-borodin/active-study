@@ -1,0 +1,46 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Relatives.CreateRelativeViewModel
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["Page Title"];
+}
+
+<form asp-action="Create" asp-route-schoolId="@Model.SchoolId">
+    <input type="hidden" asp-for="StudentId" />
+    <div>
+        <label asp-for="FirstName">@localizer["FirstName"]</label>
+        <input type="text"
+               asp-for="FirstName"
+               placeholder="@localizer["FirstName"]"
+               required
+               autocomplete="off" />
+    </div>
+
+    <div>
+        <label asp-for="LastName">@localizer["LastName"]</label>
+        <input type="text"
+               asp-for="LastName"
+               placeholder="@localizer["LastName"]"
+               required
+               autocomplete="off" />
+    </div>
+
+    <div>
+        <label asp-for="Email">@localizer["Email"]</label>
+        <input type="text" 
+               asp-for="Email"
+               placeholder="@localizer["Email"]"
+               autocomplete="off" />
+    </div>
+
+    <div>
+        <label asp-for="Phone">@localizer["Phone"]</label>
+        <input type="text"
+               asp-for="Phone"
+               placeholder="@localizer["Phone"]"
+               autocomplete="off" />
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

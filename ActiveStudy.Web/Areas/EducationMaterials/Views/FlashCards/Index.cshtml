@@ -1,0 +1,18 @@
+@model ActiveStudy.Web.Areas.EducationMaterials.Models.FlashCards.FlashCardsViewModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+
+@{
+    ViewData["Title"] = sharedLocalizer["Flash Cards"].Value;
+}
+
+<h2>@sharedLocalizer["Flash Cards"]</h2>
+
+<h3>All Flash Cards</h3>
+<ul>
+    @foreach (var testWork in Model.Items)
+    {
+        <li>
+            <a asp-controller="FlashCards" asp-action="Details" asp-route-id="@testWork.Id">@testWork.Title</a>
+        </li>
+    }
+</ul>

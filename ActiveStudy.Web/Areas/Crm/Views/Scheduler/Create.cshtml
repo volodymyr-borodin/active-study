@@ -1,0 +1,55 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Scheduler.CreateEventPageModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer
+@inject IViewLocalizer localizer
+@{
+    ViewData["Title"] = localizer["Page Title"];
+}
+
+<form asp-action="Create">
+    <input type="hidden" asp-for="SchoolId">
+    <div>
+        <label asp-for="Description">@localizer["Description"]</label>
+        <input type="text"
+               asp-for="Description"
+               placeholder="@localizer["Description"]"
+               autocomplete="off">
+    </div>
+
+    <div>
+        <label  asp-for="ClassId">@sharedLocalizer["Class"]</label>
+        <select asp-for="ClassId"
+                asp-items="@Model.Classes">
+        </select>
+    </div>
+
+    <div>
+        <label asp-for="TeacherId">@sharedLocalizer["Teacher"]</label>
+        <select asp-for="TeacherId"
+                asp-items="@Model.Teachers">
+        </select>
+    </div>
+
+    <div>
+        <label asp-for="SubjectId">@sharedLocalizer["Subject"]</label>
+        <select asp-for="SubjectId"
+                asp-items="@Model.Subjects">
+        </select>
+    </div>
+
+    <div>
+        <label asp-for="SubjectId">@localizer["Date"]</label>
+        <input readonly asp-for="Date" />
+    </div>
+    <div>
+        <label asp-for="SubjectId">@localizer["From"]</label>
+        <input readonly asp-for="From" />
+    </div>
+    <div>
+        <label asp-for="SubjectId">@localizer["To"]</label>
+        <input readonly asp-for="To" />
+    </div>
+
+    <div>
+        <button type="submit">@localizer["Save"]</button>
+    </div>
+</form>

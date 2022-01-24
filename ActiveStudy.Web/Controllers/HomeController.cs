@@ -3,30 +3,30 @@ using System.Threading.Tasks;
 using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Models.Home;
 using Microsoft.AspNetCore.Mvc;
+using static ActiveStudy.Web.Consts;
 
-namespace ActiveStudy.Web.Controllers
+namespace ActiveStudy.Web.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly CurrentUserProvider currentUserProvider;
+
+    public HomeController(CurrentUserProvider currentUserProvider)
     {
-        private readonly CurrentUserProvider currentUserProvider;
+        this.currentUserProvider = currentUserProvider;
+    }
 
-        public HomeController(CurrentUserProvider currentUserProvider)
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        if (!currentUserProvider.IsAuthenticated)
         {
-            this.currentUserProvider = currentUserProvider;
+            return View(new HomePageModel());
         }
-        
-        [HttpGet]
-        public async Task<IActionResult> Index()
-        {
-            if (!currentUserProvider.IsAuthenticated)
-            {
-                return View(new HomePageModel());
-            }
 
-            var userSchoolIds = await currentUserProvider.GetAssignedSchoolAsync();
-            return userSchoolIds.Count() == 1
-                ? RedirectToAction("Details", "School", new {Id = userSchoolIds.First()})
-                : RedirectToAction("List", "School");
-        }
+        var userSchoolIds = await currentUserProvider.GetAssignedSchoolAsync();
+        return userSchoolIds.Count() == 1
+            ? RedirectToAction("Details", "School", new { area = Area.Crm, Id = userSchoolIds.First()})
+            : RedirectToAction("List", "School", new { area = Area.Crm });
     }
 }

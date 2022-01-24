@@ -1,0 +1,14 @@
+@model ActiveStudy.Web.Areas.Crm.Models.Schools.SchoolHomePageModel
+@inject IHtmlLocalizer<SharedResource> sharedLocalizer;
+@inject IViewLocalizer localizer
+
+@{
+    ViewData["Title"] = localizer["Page Title"];
+
+    var auditFilter = new Dictionary<string, string>
+    {
+        ["schoolId"] = Model.School.Id
+    };
+}
+
+<vc:audit filter="@auditFilter" />

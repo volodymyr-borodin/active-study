@@ -1,0 +1,32 @@
+@model ActiveStudy.Web.Areas.EducationMaterials.Models.FlashCards.FlashCardsDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Set.Title;
+}
+
+<h2>@Model.Set.Title</h2>
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <a asp-action="Learn" asp-route-id="@Model.Set.Id">Learn</a>
+}
+
+@foreach (var card in Model.Set.Cards)
+{
+    <fieldset>
+        <legend>@card.Term</legend>
+        <p>@card.Definition</p>
+        @foreach (var clue in card.Clues)
+        {
+            <p><i>@clue.Text</i></p>
+        }
+    </fieldset>
+}
+
+@if (Model.CardsProgress.Any())
+{
+    <h3>My Progress</h3>
+    @foreach (var card in Model.CardsProgress)
+    {
+        <p>@card.Card.Term (@card.Progress / 10)</p>
+    }
+}
