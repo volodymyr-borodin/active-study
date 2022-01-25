@@ -51,5 +51,22 @@ public class FlashCardsController : ControllerBase
         return Ok(new LearningRound(item.Items));
     }
 
+    [Authorize(Policy = "Education/FlashCards")]
+    [HttpPost("{id}/learn")]
+    public async Task<IActionResult> Learn(
+        [FromRoute] string id,
+        [FromBody] LearnInput model)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        var result = await learningProgressService.UpdateProgressAsync(userId, id, model.Answers);
+
+        return Ok(new
+        {
+            Results = result,
+            IsFinished = await learningProgressService.IsFinishedAsync(userId, id)
+        });
+    }
+
     public record LearningRound(IEnumerable<LearningRoundItem> CardsToLearn);
+    public record LearnInput(IEnumerable<NewAnswer> Answers);
 }
