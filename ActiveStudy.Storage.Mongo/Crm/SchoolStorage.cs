@@ -25,6 +25,11 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 Owner = school.Owner
             };
 
+            if (ObjectId.TryParse(school.Id, out var oid))
+            {
+                entity.Id = oid;
+            }
+
             await context.Schools.InsertOneAsync(entity);
 
             return entity.Id.ToString();

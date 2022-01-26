@@ -28,6 +28,7 @@ public class SchoolController : Controller
 
     private readonly ITeacherStorage teacherStorage;
     private readonly IAuditStorage auditStorage;
+    private readonly DemoSchool demoSchool;
 
     public SchoolController(ISchoolStorage schoolStorage,
         ICountryStorage countryStorage,
@@ -35,7 +36,8 @@ public class SchoolController : Controller
         UserManager userManager,
         RoleManager roleManager,
         ITeacherStorage teacherStorage,
-        IAuditStorage auditStorage)
+        IAuditStorage auditStorage,
+        DemoSchool demoSchool)
     {
         this.schoolStorage = schoolStorage;
         this.countryStorage = countryStorage;
@@ -44,12 +46,23 @@ public class SchoolController : Controller
         this.roleManager = roleManager;
         this.teacherStorage = teacherStorage;
         this.auditStorage = auditStorage;
+        this.demoSchool = demoSchool;
     }
 
     [HttpGet("create")]
     public async Task<IActionResult> Create()
     {
         return View(await BuildCreateModel());
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreateDemo()
+    {
+        var school = await demoSchool.InitAsync(currentUserProvider.User.AsUser());
+        await roleManager.AddDefaultAsync(school.Id);
+        await userManager.AddToRoleAsync(currentUserProvider.User, Role.Principal, school.Id);
+
+        return RedirectToAction("Details", new {id = school.Id});
     }
 
     [HttpPost("create")]

@@ -154,6 +154,8 @@ public class Startup
         services.AddScoped<IRelativesStorage, RelativesStorage>();
         services.AddScoped<ISchedulerStorage, SchedulerStorage>();
 
+        services.AddScoped<DemoSchool>();
+
         // materials
         services.AddScoped(_ => new MaterialsContext(mongoUrl));
         services.AddScoped<ITestWorksStorage, TestWorksStorage>();
