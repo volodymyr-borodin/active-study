@@ -32,10 +32,14 @@ public class ClassManager
         var dict = DaysRange(from, to)
             .ToDictionary(day => day, day =>
             {
-                // TODO: Validate EffectiveFrom/EffectiveTo dates
-                return (IReadOnlyCollection<Event>) scheduleTemplate.Periods
-                    .Select(p => p.Lessons[day.DayOfWeek] == null ? null : @class.CreateEvent(day, p.Start, p.End, p.Lessons[day.DayOfWeek].Teacher, p.Lessons[day.DayOfWeek].Subject))
-                    .ToList();
+                if (scheduleTemplate.EffectiveFrom <= day && day <= scheduleTemplate.EffectiveTo)
+                {
+                    return (IReadOnlyCollection<Event>) scheduleTemplate.Periods
+                        .Select(p => p.Lessons[day.DayOfWeek] == null ? null : @class.CreateEvent(day, p.Start, p.End, p.Lessons[day.DayOfWeek].Teacher, p.Lessons[day.DayOfWeek].Subject))
+                        .ToList();
+                }
+
+                return Array.Empty<Event>();
             });
 
         return new Schedule(dict, periods);
