@@ -25,7 +25,7 @@ public class LearningProgressService
             progresses.Add(await progressStorage.GetCardProgressAsync(userId, card));
         }
 
-        return new SetLearningProgress(set.Id, set.Title, progresses);
+        return new SetLearningProgress(set, progresses);
     }
 
     public async Task<LearningRound> GetNextRoundAsync(string userId, string cardSetId)

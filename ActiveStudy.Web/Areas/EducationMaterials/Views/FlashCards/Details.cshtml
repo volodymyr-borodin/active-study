@@ -6,6 +6,7 @@
 
 <h2>@Model.Set.Title</h2>
 <p>@Model.Set.Description</p>
+<p>Author: @Model.Set.Author.FullName</p>
 @if (User.Identity?.IsAuthenticated ?? false)
 {
     <a asp-action="Learn" asp-route-id="@Model.Set.Id">Learn</a>

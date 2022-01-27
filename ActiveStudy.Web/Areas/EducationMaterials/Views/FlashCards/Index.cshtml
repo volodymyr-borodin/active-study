@@ -13,6 +13,7 @@
     {
         <li>
             <a asp-controller="FlashCards" asp-action="Details" asp-route-id="@testWork.Id">@testWork.Title</a>
+            <p>Author: @testWork.Author.FullName</p>
         </li>
     }
 </ul>
