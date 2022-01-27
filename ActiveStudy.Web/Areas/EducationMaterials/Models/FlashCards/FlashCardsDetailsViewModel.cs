@@ -6,4 +6,4 @@ namespace ActiveStudy.Web.Areas.EducationMaterials.Models.FlashCards;
 
 public record FlashCardsDetailsViewModel(
     FlashCardSetDetails Set,
-    IEnumerable<CardLearningProgress> CardsProgress);
+    Dictionary<string, CardLearningProgress> Progress);

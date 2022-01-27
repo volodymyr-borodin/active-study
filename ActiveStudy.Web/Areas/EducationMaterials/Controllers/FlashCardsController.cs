@@ -60,7 +60,7 @@ public class FlashCardsController : Controller
             progress = (await learningProgressService.GetProgressAsync(currentUserProvider.User.Id, item)).CardsProgress;
         }
 
-        return View(new FlashCardsDetailsViewModel(item, progress));
+        return View(new FlashCardsDetailsViewModel(item, progress.ToDictionary(cardProgress => cardProgress.Card.Id)));
     }
 
     [Authorize]
