@@ -30,7 +30,7 @@ public class FlashCardsStorage : IFlashCardsStorage
         var cards = entity.Cards.Select(card =>
             new FlashCard(card.Id.ToString(), card.Term, card.Definition, card.Clues?.Select(clue => new Clue(clue.Text)) ?? Enumerable.Empty<Clue>()));
 
-        return new FlashCardSetDetails(entity.Id.ToString(), entity.Title, cards);
+        return new FlashCardSetDetails(entity.Id.ToString(), entity.Title, entity.Description ?? string.Empty, cards);
     }
 
     public async Task<IEnumerable<FlashCardSet>> FindAsync()
@@ -47,6 +47,7 @@ public class FlashCardsStorage : IFlashCardsStorage
         await context.FlashCardsSets.InsertOneAsync(new FlashCardsSetEntity
         {
             Title = set.Title,
+            Description = set.Description,
             Cards = set.Cards.Select(c => new FlashCardEntity
             {
                 Id = ObjectId.GenerateNewId(),

@@ -8,6 +8,9 @@ public class FlashCardsSetEntity
 {
     public ObjectId Id { get; set; }
 
+    [BsonElement("description")]
+    public string Description { get; set; }
+
     [BsonElement("title")]
     public string Title { get; set; }
 

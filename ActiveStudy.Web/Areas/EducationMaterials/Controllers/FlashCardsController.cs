@@ -45,7 +45,7 @@ public class FlashCardsController : Controller
     public async Task<IActionResult> Create(FlashCardSetCreateInputModel input)
     {
         var cards = input.Cards.Select(c => new FlashCard(string.Empty, c.Term, c.Definition, Enumerable.Empty<Clue>()));
-        await flashCardsService.CreateAsync(new FlashCardSetDetails(string.Empty, input.Title, cards));
+        await flashCardsService.CreateAsync(new FlashCardSetDetails(string.Empty, input.Title, input.Description, cards));
 
         return RedirectToAction("Index");
     }

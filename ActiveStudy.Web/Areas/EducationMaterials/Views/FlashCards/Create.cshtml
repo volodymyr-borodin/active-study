@@ -12,6 +12,13 @@
                autocomplete="off">
     </div>
 
+    <div>
+        <label asp-for="Description">@localizer["Description"]</label>
+        <textarea asp-for="Description"
+               placeholder="@localizer["Title"]"
+               autocomplete="off"></textarea>
+    </div>
+
     <fieldset v-for="(card, cardIndex) in cards">
         <div>
             <input type="text"
