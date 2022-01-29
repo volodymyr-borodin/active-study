@@ -11,6 +11,9 @@ namespace ActiveStudy.Storage.Mongo.Crm
         [BsonElement("title")]
         public string Title { get; set; }
 
+        [BsonElement("description")]
+        public string Description { get; set; }
+
         [BsonElement("country")]
         public CountryEntity Country { get; set; }
 
@@ -19,7 +22,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
 
         public static implicit operator School(SchoolEntity school)
         {
-            return new School(school.Id.ToString(), school.Title, school.Country, school.Owner);
+            return new School(school.Id.ToString(), school.Title, school.Description ?? string.Empty, school.Country, school.Owner);
         }
     }
 }

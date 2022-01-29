@@ -76,7 +76,7 @@ public class SchoolController : Controller
 
         var country = await countryStorage.GetByCodeAsync(CountryCode);
         var user = currentUserProvider.User.AsUser();
-        var school = new School(null, model.Title, country, user);
+        var school = new School(null, model.Title, model.Description ?? string.Empty, country, user);
 
         var schoolId = await schoolStorage.CreateAsync(school);
         await roleManager.AddDefaultAsync(schoolId);
@@ -128,6 +128,7 @@ public class SchoolController : Controller
         var countries = await countryStorage.SearchAsync();
 
         return new CreateSchoolModel(new SelectList(countries, "Code", "Name"),
+            string.Empty,
             string.Empty,
             string.Empty);
     }

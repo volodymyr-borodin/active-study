@@ -1,4 +1,5 @@
 @using ActiveStudy.Domain.Crm.Identity
+@using Markdig
 @model ActiveStudy.Web.Areas.Crm.Models.Schools.SchoolHomePageModel
 @inject IHtmlLocalizer<SharedResource> sharedLocalizer;
 @inject IViewLocalizer localizer
@@ -15,6 +16,10 @@
 }
 
 <vc:breadcrumb items="@breadcrumb" />
+
+<div>
+    @Html.Raw(Markdown.ToHtml(Model.School.Description))
+</div>
 
 <div>
     @if (await accessResolver.HasReadAccessAsync(User, Model.School.Id, Sections.Teachers))

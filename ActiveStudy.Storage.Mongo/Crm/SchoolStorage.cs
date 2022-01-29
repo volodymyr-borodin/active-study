@@ -21,6 +21,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
             var entity = new SchoolEntity
             {
                 Title = school.Title,
+                Description = school.Description,
                 Country = school.Country,
                 Owner = school.Owner
             };

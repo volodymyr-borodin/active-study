@@ -26,6 +26,14 @@
     </div>
 
     <div>
+        <label asp-for="Description">@localizer["Description"]</label>
+        <textarea cols="20" rows="10"
+               asp-for="Description"
+               placeholder="@localizer["Description"]"
+               autocomplete="off"></textarea>
+    </div>
+
+    <div>
         <label asp-for="CountryCode">@localizer["Country"]</label>
         <select asp-for="CountryCode"
                 asp-items="@Model.Countries"

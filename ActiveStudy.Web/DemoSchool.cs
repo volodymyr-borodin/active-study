@@ -33,7 +33,7 @@ public class DemoSchool
     public async Task<School> InitAsync(User owner)
     {
         // init school
-        var school = new School(ObjectId.GenerateNewId().ToString(), "Demo", new Country("Україна", "UA"), owner);
+        var school = new School(ObjectId.GenerateNewId().ToString(), "Demo", string.Empty, new Country("Україна", "UA"), owner);
         await schoolStorage.CreateAsync(school);
 
         // init teachers
