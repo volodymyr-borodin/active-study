@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Materials.FlashCards;
 using ActiveStudy.Domain.Materials.FlashCards.Progress;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace ActiveStudy.Storage.Mongo.Materials.FlashCards;
@@ -40,6 +41,7 @@ public class ProgressStorage : IProgressStorage
         {
             await context.FlashCardsProgress.InsertOneAsync(new UserFlashCardsProgressEntity
             {
+                Id = ObjectId.GenerateNewId(),
                 UserId = userId,
                 Progress = new Dictionary<string, int>
                 {
