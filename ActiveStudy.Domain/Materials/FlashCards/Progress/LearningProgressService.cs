@@ -77,10 +77,6 @@ public class LearningProgressService
     public async Task ResetProgressAsync(string userId, string cardSetId)
     {
         var set = await flashCardsService.GetByIdAsync(cardSetId);
-
-        foreach (var card in set.Cards)
-        {
-            await progressStorage.ClearProgressAsync(userId, card);
-        }
+        await progressStorage.ClearSetProgressAsync(userId, set);
     }
 }

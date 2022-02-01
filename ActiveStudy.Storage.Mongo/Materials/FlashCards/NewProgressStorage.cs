@@ -7,11 +7,11 @@ using MongoDB.Driver;
 
 namespace ActiveStudy.Storage.Mongo.Materials.FlashCards;
 
-public class NewProgressStorage : IProgressStorage
+public class ProgressStorage : IProgressStorage
 {
     private readonly MaterialsContext context;
 
-    public NewProgressStorage(MaterialsContext context)
+    public ProgressStorage(MaterialsContext context)
     {
         this.context = context;
     }
@@ -76,11 +76,11 @@ public class NewProgressStorage : IProgressStorage
         }
     }
 
-    public async Task ClearProgressAsync(string userId, FlashCard card)
+    public async Task ClearSetProgressAsync(string userId, FlashCardSetDetails set)
     {
         var filter = Builders<UserCardProgressEntity>.Filter.Eq(progress => progress.UserId, userId)
-                     & Builders<UserCardProgressEntity>.Filter.Eq(progress => progress.TermId, card.Id);
+                     & Builders<UserCardProgressEntity>.Filter.In(progress => progress.TermId, set.Cards.Select(c => c.Id));
 
-        await context.UserCardProgress.DeleteOneAsync(filter);
+        await context.UserCardProgress.DeleteManyAsync(filter);
     }
 }

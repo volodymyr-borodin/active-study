@@ -164,7 +164,7 @@ public class Startup
 
         services.AddScoped<IFlashCardsStorage, FlashCardsStorage>();
         services.AddScoped<FlashCardsService>();
-        services.AddScoped<IProgressStorage, NewProgressStorage>();
+        services.AddScoped<IProgressStorage, ProgressStorage>();
         services.AddScoped<LearningProgressService>();
 
         services.Configure<RouteOptions>(options =>
