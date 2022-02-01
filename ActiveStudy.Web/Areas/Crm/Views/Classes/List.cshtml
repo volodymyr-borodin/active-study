@@ -1,6 +1,8 @@
+@using ActiveStudy.Domain.Crm.Identity
 @model ActiveStudy.Web.Areas.Crm.Models.Classes.ClassesListPageModel
 @inject IHtmlLocalizer<SharedResource> sharedLocalizer;
 @inject IViewLocalizer localizer
+@inject IAccessResolver accessResolver
 
 @{
     ViewData["Title"] = sharedLocalizer["Classes"].Value + " | " + Model.School.Title;
@@ -14,12 +16,14 @@
 }
 
 <vc:breadcrumb items="@breadcrumb" />
-<a asp-area="Crm"
-   asp-controller="Classes"
-   asp-action="Create"
-   asp-route-schoolId="@Model.School.Id">
-    @sharedLocalizer["Add Class"]
-</a>
+
+@if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Classes))
+{
+    <a asp-area="Crm"
+       asp-controller="Classes"
+       asp-action="Create"
+       asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Add Class"]</a>
+}
 <ul>
     @foreach (var cls in Model.Classes)
     {

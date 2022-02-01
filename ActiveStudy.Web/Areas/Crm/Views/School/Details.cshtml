@@ -27,9 +27,11 @@
         <a asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">
             @sharedLocalizer["Teachers"]
         </a>
-        <text>|</text>
     }
-    <a asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
-        @sharedLocalizer["Classes"]
-    </a>
+    @if (await accessResolver.HasReadAccessAsync(User, Model.School.Id, Sections.Classes))
+    {
+        <a asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">
+            @sharedLocalizer["Classes"]
+        </a>
+    }
 </div>

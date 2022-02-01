@@ -61,6 +61,11 @@ public class ClassesController : Controller
     [HttpGet]
     public async Task<IActionResult> List([Required]string schoolId)
     {
+        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Classes))
+        {
+            return Forbid();
+        }
+        
         var school = await schoolStorage.GetByIdAsync(schoolId);
         var classes = await classStorage.FindAsync(schoolId);
 
@@ -72,6 +77,11 @@ public class ClassesController : Controller
         [Required] string id,
         string scheduleDate = null)
     {
+        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Classes))
+        {
+            return Forbid();
+        }
+
         var @class = await classStorage.GetByIdAsync(id);
         var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
         var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
@@ -107,8 +117,15 @@ public class ClassesController : Controller
     }
 
     [HttpGet("{id}/schedule-templates/create")]
-    public async Task<IActionResult> CreateScheduleTemplate([Required] string id)
+    public async Task<IActionResult> CreateScheduleTemplate(
+        [Required] string schoolId,
+        [Required] string id)
     {
+        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Classes))
+        {
+            return Forbid();
+        }
+
         var schedule = await classStorage.GetScheduleTemplateAsync(id);
         var @class = await classStorage.GetByIdAsync(id);
         var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
@@ -185,9 +202,16 @@ public class ClassesController : Controller
     }
 
     [HttpPost("{id}/schedule-templates/create")]
-    public async Task<IActionResult> CreateScheduleTemplate([Required] string id,
+    public async Task<IActionResult> CreateScheduleTemplate(
+        [Required] string schoolId,
+        [Required] string id,
         ClassScheduleTemplateInputModel model)
     {
+        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Classes))
+        {
+            return Forbid();
+        }
+
         var @class = await classStorage.GetByIdAsync(id);
         var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
         var classInfo = (ClassShortInfo) @class;
@@ -267,6 +291,11 @@ public class ClassesController : Controller
     [HttpGet("create")]
     public async Task<IActionResult> Create(string schoolId)
     {
+        if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Classes))
+        {
+            return Forbid();
+        }
+        
         var school = await schoolStorage.GetByIdAsync(schoolId);
         var teachers = await teacherStorage.FindAsync(schoolId);
 
@@ -283,8 +312,15 @@ public class ClassesController : Controller
 
     [HttpPost("create")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Required]string schoolId, CreateClassInputModel model)
+    public async Task<IActionResult> Create(
+        [Required]string schoolId,
+        CreateClassInputModel model)
     {
+        if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Classes))
+        {
+            return Forbid();
+        }
+
         var school = await schoolStorage.GetByIdAsync(schoolId);
         if (!ModelState.IsValid)
         {
