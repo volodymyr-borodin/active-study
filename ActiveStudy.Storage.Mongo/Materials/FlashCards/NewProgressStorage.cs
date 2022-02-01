@@ -38,17 +38,13 @@ public class NewProgressStorage : IProgressStorage
         var progress = await context.UserCardProgress.Find(filter).FirstOrDefaultAsync();
         if (progress == null)
         {
-            await context.UserCardProgress.ReplaceOneAsync(filter, new UserCardProgressEntity
-                {
-                    UserId = userId,
-                    TermId = card.Id,
-                    Progress = amount,
-                    UpdatedOn = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-                },
-                new ReplaceOptions
-                {
-                    IsUpsert = true
-                });
+            await context.UserCardProgress.InsertOneAsync(new UserCardProgressEntity
+            {
+                UserId = userId,
+                TermId = card.Id,
+                Progress = amount,
+                UpdatedOn = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+            });
         }
         else
         {
