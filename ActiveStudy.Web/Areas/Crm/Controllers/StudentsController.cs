@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Identity;
 using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
@@ -24,13 +25,15 @@ public class StudentsController : Controller
     private readonly IRelativesStorage relativesStorage;
     private readonly IAuditStorage auditStorage;
     private readonly CurrentUserProvider currentUserProvider;
+    private readonly IAccessResolver accessResolver;
 
     public StudentsController(ISchoolStorage schoolStorage,
         IStudentStorage studentStorage,
         IClassStorage classStorage,
         IRelativesStorage relativesStorage,
         IAuditStorage auditStorage,
-        CurrentUserProvider currentUserProvider)
+        CurrentUserProvider currentUserProvider,
+        IAccessResolver accessResolver)
     {
         this.schoolStorage = schoolStorage;
         this.studentStorage = studentStorage;
@@ -38,11 +41,19 @@ public class StudentsController : Controller
         this.relativesStorage = relativesStorage;
         this.auditStorage = auditStorage;
         this.currentUserProvider = currentUserProvider;
+        this.accessResolver = accessResolver;
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Details([Required] string id)
+    public async Task<IActionResult> Details(
+        [Required] string schoolId,
+        [Required] string id)
     {
+        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Students))
+        {
+            return Forbid();
+        }
+
         var student = await studentStorage.GetByIdAsync(id);
         var relatives = await relativesStorage.SearchAsync(student.Id);
         return View(new StudentDetailsPageModel(student.FullName, relatives));
@@ -51,6 +62,11 @@ public class StudentsController : Controller
     [HttpGet("create")]
     public async Task<IActionResult> Create(string schoolId, string classId)
     {
+        if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Students))
+        {
+            return Forbid();
+        }
+
         return View(await Build(schoolId, classId));
     }
 
@@ -58,6 +74,11 @@ public class StudentsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create([Required]string schoolId, CreateStudentInputModel model)
     {
+        if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Students))
+        {
+            return Forbid();
+        }
+
         if (!ModelState.IsValid)
         {
             return View(await Build(schoolId, model?.ClassId, model));

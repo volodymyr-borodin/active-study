@@ -7,6 +7,7 @@ using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
 using ActiveStudy.Domain.Crm.Classes.ScheduleTemplate;
+using ActiveStudy.Domain.Crm.Identity;
 using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
@@ -29,6 +30,7 @@ public class ClassesController : Controller
     private readonly IRelativesStorage relativesStorage;
     private readonly ITeacherStorage teacherStorage;
     private readonly ISubjectStorage subjectStorage;
+    private readonly IAccessResolver accessResolver;
     private readonly ClassManager classManager;
     private readonly IAuditStorage auditStorage;
     private readonly CurrentUserProvider currentUserProvider;
@@ -40,7 +42,9 @@ public class ClassesController : Controller
         ITeacherStorage teacherStorage,
         ClassManager classManager,
         IAuditStorage auditStorage,
-        CurrentUserProvider currentUserProvider, ISubjectStorage subjectStorage)
+        CurrentUserProvider currentUserProvider,
+        ISubjectStorage subjectStorage,
+        IAccessResolver accessResolver)
     {
         this.classStorage = classStorage;
         this.studentStorage = studentStorage;
@@ -50,6 +54,7 @@ public class ClassesController : Controller
         this.auditStorage = auditStorage;
         this.currentUserProvider = currentUserProvider;
         this.subjectStorage = subjectStorage;
+        this.accessResolver = accessResolver;
         this.schoolStorage = schoolStorage;
     }
 
@@ -220,6 +225,11 @@ public class ClassesController : Controller
         [Required] string id,
         string scheduleDate = null)
     {
+        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Students))
+        {
+            return Forbid();
+        }
+        
         var @class = await classStorage.GetByIdAsync(id);
         var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
         var school = await schoolStorage.GetByIdAsync(@class.SchoolId);

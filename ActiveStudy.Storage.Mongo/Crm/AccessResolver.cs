@@ -18,40 +18,20 @@ public class AccessResolver : IAccessResolver
         this.userManager = userManager;
         this.roleManager = roleManager;
     }
-    
-    public async Task<bool> HasFullAccessAsync(string userId, string schoolId, Guid section)
-    {
-        var userRoles = await GetUserRoleInSchoolAsync(userId, schoolId);
-
-        return userRoles.Any(role => role.Access[Sections.Teachers] == AccessLevel.Full);
-    }
 
     public async Task<bool> HasFullAccessAsync(ClaimsPrincipal user, string schoolId, Guid section)
     {
         var userRoles = await GetUserRoleInSchoolAsync(user, schoolId);
 
-        return userRoles.Any(role => role.Access[Sections.Teachers] == AccessLevel.Full);
-    }
-
-    public async Task<bool> HasReadAccessAsync(string userId, string schoolId, Guid section)
-    {
-        var userRoles = await GetUserRoleInSchoolAsync(userId, schoolId);
-
-        return userRoles.Any(role => role.Access[Sections.Teachers] == AccessLevel.Readonly
-                                     || role.Access[Sections.Teachers] == AccessLevel.Full);
+        return userRoles.Any(role => role.Access[section] == AccessLevel.Full);
     }
 
     public async Task<bool> HasReadAccessAsync(ClaimsPrincipal user, string schoolId, Guid section)
     {
         var userRoles = await GetUserRoleInSchoolAsync(user, schoolId);
 
-        return userRoles.Any(role => role.Access[Sections.Teachers] == AccessLevel.Readonly
-                                     || role.Access[Sections.Teachers] == AccessLevel.Full);
-    }
-
-    private async Task<IEnumerable<Role>> GetUserRoleInSchoolAsync(string userId, string schoolId)
-    {
-        return await GetUserRoleInSchoolAsync(await userManager.FindByIdAsync(userId), schoolId);
+        return userRoles.Any(role => role.Access[section] == AccessLevel.Readonly
+                                     || role.Access[section] == AccessLevel.Full);
     }
 
     private async Task<IEnumerable<Role>> GetUserRoleInSchoolAsync(ClaimsPrincipal user, string schoolId)
