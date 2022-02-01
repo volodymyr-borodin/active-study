@@ -8,8 +8,10 @@ using ActiveStudy.Domain.Crm.Identity;
 using ActiveStudy.Domain.Crm.Relatives;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Students;
+using ActiveStudy.Storage.Mongo.Identity;
 using ActiveStudy.Web.Areas.Crm.Models.Students;
 using ActiveStudy.Web.Models;
+using ActiveStudy.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +28,8 @@ public class StudentsController : Controller
     private readonly IAuditStorage auditStorage;
     private readonly CurrentUserProvider currentUserProvider;
     private readonly IAccessResolver accessResolver;
+    private readonly UserManager userManager;
+    private readonly NotificationManager notificationManager;
 
     public StudentsController(ISchoolStorage schoolStorage,
         IStudentStorage studentStorage,
@@ -33,7 +37,9 @@ public class StudentsController : Controller
         IRelativesStorage relativesStorage,
         IAuditStorage auditStorage,
         CurrentUserProvider currentUserProvider,
-        IAccessResolver accessResolver)
+        IAccessResolver accessResolver,
+        UserManager userManager,
+        NotificationManager notificationManager)
     {
         this.schoolStorage = schoolStorage;
         this.studentStorage = studentStorage;
@@ -42,6 +48,8 @@ public class StudentsController : Controller
         this.auditStorage = auditStorage;
         this.currentUserProvider = currentUserProvider;
         this.accessResolver = accessResolver;
+        this.userManager = userManager;
+        this.notificationManager = notificationManager;
     }
 
     [HttpGet("{id}")]
@@ -92,7 +100,7 @@ public class StudentsController : Controller
             classInfo = new ClassShortInfo(@class.Id, @class.Title);
         }
 
-        var student = new Student(string.Empty, model.FirstName, model.LastName, model.Email, model.Phone, schoolId, classInfo == null ? Enumerable.Empty<ClassShortInfo>() : new [] { classInfo });
+        var student = new Student(string.Empty, model.FirstName, model.LastName, model.Email, model.Phone, schoolId, null, classInfo == null ? Enumerable.Empty<ClassShortInfo>() : new [] { classInfo });
         var studentId = await studentStorage.InsertAsync(student);
 
         var school = await schoolStorage.GetByIdAsync(schoolId);
@@ -109,6 +117,57 @@ public class StudentsController : Controller
 
         return RedirectToAction("Details", "Classes", new { schoolId, id = model.ClassId });
     }
+
+    [HttpPost("{id}/invite")]
+    public async Task<IActionResult> Invite([Required] string schoolId, [Required] string id)
+    {
+        if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Students))
+        {
+            return Forbid();
+        }
+
+        var student = await studentStorage.GetByIdAsync(id);
+        var school = await schoolStorage.GetByIdAsync(schoolId);
+
+        var user = new ActiveStudyUserEntity
+        {
+            UserName = student.Email,
+            Email = student.Email,
+            FirstName = student.FirstName,
+            LastName = student.LastName
+        };
+
+        var existingUser = await userManager.FindByNameAsync(user.UserName);
+        if (existingUser != null)
+        {
+            // var schoolIds = await userManager.GetSchoolClaimsAsync(existingUser);
+            // if (schoolIds.Any(s => s.Value == schoolId))
+            // {
+            //     // TODO: Show error
+            //     return RedirectToAction("List", new {schoolId});
+            // }
+
+            await userManager.AddToRoleAsync(existingUser, Role.Student, schoolId);
+            await SendInvitationEmail(school, existingUser);
+            await studentStorage.SetUserIdAsync(student.Id, existingUser.Id);
+        }
+        else
+        {
+            var result = await userManager.CreateAsync(user);
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, Role.Student, schoolId);
+                await SendInvitationEmail(school, user);
+                await studentStorage.SetUserIdAsync(student.Id, user.Id);
+            }
+        }
+
+        await auditStorage.LogStudentInvitedAsync(school.Id, school.Title,
+            student.Id, student.FullName,
+            currentUserProvider.User.AsUser());
+            
+        return RedirectToAction("Details", "School", new {id = schoolId});
+    }
     
     private async Task<CreateStudentViewModel> Build(string schoolId, string classId, CreateStudentInputModel input = null)
     {
@@ -124,5 +183,21 @@ public class StudentsController : Controller
             input?.Email,
             input?.Phone,
             input?.ClassId);
+    }
+
+    private async Task SendInvitationEmail(School school, ActiveStudyUserEntity user)
+    {
+        var url = Url.Action(
+            "CompleteInvitation",
+            "Account",
+            new
+            {
+                userId = user.Id,
+                code = await userManager.GenerateEmailConfirmationTokenAsync(user)
+            }, 
+            Request.Scheme);
+
+        await notificationManager.SendInvitationEmailAsync(new InvitationEmailTemplateInfo(
+            user, school, url, currentUserProvider.User));
     }
 }

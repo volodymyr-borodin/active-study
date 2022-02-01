@@ -9,7 +9,7 @@ public record Role(string Name, IDictionary<Guid, AccessLevel> Access)
     public static readonly Role Principal = new Role(PrincipalName, new Dictionary<Guid, AccessLevel>
     {
         [Sections.Teachers] = AccessLevel.Full,
-        [Sections.Students] = AccessLevel.Readonly
+        [Sections.Students] = AccessLevel.Full
     });
 
     public const string TeacherName = "Teacher";

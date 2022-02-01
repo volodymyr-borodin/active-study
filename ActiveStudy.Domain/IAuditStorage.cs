@@ -141,6 +141,22 @@ namespace ActiveStudy.Domain
                 user));
         }
 
+        public static async Task LogStudentInvitedAsync(this IAuditStorage auditStorage,
+            string schoolId, string schoolTitle,
+            string studentId, string studentName,
+            User user)
+        {
+            await auditStorage.LogAsync(new AuditItem(AuditItem.TeacherInvited,
+                new Dictionary<string, string>
+                {
+                    ["schoolId"] = schoolId,
+                    ["schoolTitle"] = schoolTitle,
+                    ["studentId"] = studentId,
+                    ["studentName"] = studentName
+                },
+                user));
+        }
+
         public static async Task LogClassCreatedAsync(this IAuditStorage auditStorage,
             string schoolId, string schoolTitle,
             string classId, string classTitle,

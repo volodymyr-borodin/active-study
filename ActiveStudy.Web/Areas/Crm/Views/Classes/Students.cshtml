@@ -32,14 +32,21 @@
             <a asp-controller="Students"
                asp-action="Details"
                asp-route-schoolId="@Model.School.Id"
-               asp-route-id="@student.Id">
-                @student.FullName
-            </a>
+               asp-route-id="@student.Id">@student.FullName</a>
             <a asp-controller="Relatives"
                asp-action="Create"
                asp-route-schoolId="@Model.School.Id"
-               asp-route-studentId="@student.Id"
-               >@sharedLocalizer["Add Relative"]</a>
+               asp-route-studentId="@student.Id">@sharedLocalizer["Add Relative"]</a>
+            @if (!await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Students))
+            {
+                <form asp-controller="Students"
+                      asp-action="Invite"
+                      asp-route-schoolId="@Model.School.Id"
+                      asp-route-id="@student.Id">
+                    <button type="submit">@sharedLocalizer["Invite"]</button>
+                </form>
+            }
+
             @if (student.Relatives.Any())
             {
                 <ul>

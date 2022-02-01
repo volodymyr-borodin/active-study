@@ -13,11 +13,12 @@ namespace ActiveStudy.Domain.Crm.Students
 
         // Access related fields
         public string SchoolId { get; }
+        public string UserId { get; }
         public IEnumerable<ClassShortInfo> Classes { get; }
 
         public string FullName => $"{FirstName} {LastName}";
 
-        public Student(string id, string firstName, string lastName, string email, string phone, string schoolId, IEnumerable<ClassShortInfo> classes)
+        public Student(string id, string firstName, string lastName, string email, string phone, string schoolId, string userId, IEnumerable<ClassShortInfo> classes)
         {
             Id = id;
             FirstName = firstName;
@@ -25,6 +26,7 @@ namespace ActiveStudy.Domain.Crm.Students
             Email = email;
             Phone = phone;
             SchoolId = schoolId;
+            UserId = userId;
             Classes = classes;
         }
     }

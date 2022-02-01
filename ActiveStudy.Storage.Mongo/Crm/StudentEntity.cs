@@ -26,6 +26,9 @@ namespace ActiveStudy.Storage.Mongo.Crm
         [BsonElement("schoolId")]
         public ObjectId SchoolId { get; set; }
 
+        [BsonElement("userId")]
+        public string UserId { get; set; }
+
         [BsonElement("classes")]
         public IList<ClassShortEntity> Classes { get; set; }
 
@@ -39,7 +42,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
             var classes = student.Classes.Select(c => (ClassShortInfo)c);
 
             return new Student(student.Id.ToString(), student.FirstName, student.LastName,
-                student.Email, student.Phone, student.SchoolId.ToString(), classes);
+                student.Email, student.Phone, student.SchoolId.ToString(), student.UserId, classes);
         }
     }
 }
