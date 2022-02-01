@@ -4,8 +4,8 @@ namespace ActiveStudy.Domain.Materials.FlashCards.Progress;
 
 public interface IProgressStorage
 {
-    Task<CardLearningProgress> GetCardProgressAsync(string userId, FlashCard card);
-    Task IncreaseProgressAsync(string userId, FlashCard card);
-    Task DecreaseProgressAsync(string userId, FlashCard card);
+    Task<SetLearningProgress> GetSetProgressAsync(string userId, FlashCardSetDetails set);
+    Task IncreaseProgressAsync(string userId, FlashCard card, int amount);
+    Task DecreaseProgressAsync(string userId, FlashCard card, int amount);
     Task ClearProgressAsync(string userId, FlashCard card);
 }

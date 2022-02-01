@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain.Materials.FlashCards;
 using ActiveStudy.Domain.Materials.FlashCards.Progress;
@@ -15,23 +16,21 @@ public class ProgressStorage : IProgressStorage
     {
         this.context = context;
     }
-    
-    public async Task<CardLearningProgress> GetCardProgressAsync(string userId, FlashCard card)
+
+    public async Task<SetLearningProgress> GetSetProgressAsync(string userId, FlashCardSetDetails set)
     {
         var userProgress = await context.FlashCardsProgress
             .Find(Builders<UserFlashCardsProgressEntity>.Filter.Eq(progress => progress.UserId, userId))
             .FirstOrDefaultAsync();
 
-        var progress = 0;
-        if (userProgress != null && userProgress.Progress.ContainsKey(card.Id))
-        {
-            progress = userProgress.Progress[card.Id];
-        }
-
-        return new CardLearningProgress(progress, card);
+        return new SetLearningProgress(set, set.Cards
+            .Select(c => new CardLearningProgress(
+                userProgress?.Progress.ContainsKey(c.Id) ?? false
+                    ? userProgress.Progress[c.Id]
+                    : 0, c)));
     }
 
-    public async Task IncreaseProgressAsync(string userId, FlashCard card)
+    public async Task IncreaseProgressAsync(string userId, FlashCard card, int amount)
     {
         var userProgress = await context.FlashCardsProgress
             .Find(Builders<UserFlashCardsProgressEntity>.Filter.Eq(progress => progress.UserId, userId))
@@ -44,7 +43,7 @@ public class ProgressStorage : IProgressStorage
                 UserId = userId,
                 Progress = new Dictionary<string, int>
                 {
-                    [card.Id] = 5
+                    [card.Id] = amount
                 }
             });
         }
@@ -52,18 +51,18 @@ public class ProgressStorage : IProgressStorage
         {
             if (userProgress.Progress.ContainsKey(card.Id))
             {
-                userProgress.Progress[card.Id] = Math.Min(userProgress.Progress[card.Id] + 5, 10);
+                userProgress.Progress[card.Id] = Math.Min(userProgress.Progress[card.Id] + amount, 10);
             }
             else
             {
-                userProgress.Progress[card.Id] = 5;
+                userProgress.Progress[card.Id] = amount;
             }
             await context.FlashCardsProgress
                 .ReplaceOneAsync(Builders<UserFlashCardsProgressEntity>.Filter.Eq(progress => progress.UserId, userId), userProgress);
         }
     }
 
-    public async Task DecreaseProgressAsync(string userId, FlashCard card)
+    public async Task DecreaseProgressAsync(string userId, FlashCard card, int amount)
     {
         var userProgress = await context.FlashCardsProgress
             .Find(Builders<UserFlashCardsProgressEntity>.Filter.Eq(progress => progress.UserId, userId))
@@ -73,7 +72,7 @@ public class ProgressStorage : IProgressStorage
         {
             if (userProgress.Progress.ContainsKey(card.Id))
             {
-                userProgress.Progress[card.Id] = Math.Max(userProgress.Progress[card.Id] - 3, 0);
+                userProgress.Progress[card.Id] = Math.Max(userProgress.Progress[card.Id] - amount, 0);
                 await context.FlashCardsProgress
                     .ReplaceOneAsync(Builders<UserFlashCardsProgressEntity>.Filter.Eq(progress => progress.UserId, userId), userProgress);
             }

@@ -17,15 +17,9 @@ public class LearningProgressService
         this.progressStorage = progressStorage;
     }
 
-    public async Task<SetLearningProgress> GetProgressAsync(string userId, FlashCardSetDetails set)
+    public Task<SetLearningProgress> GetProgressAsync(string userId, FlashCardSetDetails set)
     {
-        var progresses = new List<CardLearningProgress>(set.Cards.Count());
-        foreach (var card in set.Cards)
-        {
-            progresses.Add(await progressStorage.GetCardProgressAsync(userId, card));
-        }
-
-        return new SetLearningProgress(set, progresses);
+        return progressStorage.GetSetProgressAsync(userId, set);
     }
 
     public async Task<LearningRound> GetNextRoundAsync(string userId, string cardSetId)
@@ -67,11 +61,11 @@ public class LearningProgressService
             var a = new AnswerResult(answer, card);
             if (a.IsCorrect)
             {
-                await progressStorage.IncreaseProgressAsync(userId, card);
+                await progressStorage.IncreaseProgressAsync(userId, card, 5);
             }
             else
             {
-                await progressStorage.DecreaseProgressAsync(userId, card);
+                await progressStorage.DecreaseProgressAsync(userId, card, 3);
             }
 
             result.Add(a);
