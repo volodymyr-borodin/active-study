@@ -23,7 +23,7 @@ public class ProgressStorage : IProgressStorage
             .Find(Builders<UserFlashCardsProgressEntity>.Filter.Eq(progress => progress.UserId, userId))
             .FirstOrDefaultAsync();
 
-        return new SetLearningProgress(set, set.Cards
+        return new SetLearningProgress(set.Cards
             .Select(c => new CardLearningProgress(
                 userProgress?.Progress.ContainsKey(c.Id) ?? false
                     ? userProgress.Progress[c.Id]
