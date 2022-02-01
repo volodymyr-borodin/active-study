@@ -12,6 +12,7 @@ namespace ActiveStudy.Storage.Mongo.Materials
 
         public IMongoCollection<FlashCardsSetEntity> FlashCardsSets => database.GetCollection<FlashCardsSetEntity>("flashCardsSets");
         public IMongoCollection<UserFlashCardsProgressEntity> FlashCardsProgress => database.GetCollection<UserFlashCardsProgressEntity>("flashCardsProgress");
+        public IMongoCollection<UserCardProgressEntity> UserCardProgress => database.GetCollection<UserCardProgressEntity>("userCardProgress");
 
         public MaterialsContext(MongoUrl url)
         {

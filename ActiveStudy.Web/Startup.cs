@@ -164,7 +164,7 @@ public class Startup
 
         services.AddScoped<IFlashCardsStorage, FlashCardsStorage>();
         services.AddScoped<FlashCardsService>();
-        services.AddScoped<IProgressStorage, ProgressStorage>();
+        services.AddScoped<IProgressStorage, NewProgressStorage>();
         services.AddScoped<LearningProgressService>();
 
         services.Configure<RouteOptions>(options =>
@@ -183,7 +183,7 @@ public class Startup
         services.AddAuthentication();
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
     {
         if (env.IsDevelopment())
         {
@@ -226,6 +226,18 @@ public class Startup
                 areaName: Area.EducationMaterials,
                 name: "materials",
                 pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+        });
+
+        applicationLifetime.ApplicationStarted.Register(() =>
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var materialsContext = scope.ServiceProvider.GetRequiredService<MaterialsContext>();
+
+            var index = Builders<UserCardProgressEntity>.IndexKeys.Combine(
+                Builders<UserCardProgressEntity>.IndexKeys.Ascending(progress => progress.UserId),
+                Builders<UserCardProgressEntity>.IndexKeys.Ascending(progress => progress.TermId));
+
+            materialsContext.UserCardProgress.Indexes.CreateOneAsync(new CreateIndexModel<UserCardProgressEntity>(index));
         });
     }
 }
