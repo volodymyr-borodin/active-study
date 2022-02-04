@@ -23,7 +23,6 @@ public class TeachersController : Controller
 {
     private readonly ITeacherStorage teacherStorage;
     private readonly ISchoolStorage schoolStorage;
-    private readonly ISubjectStorage subjectStorage;
     private readonly IClassStorage classStorage;
     private readonly IAuditStorage auditStorage;
     private readonly ISchedulerStorage scheduleStorage;
@@ -34,7 +33,6 @@ public class TeachersController : Controller
 
     public TeachersController(ITeacherStorage teacherStorage,
         ISchoolStorage schoolStorage,
-        ISubjectStorage subjectStorage,
         IClassStorage classStorage,
         ISchedulerStorage scheduleStorage,
         IAuditStorage auditStorage,
@@ -45,7 +43,6 @@ public class TeachersController : Controller
     {
         this.teacherStorage = teacherStorage;
         this.schoolStorage = schoolStorage;
-        this.subjectStorage = subjectStorage;
         this.classStorage = classStorage;
         this.scheduleStorage = scheduleStorage;
         this.auditStorage = auditStorage;
@@ -120,8 +117,8 @@ public class TeachersController : Controller
         var school = await schoolStorage.GetByIdAsync(schoolId);
 
         // TODO: Validate create class access to school
-        var subjects = await subjectStorage.SearchAsync(model.SubjectIds);
-            
+        var subjects = await schoolStorage.GetSubjectsAsync(schoolId, model.SubjectIds);
+
         var teacher = new Teacher(string.Empty, model.FirstName, model.LastName, model.MiddleName, model.Email, subjects, schoolId, null);
         var teacherId = await teacherStorage.InsertAsync(teacher);
 
@@ -209,7 +206,7 @@ public class TeachersController : Controller
     private async Task<CreateTeacherViewModel> Build(string schoolId, CreateTeacherInputModel input = null)
     {
         var school = await schoolStorage.GetByIdAsync(schoolId);
-        var subjects = await subjectStorage.SearchAsync(school.Country.Code);
+        var subjects = await schoolStorage.GetSubjectsAsync(school.Id);
 
         return new CreateTeacherViewModel(
             school,

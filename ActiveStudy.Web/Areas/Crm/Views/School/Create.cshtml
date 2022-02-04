@@ -41,6 +41,17 @@
         </select>
     </div>
 
+    <fieldset>
+        <legend>Subjects</legend>
+        @for (var i = 0; i < Model.Subjects.Length; i++)
+        {
+            <div>
+                @{ var i1 = i; }
+                <input asp-for="@Model.Subjects[i1]" />
+            </div>
+        }
+    </fieldset>
+
     <div>
         <button type="submit">@localizer["Save"]</button>
     </div>

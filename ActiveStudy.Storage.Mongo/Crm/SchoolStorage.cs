@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Schools;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -34,6 +35,37 @@ namespace ActiveStudy.Storage.Mongo.Crm
             await context.Schools.InsertOneAsync(entity);
 
             return entity.Id.ToString();
+        }
+
+        public async Task<IEnumerable<Subject>> GetSubjectsAsync(string id, IEnumerable<string> subjectIds = null)
+        {
+            var filter = Builders<SchoolSubjectEntity>.Filter.Eq(subject => subject.SchoolId, id);
+            if (subjectIds != null)
+            {
+                filter &= Builders<SchoolSubjectEntity>.Filter.In(cr => cr.Id, subjectIds.Select(sid => new ObjectId(sid)));
+            }
+
+            var entities = await context.SchoolSubjects
+                .Find(filter)
+                .ToListAsync();
+
+            return entities
+                .Select(e => new Subject(e.Id.ToString(), e.Title))
+                .ToList();
+        }
+
+        public async Task InsertSubjectsAsync(string id, IEnumerable<Subject> subjects)
+        {
+            var entities = subjects.Select(s => new SchoolSubjectEntity
+            {
+                Id = s.Id == null
+                    ? ObjectId.GenerateNewId()
+                    : ObjectId.Parse(s.Id),
+                SchoolId = id,
+                Title = s.Title
+            });
+
+            await context.SchoolSubjects.InsertManyAsync(entities);
         }
 
         public async Task<IEnumerable<School>> SearchByIdsAsync(IEnumerable<string> ids)

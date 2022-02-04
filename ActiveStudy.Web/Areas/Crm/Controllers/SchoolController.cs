@@ -79,6 +79,8 @@ public class SchoolController : Controller
         var school = new School(null, model.Title, model.Description ?? string.Empty, country, user);
 
         var schoolId = await schoolStorage.CreateAsync(school);
+        var subjects = model.Subjects.Select(s => new Subject(null, s)).ToList();
+        await schoolStorage.InsertSubjectsAsync(schoolId, subjects);
         await roleManager.AddDefaultAsync(schoolId);
         await auditStorage.LogSchoolCreateAsync(schoolId, school.Title, user);
 
@@ -130,6 +132,7 @@ public class SchoolController : Controller
         return new CreateSchoolModel(new SelectList(countries, "Code", "Name"),
             string.Empty,
             string.Empty,
-            string.Empty);
+            string.Empty,
+            Enumerable.Range(0, 6).Select(_ => string.Empty).ToArray());
     }
 }

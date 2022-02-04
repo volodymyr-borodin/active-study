@@ -6,4 +6,5 @@ public record CreateSchoolModel(
     SelectList Countries,
     string Title,
     string Description,
-    string CountryCode) : CreateSchoolInputModel(Title, Description, CountryCode);
+    string CountryCode,
+    string[] Subjects) : CreateSchoolInputModel(Title, Description, CountryCode, Subjects);

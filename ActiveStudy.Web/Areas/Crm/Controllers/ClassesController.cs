@@ -29,7 +29,6 @@ public class ClassesController : Controller
     private readonly IStudentStorage studentStorage;
     private readonly IRelativesStorage relativesStorage;
     private readonly ITeacherStorage teacherStorage;
-    private readonly ISubjectStorage subjectStorage;
     private readonly IAccessResolver accessResolver;
     private readonly ClassManager classManager;
     private readonly IAuditStorage auditStorage;
@@ -43,7 +42,6 @@ public class ClassesController : Controller
         ClassManager classManager,
         IAuditStorage auditStorage,
         CurrentUserProvider currentUserProvider,
-        ISubjectStorage subjectStorage,
         IAccessResolver accessResolver)
     {
         this.classStorage = classStorage;
@@ -53,7 +51,6 @@ public class ClassesController : Controller
         this.classManager = classManager;
         this.auditStorage = auditStorage;
         this.currentUserProvider = currentUserProvider;
-        this.subjectStorage = subjectStorage;
         this.accessResolver = accessResolver;
         this.schoolStorage = schoolStorage;
     }
@@ -128,10 +125,9 @@ public class ClassesController : Controller
 
         var schedule = await classStorage.GetScheduleTemplateAsync(id);
         var @class = await classStorage.GetByIdAsync(id);
-        var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
-        var subjects = (await subjectStorage.SearchAsync(school.Country.Code))
+        var subjects = (await schoolStorage.GetSubjectsAsync(@class.SchoolId))
             .Select(subject => new SelectListItem(subject.Title, subject.Id)).Append(new SelectListItem("", null, true));
-        var teachers = (await teacherStorage.FindAsync(school.Id))
+        var teachers = (await teacherStorage.FindAsync(@class.SchoolId))
             .Select(teacher => new SelectListItem(teacher.FullName, teacher.Id)).Append(new SelectListItem("", null, true));
 
         if (schedule == null)
@@ -213,12 +209,11 @@ public class ClassesController : Controller
         }
 
         var @class = await classStorage.GetByIdAsync(id);
-        var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
         var classInfo = (ClassShortInfo) @class;
 
         var schedulePeriods = new List<SchedulePeriod>();
         var teachers = await teacherStorage.FindAsync(@class.SchoolId);
-        var subjects = await subjectStorage.SearchAsync(school.Country.Code);
+        var subjects = await schoolStorage.GetSubjectsAsync(@class.SchoolId);
         foreach (var p in model.Periods)
         {
             var period = new SchedulePeriod(p.Start, p.End, new Dictionary<DayOfWeek, ScheduleTemplateLesson>());
@@ -241,7 +236,7 @@ public class ClassesController : Controller
         var (schedule, result) = ClassScheduleTemplate.New(model.EffectiveFrom, model.EffectiveTo, schedulePeriods);
         await classManager.SaveScheduleTemplateAsync(@class, schedule);
 
-        return RedirectToAction("Details", new {id = id, schoolId = school.Id});
+        return RedirectToAction("Details", new {id = id, schoolId = @class.Id});
     }
 
     [HttpGet("{id}/students")]
