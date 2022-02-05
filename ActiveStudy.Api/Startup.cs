@@ -34,7 +34,7 @@ namespace ActiveStudy.Api
             services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
                 {
-                    options.RequireHttpsMetadata = !hostEnvironment.IsDevelopment();
+                    options.RequireHttpsMetadata = false;
                     options.Authority = configuration["AUTHORITY"];
                     options.TokenValidationParameters.ValidateAudience = false;
                 });
