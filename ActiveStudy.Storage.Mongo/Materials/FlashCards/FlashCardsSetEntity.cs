@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ActiveStudy.Domain.Materials.FlashCards;
 using ActiveStudy.Storage.Mongo.Crm;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -20,4 +21,7 @@ public class FlashCardsSetEntity
 
     [BsonElement("cards")]
     public IEnumerable<FlashCardEntity> Cards { get; set; }
+
+    [BsonElement("status")]
+    public FlashCardSetStatus Status { get; set; }
 }

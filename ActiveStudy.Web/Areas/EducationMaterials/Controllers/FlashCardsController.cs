@@ -28,7 +28,7 @@ public class FlashCardsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var items = await flashCardsService.FindAsync();
+        var items = await flashCardsService.FindAsync(User.GetAuthContext());
 
         return View(new FlashCardsViewModel(items));
     }
@@ -45,7 +45,7 @@ public class FlashCardsController : Controller
     public async Task<IActionResult> Create(FlashCardSetCreateInputModel input)
     {
         var cards = input.Cards.Select(c => new FlashCard(string.Empty, c.Term, c.Definition, Enumerable.Empty<Clue>()));
-        await flashCardsService.CreateAsync(new FlashCardSetDetails(string.Empty, input.Title, input.Description, currentUserProvider.User.AsUser(), cards));
+        await flashCardsService.CreateAsync(new FlashCardSetDetails(string.Empty, input.Title, input.Description, input.Public ? FlashCardSetStatus.Public : FlashCardSetStatus.Private, currentUserProvider.User.AsUser(), cards));
 
         return RedirectToAction("Index");
     }
@@ -53,7 +53,7 @@ public class FlashCardsController : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> Details(string id)
     {
-        var item = await flashCardsService.GetByIdAsync(id);
+        var item = await flashCardsService.GetByIdAsync(id, User.GetAuthContext());
         var progress = Enumerable.Empty<CardLearningProgress>();
         if (currentUserProvider.IsAuthenticated)
         {

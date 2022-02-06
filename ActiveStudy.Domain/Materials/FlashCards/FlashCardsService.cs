@@ -12,14 +12,14 @@ public class FlashCardsService
         this.flashCardsStorage = flashCardsStorage;
     }
 
-    public Task<FlashCardSetDetails> GetByIdAsync(string id)
+    public Task<FlashCardSetDetails> GetByIdAsync(string id, AuthContext authContext = null)
     {
-        return flashCardsStorage.GetByIdAsync(id);
+        return flashCardsStorage.GetByIdAsync(id, authContext);
     }
 
-    public Task<IEnumerable<FlashCardSet>> FindAsync()
+    public Task<IEnumerable<FlashCardSet>> FindAsync(AuthContext authContext = null)
     {
-        return flashCardsStorage.FindAsync();
+        return flashCardsStorage.FindAsync(authContext);
     }
 
     public Task CreateAsync(FlashCardSetDetails set)

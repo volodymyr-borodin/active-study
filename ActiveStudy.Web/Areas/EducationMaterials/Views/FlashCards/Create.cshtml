@@ -15,8 +15,13 @@
     <div>
         <label asp-for="Description">@localizer["Description"]</label>
         <textarea asp-for="Description"
-               placeholder="@localizer["Title"]"
+               placeholder="@localizer["Description"]"
                autocomplete="off"></textarea>
+    </div>
+
+    <div>
+        <label asp-for="Public">@localizer["Public"]</label>
+        <input asp-for="Public" />
     </div>
 
     <fieldset v-for="(card, cardIndex) in cards">
