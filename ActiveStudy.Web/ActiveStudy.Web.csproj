@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <CodeAnalysisRuleSet>../ActiveStudy.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
     <ItemGroup>
