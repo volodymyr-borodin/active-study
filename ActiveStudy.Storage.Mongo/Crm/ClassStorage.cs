@@ -51,6 +51,20 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return entity.Id.ToString();
         }
 
+        public Task InsertManyAsync(IEnumerable<Class> classes)
+        {
+            var entities = classes.Select(c => new ClassEntity
+            {
+                Id = new ObjectId(c.Id),
+                SchoolId = new ObjectId(c.SchoolId),
+                Grade = c.Grade,
+                Label = c.Label,
+                Teacher = (TeacherShortEntity) c.Teacher
+            });
+
+            return context.Classes.InsertManyAsync(entities);
+        }
+
         public async Task SetTeacherUserIdAsync(string teacherId, string userId)
         {
             var idFilter = Builders<ClassEntity>.Filter

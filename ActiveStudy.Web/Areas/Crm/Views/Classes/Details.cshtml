@@ -17,15 +17,15 @@
 }
 
 <vc:breadcrumb items="@breadcrumb" />
-@if (await accessResolver.HasReadAccessAsync(User, Model.School.Id, Sections.Students))
-{
-    <a asp-controller="Classes"
-       asp-action="Students"
-       asp-route-schoolId="@Model.School.Id"
-       asp-route-id="@Model.Id">
-        @sharedLocalizer["Students"]
-    </a>
-}
+@* @if (await accessResolver.HasReadAccessAsync(User, Model.School.Id, Sections.Students)) *@
+@* { *@
+@*     <a asp-controller="Classes" *@
+@*        asp-action="Students" *@
+@*        asp-route-schoolId="@Model.School.Id" *@
+@*        asp-route-id="@Model.Id"> *@
+@*         @sharedLocalizer["Students"] *@
+@*     </a> *@
+@* } *@
 @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Classes))
 {
     <a asp-controller="Classes"
