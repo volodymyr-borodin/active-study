@@ -26,7 +26,7 @@
         @sharedLocalizer["Students"]
     </a>
 }
-@if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Students))
+@if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Classes))
 {
     <a asp-controller="Classes"
        asp-action="CreateScheduleTemplate"
