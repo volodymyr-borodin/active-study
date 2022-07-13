@@ -7,8 +7,6 @@ namespace ActiveStudy.Domain.Crm.Scheduler
 {
     public interface ISchedulerStorage
     {
-        Task CreateAsync(Event @event);
-        Task<Schedule> GetByClassAsync(string classId, DateTime from, DateTime to);
         Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to);
     }
 

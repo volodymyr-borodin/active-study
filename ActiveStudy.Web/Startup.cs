@@ -25,7 +25,6 @@ using ActiveStudy.Web.Models;
 using ActiveStudy.Web.Services;
 using ActiveStudy.Web.Services.Email;
 using ActiveStudy.Web.Services.Email.Smtp;
-using Duende.IdentityServer.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -68,7 +67,7 @@ public class Startup
         switch (Configuration["EMAIL_SENDER"])
         {
             case "SMTP":
-                services.AddScoped<IEmailService>(provider => new SmtpEmailService(
+                services.AddScoped<IEmailService>(_ => new SmtpEmailService(
                     new SmtpClientConfiguration(
                         Configuration["SMTP_HOST"],
                         Configuration.GetValue<int>("SMTP_POST"),
@@ -114,29 +113,6 @@ public class Startup
         });
 
         services.AddScoped<CurrentUserProvider>();
-            
-        // oauth
-        services.AddIdentityServer()
-            .AddInMemoryClients(new[]
-            {
-                new Client
-                {
-                    ClientId = "ios_client",
-                    ClientName = "IOS client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    AllowedScopes = new[] {new IdentityResources.OpenId().Name, "education:flash-cards"},
-                    ClientSecrets = new[] {new Secret("41240356-7459-4EAA-92BD-E483FA068AEC".Sha256())}
-                }
-            })
-            .AddInMemoryIdentityResources(new[]
-            {
-                new IdentityResources.OpenId()
-            })
-            .AddInMemoryApiScopes(new[]
-            {
-                new ApiScope("education:flash-cards", "Education Materials/Flash Cards")
-            })
-            .AddAspNetIdentity<ActiveStudyUserEntity>();
 
         // common
         services.AddScoped(_ => new CommonContext(mongoUrl));
@@ -176,11 +152,9 @@ public class Startup
             .AddRazorOptions(options => { options.ViewLocationFormats.Add("/{0}.cshtml"); })
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddDataAnnotationsLocalization(options => {
-                options.DataAnnotationLocalizerProvider = (type, factory) =>
+                options.DataAnnotationLocalizerProvider = (_, factory) =>
                     factory.Create(typeof(SharedResource));
             });
-
-        services.AddAuthentication();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
@@ -208,7 +182,6 @@ public class Startup
 
         app.UseRequestLocalization();
         app.UseRouting();
-        app.UseIdentityServer();
 
         app.UseAuthentication();
         app.UseAuthorization();

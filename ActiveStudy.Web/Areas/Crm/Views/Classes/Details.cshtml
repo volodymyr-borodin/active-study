@@ -26,12 +26,15 @@
         @sharedLocalizer["Students"]
     </a>
 }
-<a asp-controller="Classes"
-   asp-action="CreateScheduleTemplate"
-   asp-route-schoolId="@Model.School.Id"
-   asp-route-id="@Model.Id">
-    Edit schedule
-</a>
+@if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Students))
+{
+    <a asp-controller="Classes"
+       asp-action="CreateScheduleTemplate"
+       asp-route-schoolId="@Model.School.Id"
+       asp-route-id="@Model.Id">
+        Edit schedule
+    </a>
+}
 <vc:scheduler schedule="@Model.Schedule"
               school-id="@Model.School.Id"
               class-id="@Model.Id"

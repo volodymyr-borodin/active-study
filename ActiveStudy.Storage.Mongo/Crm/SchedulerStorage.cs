@@ -69,9 +69,10 @@ namespace ActiveStudy.Storage.Mongo.Crm
                 .ToDictionary(DateOnly.FromDateTime, day => (IReadOnlyCollection<Event>) entities
                     .Where(e => e.Date == day)
                     .OrderBy(e => e.From)
-                    .Select(e => (Event) e));
+                    .Select(e => (Event) e)
+                    .ToList());
 
-            return new Schedule(new Dictionary<DateOnly, IReadOnlyCollection<Event>>(), new SchedulePeriod[]{});
+            return new Schedule(dict, Array.Empty<SchedulePeriod>());
         }
 
         private static IEnumerable<DateTime> DaysRange(DateTime from, DateTime to)

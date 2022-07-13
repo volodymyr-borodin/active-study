@@ -7,7 +7,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "EMAIL_SENDER": "CONSOLE",
-        "MONGO_CONNECTION": "mongodb://localhost:27017/activestudy?retryWrites=true&w=majority"
+        "MONGO_CONNECTION": "mongodb://root:nmCJ5L8bYiz34vZFFi191@localhost:27017/activestudy?retryWrites=true&w=majority&authSource=admin"
       }
     }
   }

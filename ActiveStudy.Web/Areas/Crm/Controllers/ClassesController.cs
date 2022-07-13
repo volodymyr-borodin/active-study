@@ -118,7 +118,7 @@ public class ClassesController : Controller
         [Required] string schoolId,
         [Required] string id)
     {
-        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Classes))
+        if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Classes))
         {
             return Forbid();
         }
@@ -203,7 +203,7 @@ public class ClassesController : Controller
         [Required] string id,
         ClassScheduleTemplateInputModel model)
     {
-        if (!await accessResolver.HasReadAccessAsync(User, schoolId, Sections.Classes))
+        if (!await accessResolver.HasFullAccessAsync(User, schoolId, Sections.Classes))
         {
             return Forbid();
         }
@@ -236,7 +236,7 @@ public class ClassesController : Controller
         var (schedule, result) = ClassScheduleTemplate.New(model.EffectiveFrom, model.EffectiveTo, schedulePeriods);
         await classManager.SaveScheduleTemplateAsync(@class, schedule);
 
-        return RedirectToAction("Details", new {id = id, schoolId = @class.Id});
+        return RedirectToAction("Details", new {id = id, schoolId = schoolId});
     }
 
     [HttpGet("{id}/students")]
