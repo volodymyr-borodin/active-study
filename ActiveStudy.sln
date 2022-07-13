@@ -8,8 +8,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveStudy.Storage.Mongo",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveStudy.Domain", "ActiveStudy.Domain\ActiveStudy.Domain.csproj", "{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActiveStudy.Api", "ActiveStudy.Api\ActiveStudy.Api.csproj", "{B4EE440A-D67B-4D8C-A074-8569C0A98A03}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +30,5 @@ Global
 		{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BC5945C-8EFB-44F2-90F0-EB6A400811DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4EE440A-D67B-4D8C-A074-8569C0A98A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4EE440A-D67B-4D8C-A074-8569C0A98A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4EE440A-D67B-4D8C-A074-8569C0A98A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4EE440A-D67B-4D8C-A074-8569C0A98A03}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
