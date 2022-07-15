@@ -79,12 +79,9 @@ public class TeachersController : Controller
         }
         var scheduleTo = scheduleFrom.AddDays(7);
 
-        var schedule = await scheduleStorage.GetByTeacherAsync(id, scheduleFrom, scheduleTo);
-
         var model = new TeacherDetailsViewModel(teacher.Id,
             teacher.FullName,
-            school,
-            schedule);
+            school);
 
         return View(model);
     }

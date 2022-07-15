@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Scheduler;
@@ -11,4 +12,4 @@ public record ClassViewModel(
     School School,
     TeacherShortInfo Teacher,
     IEnumerable<StudentViewModel> Students,
-    Schedule Schedule);
+    Dictionary<DayOfWeek, Dictionary<LessonDuration, ScheduleItem>> Schedule);

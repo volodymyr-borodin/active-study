@@ -124,7 +124,6 @@ public class Startup
         services.AddScoped(_ => new CrmContext(mongoUrl));
         services.AddScoped<ISchoolStorage, SchoolStorage>();
         services.AddScoped<IClassStorage, ClassStorage>();
-        services.AddScoped<ClassManager>();
         services.AddScoped<ITeacherStorage, TeacherStorage>();
         services.AddScoped<IStudentStorage, StudentStorage>();
         services.AddScoped<IRelativesStorage, RelativesStorage>();

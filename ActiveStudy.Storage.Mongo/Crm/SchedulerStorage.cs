@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ActiveStudy.Domain;
+using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Scheduler;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace ActiveStudy.Storage.Mongo.Crm
 {
@@ -17,71 +17,57 @@ namespace ActiveStudy.Storage.Mongo.Crm
             this.context = context;
         }
 
-        public async Task CreateAsync(Event @event)
+        public async Task<Dictionary<ClassShortInfo, Dictionary<DayOfWeek, Dictionary<LessonDuration, ScheduleItem>>>> GetClassBasedSchoolScheduleAsync()
         {
-            var entity = new EventEntity
+            var c1 = new ClassShortInfo("1", "1-A");
+            var c2 = new ClassShortInfo("2", "1-A");
+
+            var t1 = new TeacherShortInfo("1", "Ivan", null);
+            var t2 = new TeacherShortInfo("1", "Ivan", null);
+            var t3 = new TeacherShortInfo("1", "Ivan", null);
+
+            var s1 = new Subject("Maths", "Maths");
+            var s2 = new Subject("Music", "Music");
+            var s3 = new Subject("History", "History");
+
+        return new Dictionary<ClassShortInfo, Dictionary<DayOfWeek, Dictionary<LessonDuration, ScheduleItem>>>
+        {
+            [c1] = new Dictionary<DayOfWeek, Dictionary<LessonDuration, ScheduleItem>>
             {
-                Description = @event.Description,
-                Teacher = (TeacherShortEntity) @event.Teacher,
-                Subject = (SubjectEntity) @event.Subject,
-                SchoolId = ObjectId.Parse(@event.SchoolId),
-                Class = (ClassShortEntity) @event.Class,
-                Date = @event.Date.ToDateTime(new TimeOnly()),
-                From = @event.From.ToTimeSpan(),
-                To = @event.To.ToTimeSpan()
-            };
-            
-            await context.Events.InsertOneAsync(entity);
-        }
-
-        public async Task<Schedule> GetByClassAsync(string classId, DateTime from, DateTime to)
-        {
-            var filter =
-                Builders<EventEntity>.Filter.Eq(entity => entity.Class.Id, ObjectId.Parse(classId))
-                & Builders<EventEntity>.Filter.Gte(entity => entity.Date, from)
-                & Builders<EventEntity>.Filter.Lte(entity => entity.Date, to);
-
-            var entities = await context.Events
-                .Find(filter)
-                .ToListAsync();
-
-            var dict = DaysRange(from, to)
-                .ToDictionary(DateOnly.FromDateTime, day => (IReadOnlyCollection<Event>) entities
-                    .Where(e => e.Date == day)
-                    .OrderBy(e => e.From)
-                    .Select(e => (Event) e));
-
-            return new Schedule(new Dictionary<DateOnly, IReadOnlyCollection<Event>>(), new SchedulePeriod[]{});
-        }
-
-        public async Task<Schedule> GetByTeacherAsync(string teacherId, DateTime from, DateTime to)
-        {
-            var filter =
-                Builders<EventEntity>.Filter.Eq(entity => entity.Teacher.Id, ObjectId.Parse(teacherId))
-                & Builders<EventEntity>.Filter.Gte(entity => entity.Date, from)
-                & Builders<EventEntity>.Filter.Lte(entity => entity.Date, to);
-
-            var entities = await context.Events
-                .Find(filter)
-                .ToListAsync();
-
-            var dict = DaysRange(from, to)
-                .ToDictionary(DateOnly.FromDateTime, day => (IReadOnlyCollection<Event>) entities
-                    .Where(e => e.Date == day)
-                    .OrderBy(e => e.From)
-                    .Select(e => (Event) e)
-                    .ToList());
-
-            return new Schedule(dict, Array.Empty<SchedulePeriod>());
-        }
-
-        private static IEnumerable<DateTime> DaysRange(DateTime from, DateTime to)
-        {
-            while (from < to)
+                [DayOfWeek.Monday] = new Dictionary<LessonDuration, ScheduleItem>
+                {
+                    [new LessonDuration(new TimeOnly(8, 0), new TimeOnly(9, 30))] = new ScheduleItem(c1, t1, s2),
+                    [new LessonDuration(new TimeOnly(9, 45), new TimeOnly(11, 15))] = new ScheduleItem(c1, t2, s1),
+                    [new LessonDuration(new TimeOnly(11, 30), new TimeOnly(12, 55))] = new ScheduleItem(c1, t2, s1),
+                },
+                [DayOfWeek.Thursday] = new Dictionary<LessonDuration, ScheduleItem>
+                {
+                    [new LessonDuration(new TimeOnly(8, 0), new TimeOnly(9, 30))] = new ScheduleItem(c1, t1, s2),
+                    [new LessonDuration(new TimeOnly(9, 45), new TimeOnly(11, 15))] = new ScheduleItem(c1, t1, s2),
+                    [new LessonDuration(new TimeOnly(11, 30), new TimeOnly(12, 55))] = new ScheduleItem(c1, t2, s1),
+                }
+            },
+            [c2] = new Dictionary<DayOfWeek, Dictionary<LessonDuration, ScheduleItem>>
             {
-                yield return from;
-                from = from.AddDays(1);
+                [DayOfWeek.Monday] = new Dictionary<LessonDuration, ScheduleItem>
+                {
+                    [new LessonDuration(new TimeOnly(8, 0), new TimeOnly(9, 30))] = new ScheduleItem(c1, t1, s2),
+                    [new LessonDuration(new TimeOnly(9, 45), new TimeOnly(11, 15))] = new ScheduleItem(c1, t2, s1),
+                    [new LessonDuration(new TimeOnly(11, 30), new TimeOnly(12, 55))] = new ScheduleItem(c1, t2, s1),
+                },
+                [DayOfWeek.Thursday] = new Dictionary<LessonDuration, ScheduleItem>
+                {
+                    [new LessonDuration(new TimeOnly(8, 0), new TimeOnly(9, 30))] = new ScheduleItem(c1, t1, s2),
+                    [new LessonDuration(new TimeOnly(9, 45), new TimeOnly(11, 15))] = new ScheduleItem(c1, t1, s2),
+                    [new LessonDuration(new TimeOnly(11, 30), new TimeOnly(12, 55))] = new ScheduleItem(c1, t2, s1),
+                }
             }
+        };
+        }
+
+        public async Task<Dictionary<DayOfWeek, Dictionary<LessonDuration, ScheduleItem>>> GetClassScheduleAsync(ClassShortInfo classShortInfo)
+        {
+            return (await GetClassBasedSchoolScheduleAsync()).Values.First();
         }
     }
 }
