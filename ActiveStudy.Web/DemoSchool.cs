@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm;
 using ActiveStudy.Domain.Crm.Classes;
+using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
 using MongoDB.Bson;
@@ -14,15 +16,18 @@ public class DemoSchool
     private readonly ISchoolStorage schoolStorage;
     private readonly ITeacherStorage teacherStorage;
     private readonly IClassStorage classStorage;
+    private readonly ISchedulerStorage schedulerStorage;
 
     public DemoSchool(
         ISchoolStorage schoolStorage,
         ITeacherStorage teacherStorage,
-        IClassStorage classStorage)
+        IClassStorage classStorage,
+        ISchedulerStorage schedulerStorage)
     {
         this.schoolStorage = schoolStorage;
         this.teacherStorage = teacherStorage;
         this.classStorage = classStorage;
+        this.schedulerStorage = schedulerStorage;
     }
 
     public async Task<School> InitAsync(User owner)
@@ -77,57 +82,88 @@ public class DemoSchool
         {
             class1A, class1B, class2A, class2B, class3A, class3B, class4A, class4B
         });
-        
-        var from = new DateTime(DateTime.Today.Year, 1, 1);
-        var to = new DateTime(DateTime.Today.Year, 12, 31);
 
-        // var (class1ASchedule, _) = ClassScheduleTemplate.New(DateOnly.FromDateTime(from),
-        //     DateOnly.FromDateTime(to), new List<SchedulePeriod>
-        //     {
-        //         new SchedulePeriod(new TimeOnly(8, 30), new TimeOnly(9, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>
-        //             {
-        //                 [DayOfWeek.Monday] = new ScheduleTemplateLesson((ClassShortInfo)class1A, (TeacherShortInfo)t1, mathematics),
-        //                 [DayOfWeek.Tuesday] = new ScheduleTemplateLesson((ClassShortInfo)class1A, (TeacherShortInfo)t4, music),
-        //             }),
-        //         new SchedulePeriod(new TimeOnly(9, 30), new TimeOnly(10, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>()
-        //             {
-        //                 [DayOfWeek.Monday] = new ScheduleTemplateLesson((ClassShortInfo)class1A, (TeacherShortInfo)t1, mathematics),
-        //                 [DayOfWeek.Tuesday] = new ScheduleTemplateLesson((ClassShortInfo)class1A, (TeacherShortInfo)t3, literacy),
-        //             }),
-        //         new SchedulePeriod(new TimeOnly(10, 30), new TimeOnly(11, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>()),
-        //         new SchedulePeriod(new TimeOnly(11, 30), new TimeOnly(12, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>()),
-        //         new SchedulePeriod(new TimeOnly(12, 30), new TimeOnly(13, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>())
-        //     });
-        // await classStorage.SaveScheduleTemplateAsync(class1A.Id, class1ASchedule);
-        //
-        // var (class1BSchedule, _) = ClassScheduleTemplate.New(DateOnly.FromDateTime(from),
-        //     DateOnly.FromDateTime(to), new List<SchedulePeriod>
-        //     {
-        //         new SchedulePeriod(new TimeOnly(8, 30), new TimeOnly(9, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>
-        //             {
-        //                 [DayOfWeek.Monday] = new ScheduleTemplateLesson((ClassShortInfo)class1B, (TeacherShortInfo)t6, mathematics),
-        //                 [DayOfWeek.Tuesday] = new ScheduleTemplateLesson((ClassShortInfo)class1B, (TeacherShortInfo)t6, mathematics),
-        //             }),
-        //         new SchedulePeriod(new TimeOnly(9, 30), new TimeOnly(10, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>()
-        //             {
-        //                 [DayOfWeek.Monday] = new ScheduleTemplateLesson((ClassShortInfo)class1B, (TeacherShortInfo)t3, literacy),
-        //                 [DayOfWeek.Tuesday] = new ScheduleTemplateLesson((ClassShortInfo)class1B, (TeacherShortInfo)t4, music),
-        //             }),
-        //         new SchedulePeriod(new TimeOnly(10, 30), new TimeOnly(11, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>()),
-        //         new SchedulePeriod(new TimeOnly(11, 30), new TimeOnly(12, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>()),
-        //         new SchedulePeriod(new TimeOnly(12, 30), new TimeOnly(13, 15),
-        //             new Dictionary<DayOfWeek, ScheduleTemplateLesson>())
-        //     });
-        // await classStorage.SaveScheduleTemplateAsync(class1B.Id, class1BSchedule);
+        var educationPeriod = new EducationPeriod(
+            ObjectId.GenerateNewId().ToString(),
+            new DateOnly(DateTime.Today.Year, 1, 1),
+            new DateOnly(DateTime.Today.Year, 12, 31),
+            new Dictionary<int, LessonDuration>
+            {
+                [0] = new LessonDuration(new TimeOnly(8, 30), new TimeOnly(9, 15)),
+                [1] = new LessonDuration(new TimeOnly(9, 30), new TimeOnly(10, 15)),
+                [2] = new LessonDuration(new TimeOnly(10, 30), new TimeOnly(11, 15)),
+                [3] = new LessonDuration(new TimeOnly(11, 30), new TimeOnly(12, 15)),
+                [4] = new LessonDuration(new TimeOnly(12, 30), new TimeOnly(13, 15)),
+                [5] = new LessonDuration(new TimeOnly(13, 30), new TimeOnly(14, 15))
+            });
+
+        var class1ASchedule = new ClassSchedule( educationPeriod, new Dictionary<DayOfWeek, DaySchedule>
+        {
+            [DayOfWeek.Monday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics),
+                [1] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics),
+                [2] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t4, music)
+            }),
+            [DayOfWeek.Tuesday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [1] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t7, literacy),
+                [2] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t7, literacy)
+            }),
+            [DayOfWeek.Wednesday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics),
+                [1] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t2, history)
+            }),
+            [DayOfWeek.Thursday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t2, history),
+                [1] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics),
+                [2] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics)
+            }),
+            [DayOfWeek.Friday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t7, literacy),
+                [1] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics)
+            })
+        });
+
+        var class1BSchedule = new ClassSchedule(educationPeriod, new Dictionary<DayOfWeek, DaySchedule>
+        {
+            [DayOfWeek.Monday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics),
+                [1] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics),
+                [2] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t4, music)
+            }),
+            [DayOfWeek.Tuesday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [1] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t7, literacy),
+                [2] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t7, literacy)
+            }),
+            [DayOfWeek.Wednesday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics),
+                [1] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t2, history)
+            }),
+            [DayOfWeek.Thursday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t2, history),
+                [1] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics),
+                [2] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics)
+            }),
+            [DayOfWeek.Friday] = new DaySchedule(new Dictionary<int, ScheduleItem>
+            {
+                [0] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t7, literacy),
+                [1] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics)
+            })
+        });
+
+        await schedulerStorage.InsertScheduleAsync(educationPeriod, new SchoolClassesSchedule(new Dictionary<ClassShortInfo, ClassSchedule>
+        {
+            [(ClassShortInfo)class1A] = class1ASchedule,
+            [(ClassShortInfo)class1B] = class1BSchedule
+        }));
 
         return school;
     }

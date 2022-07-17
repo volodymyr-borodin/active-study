@@ -2,9 +2,9 @@ using System;
 
 namespace ActiveStudy.Storage.Mongo.Crm;
 
-internal class ScheduleLessonDurationEntity
+public class ScheduleLessonDurationEntity
 {
-    public DateTime Start { get; set; }
+    public TimeSpan Start { get; set; }
 
-    public DateTime End { get; set; }
+    public TimeSpan End { get; set; }
 }

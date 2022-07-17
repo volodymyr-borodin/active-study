@@ -26,16 +26,6 @@
 @*         @sharedLocalizer["Students"] *@
 @*     </a> *@
 @* } *@
-@* @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Classes)) *@
-@* { *@
-@*     <a asp-controller="Classes" *@
-@*        asp-action="CreateScheduleTemplate" *@
-@*        asp-route-schoolId="@Model.School.Id" *@
-@*        asp-route-id="@Model.Id"> *@
-@*         Edit schedule *@
-@*     </a> *@
-@* } *@
-@Model.Schedule
 <table class="table">
     <tr>
         <th></th>
@@ -44,20 +34,22 @@
             <th>@dayOfWeek.ToString()</th>
         }
     </tr>
-    @foreach (var (timeSlot, _) in Model.Schedule.Values.First())
+    @foreach (var (timeSlot, _) in Model.Schedule.EducationPeriod.Lessons)
     {
         <tr>
-            <td>@timeSlot.Start.ToString("hh\\:mm") - @timeSlot.End.ToString("hh\\:mm")</td>
+            <td>@Model.Schedule.EducationPeriod.Lessons[timeSlot].Start.ToString("hh\\:mm") - @Model.Schedule.EducationPeriod.Lessons[timeSlot].End.ToString("hh\\:mm")</td>
             
             @foreach (var (_, lessons) in Model.Schedule)
             {
-                <td>@lessons[timeSlot].Class.Title, @lessons[timeSlot].Subject.Title, @lessons[timeSlot].Teacher.FullName</td>
+                if (lessons.ContainsKey(timeSlot) && lessons[timeSlot] != null)
+                {
+                    <td>@lessons[timeSlot].Class.Title, @lessons[timeSlot].Subject.Title, @lessons[timeSlot].Teacher.FullName</td>
+                }
+                else
+                {
+                    <td>-</td>
+                }
             }
         </tr>
     }
 </table>
-<vc:scheduler schedule="@Model.Schedule"
-              school-id="@Model.School.Id"
-              class-id="@Model.Id"
-              teacher-id="@null">
-</vc:scheduler>

@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ActiveStudy.Storage.Mongo.Crm;
 
-internal class SchedulePeriodEntity
+public class SchedulePeriodEntity
 {
     public ObjectId Id { get; set; }
 
@@ -16,5 +16,5 @@ internal class SchedulePeriodEntity
     public DateTime To { get; set; }
 
     [BsonElement("lessons")]
-    public Dictionary<int, ScheduleLessonDurationEntity> Lessons { get; set; }
+    public Dictionary<string, ScheduleLessonDurationEntity> Lessons { get; set; }
 }

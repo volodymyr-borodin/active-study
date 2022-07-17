@@ -12,6 +12,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
         public IMongoCollection<StudentEntity> Students => database.GetCollection<StudentEntity>("students");
         public IMongoCollection<RelativeEntity> Relatives => database.GetCollection<RelativeEntity>("relatives");
         public IMongoCollection<ScheduleLessonEntity> ScheduleLessons => database.GetCollection<ScheduleLessonEntity>("scheduleLessons");
+        public IMongoCollection<SchedulePeriodEntity> SchedulePeriods => database.GetCollection<SchedulePeriodEntity>("schedulePeriods");
 
         public CrmContext(MongoUrl url)
         {
