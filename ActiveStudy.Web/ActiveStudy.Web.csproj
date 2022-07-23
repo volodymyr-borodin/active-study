@@ -16,4 +16,9 @@
       <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.7.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas\Crm\Components" />
+      <Folder Include="Areas\Crm\Views\Shared\Components" />
+    </ItemGroup>
+
 </Project>
