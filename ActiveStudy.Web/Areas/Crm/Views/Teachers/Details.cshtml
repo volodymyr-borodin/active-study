@@ -1,6 +1,5 @@
 @model ActiveStudy.Web.Areas.Crm.Models.Teachers.TeacherDetailsViewModel
 @inject IHtmlLocalizer<SharedResource> sharedLocalizer;
-@inject IViewLocalizer localizer
 
 @{
     ViewData["Title"] = $"{Model.FullName} | {Model.School.Title}";
@@ -15,3 +14,4 @@
 }
 
 <vc:breadcrumb items="@breadcrumb" />
+<vc:teacher-schedule school-id="@Model.School.Id" teacher-id="@Model.Id"></vc:teacher-schedule>

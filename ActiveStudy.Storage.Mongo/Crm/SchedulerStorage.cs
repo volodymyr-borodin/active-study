@@ -109,6 +109,31 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return ClassSchedule.Init(educationPeriod, result);
         }
 
+        public async Task<TeacherSchedule> GetTeacherScheduleAsync(string schoolId, TeacherShortInfo teacher)
+        {
+            var educationPeriod = await GetEducationPeriodAsync(schoolId);
+
+            var filter = Builders<ScheduleLessonEntity>.Filter.Eq(x => x.PeriodId, ObjectId.Parse(educationPeriod.Id))
+                         & Builders<ScheduleLessonEntity>.Filter.Eq(x => x.Teacher.Id, ObjectId.Parse(teacher.Id));
+
+            var lessons = await context.ScheduleLessons
+                .Find(filter)
+                .ToListAsync();
+
+            var result = lessons.GroupBy(l => l.DayOfWeek)
+                .ToDictionary(
+                    g => Enum.Parse<DayOfWeek>(g.Key),
+                    g => new DaySchedule(g.GroupBy(k => k.Order)
+                        .ToDictionary(
+                            gg => gg.Key,
+                            gg => new ScheduleItem(
+                                (ClassShortInfo) gg.First().Class,
+                                (TeacherShortInfo) gg.First().Teacher,
+                                (Subject) gg.First().Subject))));
+
+            return TeacherSchedule.Init(educationPeriod, result);
+        }
+
         public async Task InsertScheduleAsync(SchoolClassesSchedule schedule)
         {
             var educationPeriod = schedule.EducationPeriod;
