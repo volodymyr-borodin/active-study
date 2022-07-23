@@ -93,7 +93,7 @@ public class ClassesController : Controller
         var scheduleTo = scheduleFrom.AddDays(7);
 
         var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
-        var schedule = await schedulerStorage.GetClassScheduleAsync((ClassShortInfo)@class);
+        var schedule = await schedulerStorage.GetClassScheduleAsync(schoolId, (ClassShortInfo)@class);
 
         var model = new ClassViewModel(@class.Id,
             @class.Title,
@@ -261,7 +261,7 @@ public class ClassesController : Controller
         }
         var scheduleTo = scheduleFrom.AddDays(7);
 
-        var schedule = await schedulerStorage.GetClassScheduleAsync((ClassShortInfo)@class);
+        var schedule = await schedulerStorage.GetClassScheduleAsync(schoolId, (ClassShortInfo)@class);
 
         var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
 

@@ -35,3 +35,41 @@
         </a>
     }
 </div>
+
+<table class="table">
+    @foreach (var dayOfWeek in Model.Schedule.Values.First().Keys)
+    {
+        <tr>
+            <th>@dayOfWeek.ToString()</th>
+            <td>
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        @foreach (var cls in Model.Schedule.Keys)
+                        {
+                            <th>@cls.Title</th>
+                        }
+                    </tr>
+                    @foreach (var (timeSlot, _) in Model.Schedule.Values.First().EducationPeriod.Lessons)
+                    {
+                        <tr>
+                            <td>@Model.Schedule.Values.First().EducationPeriod.Lessons[timeSlot].Start.ToString("hh\\:mm") - @Model.Schedule.EducationPeriod.Lessons[timeSlot].End.ToString("hh\\:mm")</td>
+
+                            @foreach (var cls in Model.Schedule.Values)
+                            {
+                                if (cls[dayOfWeek].ContainsKey(timeSlot) && cls[dayOfWeek][timeSlot] != null)
+                                {
+                                    <td>@cls[dayOfWeek][timeSlot].Class.Title, @cls[dayOfWeek][timeSlot].Subject.Title, @cls[dayOfWeek][timeSlot].Teacher.FullName</td>
+                                }
+                                else
+                                {
+                                    <td>-</td>
+                                }
+                            }
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    }
+</table>

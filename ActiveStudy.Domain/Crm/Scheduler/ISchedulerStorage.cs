@@ -6,8 +6,9 @@ namespace ActiveStudy.Domain.Crm.Scheduler;
 
 public interface ISchedulerStorage
 {
-    Task<ClassSchedule> GetClassScheduleAsync(ClassShortInfo @class);
-    Task InsertScheduleAsync(EducationPeriod educationPeriod, SchoolClassesSchedule schedule);
+    Task<SchoolClassesSchedule> GetSchoolClassScheduleAsync(string schoolId);
+    Task<ClassSchedule> GetClassScheduleAsync(string schoolId, ClassShortInfo @class);
+    Task InsertScheduleAsync(SchoolClassesSchedule schedule);
 }
 
 public class DaySchedule : Dictionary<int, ScheduleItem>
@@ -62,11 +63,14 @@ public class ClassSchedule : Dictionary<DayOfWeek, DaySchedule>
     }
 }
 
-public record EducationPeriod(string Id, DateOnly From, DateOnly To, Dictionary<int, LessonDuration> Lessons);
+public record EducationPeriod(string Id, string SchoolId, DateOnly From, DateOnly To, Dictionary<int, LessonDuration> Lessons);
 
 public class SchoolClassesSchedule : Dictionary<ClassShortInfo, ClassSchedule>
 {
-    public SchoolClassesSchedule(Dictionary<ClassShortInfo, ClassSchedule> dictionary) : base(dictionary)
+    public EducationPeriod EducationPeriod { get; }
+
+    public SchoolClassesSchedule(EducationPeriod educationPeriod, Dictionary<ClassShortInfo, ClassSchedule> dictionary) : base(dictionary)
     {
+        EducationPeriod = educationPeriod;
     }
 }

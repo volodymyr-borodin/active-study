@@ -9,6 +9,9 @@ public class SchedulePeriodEntity
 {
     public ObjectId Id { get; set; }
 
+    [BsonElement("schoolId")]
+    public ObjectId SchoolId { get; set; }
+
     [BsonElement("from")]
     public DateTime From { get; set; }
 

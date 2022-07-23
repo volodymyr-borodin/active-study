@@ -85,6 +85,7 @@ public class DemoSchool
 
         var educationPeriod = new EducationPeriod(
             ObjectId.GenerateNewId().ToString(),
+            school.Id,
             new DateOnly(DateTime.Today.Year, 1, 1),
             new DateOnly(DateTime.Today.Year, 12, 31),
             new Dictionary<int, LessonDuration>
@@ -120,22 +121,11 @@ public class DemoSchool
                 [0] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t2, history),
                 [1] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics),
                 [2] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics)
-            }),
-            [DayOfWeek.Friday] = new DaySchedule(new Dictionary<int, ScheduleItem>
-            {
-                [0] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t7, literacy),
-                [1] = new ScheduleItem((ClassShortInfo) class1A, (TeacherShortInfo) t1, mathematics)
             })
         });
 
         var class1BSchedule = new ClassSchedule(educationPeriod, new Dictionary<DayOfWeek, DaySchedule>
         {
-            [DayOfWeek.Monday] = new DaySchedule(new Dictionary<int, ScheduleItem>
-            {
-                [0] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics),
-                [1] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t1, mathematics),
-                [2] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t4, music)
-            }),
             [DayOfWeek.Tuesday] = new DaySchedule(new Dictionary<int, ScheduleItem>
             {
                 [1] = new ScheduleItem((ClassShortInfo) class1B, (TeacherShortInfo) t7, literacy),
@@ -159,7 +149,7 @@ public class DemoSchool
             })
         });
 
-        await schedulerStorage.InsertScheduleAsync(educationPeriod, new SchoolClassesSchedule(new Dictionary<ClassShortInfo, ClassSchedule>
+        await schedulerStorage.InsertScheduleAsync(new SchoolClassesSchedule(educationPeriod, new Dictionary<ClassShortInfo, ClassSchedule>
         {
             [(ClassShortInfo)class1A] = class1ASchedule,
             [(ClassShortInfo)class1B] = class1BSchedule

@@ -13,21 +13,25 @@ namespace ActiveStudy.Storage.Mongo.Crm
     public class SchedulerStorage : ISchedulerStorage
     {
         private readonly CrmContext context;
+        private readonly SchoolScheduleFactory factory;
 
         public SchedulerStorage(CrmContext context)
         {
             this.context = context;
+            factory = new SchoolScheduleFactory(context);
         }
 
-        private async Task<EducationPeriod> GetEducationPeriodAsync()
+        private async Task<EducationPeriod> GetEducationPeriodAsync(string schoolId)
         {
-            var educationPeriod = await context.SchedulePeriods.Find(Builders<SchedulePeriodEntity>.Filter.Empty)
+            var filter = Builders<SchedulePeriodEntity>.Filter.Eq(p => p.SchoolId, ObjectId.Parse(schoolId));
+            var educationPeriod = await context.SchedulePeriods.Find(filter)
                 .FirstOrDefaultAsync();
 
             if (educationPeriod == null)
             {
                 return new EducationPeriod(
                     ObjectId.GenerateNewId().ToString(),
+                    schoolId,
                     new DateOnly(DateTime.Today.Year, 1, 1),
                     new DateOnly(DateTime.Today.Year, 12, 31),
                     new Dictionary<int, LessonDuration>
@@ -43,6 +47,7 @@ namespace ActiveStudy.Storage.Mongo.Crm
 
             return new EducationPeriod(
                 educationPeriod.Id.ToString(),
+                educationPeriod.SchoolId.ToString(),
                 DateOnly.FromDateTime(educationPeriod.From),
                 DateOnly.FromDateTime(educationPeriod.To),
                 educationPeriod.Lessons.ToDictionary(
@@ -52,9 +57,36 @@ namespace ActiveStudy.Storage.Mongo.Crm
                         TimeOnly.FromTimeSpan(x.Value.End))));
         }
 
-        public async Task<ClassSchedule> GetClassScheduleAsync(ClassShortInfo @class)
+        public async Task<SchoolClassesSchedule> GetSchoolClassScheduleAsync(string schoolId)
         {
-            var educationPeriod = await GetEducationPeriodAsync();
+            var educationPeriod = await GetEducationPeriodAsync(schoolId);
+
+            var filter = Builders<ScheduleLessonEntity>.Filter.Eq(x => x.PeriodId, ObjectId.Parse(educationPeriod.Id));
+
+            var lessons = await context.ScheduleLessons
+                .Find(filter)
+                .ToListAsync();
+
+            var schoolSchedule = lessons.GroupBy(l => l.Class.Id)
+                .ToDictionary(
+                    g => (ClassShortInfo)g.First(c => c.Class.Id == g.Key).Class,
+                    g => ClassSchedule.Init(educationPeriod, g.GroupBy(l => l.DayOfWeek)
+                        .ToDictionary(
+                            gg => Enum.Parse<DayOfWeek>(gg.Key),
+                            gg => new DaySchedule(gg.GroupBy(k => k.Order)
+                                .ToDictionary(
+                                    ggg => ggg.Key,
+                                    ggg => new ScheduleItem(
+                                        (ClassShortInfo) ggg.First().Class,
+                                        (TeacherShortInfo) ggg.First().Teacher,
+                                        (Subject) ggg.First().Subject))))));
+
+            return await factory.BuildAsync(educationPeriod, schoolSchedule);
+        }
+
+        public async Task<ClassSchedule> GetClassScheduleAsync(string schoolId, ClassShortInfo @class)
+        {
+            var educationPeriod = await GetEducationPeriodAsync(schoolId);
 
             var filter = Builders<ScheduleLessonEntity>.Filter.Eq(x => x.PeriodId, ObjectId.Parse(educationPeriod.Id))
                          & Builders<ScheduleLessonEntity>.Filter.Eq(x => x.Class.Id, ObjectId.Parse(@class.Id));
@@ -77,11 +109,13 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return ClassSchedule.Init(educationPeriod, result);
         }
 
-        public async Task InsertScheduleAsync(EducationPeriod educationPeriod, SchoolClassesSchedule schedule)
+        public async Task InsertScheduleAsync(SchoolClassesSchedule schedule)
         {
+            var educationPeriod = schedule.EducationPeriod;
             await context.SchedulePeriods.InsertOneAsync(new SchedulePeriodEntity
             {
                 Id = ObjectId.Parse(educationPeriod.Id),
+                SchoolId = ObjectId.Parse(educationPeriod.SchoolId),
                 From = educationPeriod.From.ToDateTime(new TimeOnly()),
                 To = educationPeriod.To.ToDateTime(new TimeOnly()),
                 Lessons = educationPeriod.Lessons

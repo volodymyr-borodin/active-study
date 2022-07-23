@@ -1,14 +1,3 @@
-namespace ActiveStudy.Domain.Crm
-{
-    public class ClassShortInfo
-    {
-        public string Id { get; }
-        public string Title { get; }
+namespace ActiveStudy.Domain.Crm;
 
-        public ClassShortInfo(string id, string title)
-        {
-            Id = id;
-            Title = title;
-        }
-    }
-}
+public record ClassShortInfo(string Id, string Title);
