@@ -1,0 +1,40 @@
+@model ActiveStudy.Domain.Crm.Scheduler.SchoolClassesSchedule
+
+
+<table class="table">
+    @foreach (var dayOfWeek in Model.Values.First().Keys)
+    {
+        <tr>
+            <th>@dayOfWeek.ToString()</th>
+            <td>
+                <table class="table">
+                    <tr>
+                        <th></th>
+                        @foreach (var cls in Model.Keys)
+                        {
+                            <th>@cls.Title</th>
+                        }
+                    </tr>
+                    @foreach (var (timeSlot, _) in Model.Values.First().EducationPeriod.Lessons)
+                    {
+                        <tr>
+                            <td>@Model.Values.First().EducationPeriod.Lessons[timeSlot].Start.ToString("hh\\:mm") - @Model.EducationPeriod.Lessons[timeSlot].End.ToString("hh\\:mm")</td>
+
+                            @foreach (var cls in Model.Values)
+                            {
+                                if (cls[dayOfWeek].ContainsKey(timeSlot) && cls[dayOfWeek][timeSlot] != null)
+                                {
+                                    <td>@cls[dayOfWeek][timeSlot].Class.Title, @cls[dayOfWeek][timeSlot].Subject.Title, @cls[dayOfWeek][timeSlot].Teacher.FullName</td>
+                                }
+                                else
+                                {
+                                    <td>-</td>
+                                }
+                            }
+                        </tr>
+                    }
+                </table>
+            </td>
+        </tr>
+    }
+</table>

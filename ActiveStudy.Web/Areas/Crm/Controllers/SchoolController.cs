@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using ActiveStudy.Domain;
 using ActiveStudy.Domain.Crm.Identity;
-using ActiveStudy.Domain.Crm.Scheduler;
 using ActiveStudy.Domain.Crm.Schools;
 using ActiveStudy.Domain.Crm.Teachers;
 using ActiveStudy.Storage.Mongo.Identity;
@@ -22,7 +21,6 @@ public class SchoolController : Controller
 {
     private const string CountryCode = "UA";
     private readonly ICountryStorage countryStorage;
-    private readonly ISchedulerStorage schedulerStorage;
     private readonly ISchoolStorage schoolStorage;
     private readonly CurrentUserProvider currentUserProvider;
     private readonly UserManager userManager;
@@ -34,7 +32,6 @@ public class SchoolController : Controller
 
     public SchoolController(ISchoolStorage schoolStorage,
         ICountryStorage countryStorage,
-        ISchedulerStorage schedulerStorage,
         CurrentUserProvider currentUserProvider,
         UserManager userManager,
         RoleManager roleManager,
@@ -44,7 +41,6 @@ public class SchoolController : Controller
     {
         this.schoolStorage = schoolStorage;
         this.countryStorage = countryStorage;
-        this.schedulerStorage = schedulerStorage;
         this.currentUserProvider = currentUserProvider;
         this.userManager = userManager;
         this.roleManager = roleManager;
@@ -126,8 +122,7 @@ public class SchoolController : Controller
     {
         var school = await schoolStorage.GetByIdAsync(schoolId);
 
-        return new SchoolHomePageModel(school,
-            await schedulerStorage.GetSchoolClassScheduleAsync(schoolId));
+        return new SchoolHomePageModel(school);
     }
 
     private async Task<CreateSchoolModel> BuildCreateModel()
