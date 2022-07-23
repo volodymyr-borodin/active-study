@@ -107,22 +107,22 @@ public class SchoolController : Controller
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Details([Required] string id)
+    public async Task<IActionResult> Details([Required] string id, [FromQuery]ScheduleDisplayMode dm = ScheduleDisplayMode.ByClasses)
     {
-        return View(await BuildIndexModel(id));
+        return View(await BuildIndexModel(id, dm));
     }
 
-    [HttpGet("{id}/audit")]
-    public async Task<IActionResult> Audit([Required] string id)
-    {
-        return View(await BuildIndexModel(id));
-    }
+    // [HttpGet("{id}/audit")]
+    // public async Task<IActionResult> Audit([Required] string id)
+    // {
+    //     return View(await BuildIndexModel(id));
+    // }
 
-    private async Task<SchoolHomePageModel> BuildIndexModel(string schoolId)
+    private async Task<SchoolHomePageModel> BuildIndexModel(string schoolId, ScheduleDisplayMode displayMode)
     {
         var school = await schoolStorage.GetByIdAsync(schoolId);
 
-        return new SchoolHomePageModel(school);
+        return new SchoolHomePageModel(school, displayMode);
     }
 
     private async Task<CreateSchoolModel> BuildCreateModel()

@@ -1,8 +1,8 @@
 @using ActiveStudy.Domain.Crm.Identity
+@using ActiveStudy.Web.Areas.Crm.Models.Schools
 @using Markdig
 @model ActiveStudy.Web.Areas.Crm.Models.Schools.SchoolHomePageModel
 @inject IHtmlLocalizer<SharedResource> sharedLocalizer;
-@inject IViewLocalizer localizer
 @inject IAccessResolver accessResolver
 
 @{
@@ -36,4 +36,11 @@
     }
 </div>
 
-<vc:school-classes-schedule school-id="@Model.School.Id"></vc:school-classes-schedule>
+@if (Model.ScheduleDisplayMode == ScheduleDisplayMode.ByClasses)
+{
+    <vc:school-classes-schedule school-id="@Model.School.Id"></vc:school-classes-schedule>
+}
+else
+{
+    <vc:school-teachers-schedule school-id="@Model.School.Id"></vc:school-teachers-schedule>
+}

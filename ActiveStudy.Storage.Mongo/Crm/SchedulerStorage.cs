@@ -84,6 +84,33 @@ namespace ActiveStudy.Storage.Mongo.Crm
             return await factory.BuildAsync(educationPeriod, schoolSchedule);
         }
 
+        public async Task<SchoolTeachersSchedule> GetSchoolTeacherScheduleAsync(string schoolId)
+        {
+            var educationPeriod = await GetEducationPeriodAsync(schoolId);
+
+            var filter = Builders<ScheduleLessonEntity>.Filter.Eq(x => x.PeriodId, ObjectId.Parse(educationPeriod.Id));
+
+            var lessons = await context.ScheduleLessons
+                .Find(filter)
+                .ToListAsync();
+
+            var schoolSchedule = lessons.GroupBy(l => l.Class.Id)
+                .ToDictionary(
+                    g => (TeacherShortInfo)g.First(c => c.Class.Id == g.Key).Teacher,
+                    g => TeacherSchedule.Init(educationPeriod, g.GroupBy(l => l.DayOfWeek)
+                        .ToDictionary(
+                            gg => Enum.Parse<DayOfWeek>(gg.Key),
+                            gg => new DaySchedule(gg.GroupBy(k => k.Order)
+                                .ToDictionary(
+                                    ggg => ggg.Key,
+                                    ggg => new ScheduleItem(
+                                        (ClassShortInfo) ggg.First().Class,
+                                        (TeacherShortInfo) ggg.First().Teacher,
+                                        (Subject) ggg.First().Subject))))));
+
+            return await factory.BuildAsync(educationPeriod, schoolSchedule);
+        }
+
         public async Task<ClassSchedule> GetClassScheduleAsync(string schoolId, ClassShortInfo @class)
         {
             var educationPeriod = await GetEducationPeriodAsync(schoolId);
