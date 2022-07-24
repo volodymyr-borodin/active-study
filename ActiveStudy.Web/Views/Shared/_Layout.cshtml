@@ -17,15 +17,11 @@
 </head>
 <body>
 
-<main>
-    @RenderBody()
-</main>
-
-@await RenderSectionAsync("Scripts", false)
+@RenderBody()
 <!-- JS Global Compulsory -->
 <script src="~/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
 <!-- JS Front Dashboard -->
-<script src="~/assets/js/hs.core.js"></script>
+<script src="~/assets/js/theme.min.js"></script>
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

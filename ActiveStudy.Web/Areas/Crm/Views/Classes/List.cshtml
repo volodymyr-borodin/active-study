@@ -15,26 +15,175 @@
     };
 }
 
-<vc:breadcrumb items="@breadcrumb" />
+<main id="content" role="main" class="main">
+  <!-- Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-end mb-3">
+        <div class="col-sm mb-2 mb-sm-0">
+          <vc:breadcrumb items="@breadcrumb" />
+            
 
-@if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Classes))
-{
-    <a asp-area="Crm"
-       asp-controller="Classes"
-       asp-action="Create"
-       asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Add Class"]</a>
-}
-<ul>
-    @foreach (var cls in Model.Classes)
-    {
-        <li>
-            <a asp-area="Crm"
-               asp-controller="Classes"
-               asp-action="Details"
-               asp-route-schoolId="@Model.School.Id"
-               asp-route-id="@cls.Id">
-                <span>@cls.Title (@(cls.Teacher?.FullName ?? "-"))</span>
-            </a>
-        </li>
-    }
-</ul>
+          <h1 class="page-header-title">@sharedLocalizer["Classes"]</h1>
+        </div>
+        <!-- End Col -->
+
+        <div class="col-sm-auto">
+          @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Classes))
+          {
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareWithPeopleModal">
+              <i class="bi-plus me-1"></i> @sharedLocalizer["Add Class"]
+            </button>
+          }
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+
+      <!-- Nav -->
+      <!-- Nav -->
+      <div class="js-nav-scroller hs-nav-scroller-horizontal">
+        <span class="hs-nav-scroller-arrow-prev" style="display: none;">
+          <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+            <i class="bi-chevron-left"></i>
+          </a>
+        </span>
+
+        <span class="hs-nav-scroller-arrow-next" style="display: none;">
+          <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+            <i class="bi-chevron-right"></i>
+          </a>
+        </span>
+
+        <ul class="nav nav-tabs page-header-tabs" id="projectsTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" asp-area="Crm" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" asp-area="Crm" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Classes"]</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" asp-area="Crm" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Teachers"]</a>
+          </li>
+        </ul>
+      </div>
+      <!-- End Nav -->
+    </div>
+    <!-- End Page Header -->
+
+    <!-- Card -->
+    <div class="card">
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable" class="table table-borderless table-thead-bordered card-table">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">Team</th>
+            <th scope="col" style="min-width: 20rem;">Description</th>
+            <th scope="col">Members</th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+
+          <tbody>
+          @foreach (var cls in Model.Classes)
+          {
+            <tr>
+              <td>
+                  
+                <a asp-area="Crm"
+                   asp-controller="Classes"
+                   asp-action="Details"
+                   asp-route-schoolId="@Model.School.Id"
+                   asp-route-id="@cls.Id">@cls.Title</a>
+              </td>
+              <td></td>
+              <td>
+                <div class="avatar-group avatar-group-xs avatar-circle">
+                  <span class="avatar" data-bs-toggle="tooltip" data-bs-placement="top" title="Ella Lauda">
+                    <img class="avatar-img" src="~/assets/img/160x160/img9.jpg" alt="Image Description">
+                  </span>
+                  <span class="avatar" data-bs-toggle="tooltip" data-bs-placement="top" title="David Harrison">
+                    <img class="avatar-img" src="~/assets/img/160x160/img3.jpg" alt="Image Description">
+                  </span>
+                  <span class="avatar avatar-soft-dark" data-bs-toggle="tooltip" data-bs-placement="top" title="Antony Taylor">
+                    <span class="avatar-initials">A</span>
+                  </span>
+                  <span class="avatar avatar-soft-info" data-bs-toggle="tooltip" data-bs-placement="top" title="Sara Iwens">
+                    <span class="avatar-initials">S</span>
+                  </span>
+                  <span class="avatar" data-bs-toggle="tooltip" data-bs-placement="top" title="Finch Hoot">
+                    <img class="avatar-img" src="~/assets/img/160x160/img5.jpg" alt="Image Description">
+                  </span>
+                  <span class="avatar avatar-light avatar-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Sam Kart, Amanda Harvey and 1 more">
+                    <span class="avatar-initials">+3</span>
+                  </span>
+                </div>
+              </td>
+              <td>
+                <div class="dropdown">
+                  <button type="button" class="btn btn-white btn-sm" id="teamsDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
+                    More <i class="bi-chevron-down ms-1"></i>
+                  </button>
+
+                  <div class="dropdown-menu dropdown-menu-sm dropdown-menu-end" aria-labelledby="teamsDropdown1">
+                    <a class="dropdown-item" href="#">Rename team</a>
+                    <a class="dropdown-item" href="#">Add to favorites</a>
+                    <a class="dropdown-item" href="#">Archive team</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item text-danger" href="#">Delete</a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+    </div>
+    <!-- End Card -->
+  </div>
+  <!-- End Content -->
+
+  <!-- Footer -->
+
+  <div class="footer">
+    <div class="row justify-content-between align-items-center">
+      <div class="col">
+        <p class="fs-6 mb-0">&copy; Front. <span class="d-none d-sm-inline-block">2022 Htmlstream.</span></p>
+      </div>
+      <!-- End Col -->
+
+      <div class="col-auto">
+        <div class="d-flex justify-content-end">
+          <!-- List Separator -->
+          <ul class="list-inline list-separator">
+            <li class="list-inline-item">
+              <a class="list-separator-link" href="#">FAQ</a>
+            </li>
+
+            <li class="list-inline-item">
+              <a class="list-separator-link" href="#">License</a>
+            </li>
+
+            <li class="list-inline-item">
+              <!-- Keyboard Shortcuts Toggle -->
+              <button class="btn btn-ghost-secondary btn btn-icon btn-ghost-secondary rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKeyboardShortcuts" aria-controls="offcanvasKeyboardShortcuts">
+                <i class="bi-command"></i>
+              </button>
+              <!-- End Keyboard Shortcuts Toggle -->
+            </li>
+          </ul>
+          <!-- End List Separator -->
+        </div>
+      </div>
+      <!-- End Col -->
+    </div>
+    <!-- End Row -->
+  </div>
+
+  <!-- End Footer -->
+</main>

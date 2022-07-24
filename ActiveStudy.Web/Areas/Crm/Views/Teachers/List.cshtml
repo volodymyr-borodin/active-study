@@ -15,39 +15,209 @@
     };
 }
 
-<vc:breadcrumb items="@breadcrumb" />
-@if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers))
-{
-    <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Add Teacher"]</a>
-}
-<ul>
-    @foreach (var teacher in Model.Teachers)
-    {
-        <li>
-            <a asp-controller="Teachers"
-               asp-action="Details"
-               asp-route-schoolId="@Model.School.Id"
-               asp-route-id="@teacher.Id">
-                <span>@teacher.FullName (@teacher.Email)</span>
-                @if (teacher.Subjects.Any())
+@* <vc:breadcrumb items="@breadcrumb" /> *@
+@* @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers)) *@
+@* { *@
+@*     <a asp-controller="Teachers" asp-action="Create" asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Add Teacher"]</a> *@
+@* } *@
+@* <ul> *@
+@*     @foreach (var teacher in Model.Teachers) *@
+@*     { *@
+@*         <li> *@
+@*             <a asp-controller="Teachers" *@
+@*                asp-action="Details" *@
+@*                asp-route-schoolId="@Model.School.Id" *@
+@*                asp-route-id="@teacher.Id"> *@
+@*                 <span>@teacher.FullName (@teacher.Email)</span> *@
+@*                 @if (teacher.Subjects.Any()) *@
+@*                 { *@
+@*                     <span>(@string.Join(", ", teacher.Subjects.Select(s => s.Title)))</span> *@
+@*                 } *@
+@*             </a> *@
+@*             @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers)) *@
+@*             { *@
+@*                 @if (!teacher.IsInvited) *@
+@*                 { *@
+@*                     <text>| </text>  *@
+@*                     <form asp-action="Invite" asp-route-schoolId="@Model.School.Id" asp-route-id="@teacher.Id"> *@
+@*                         <button>Invite</button> *@
+@*                     </form> *@
+@*                 } *@
+@*                 else *@
+@*                 { *@
+@*                     <text>Invited</text> *@
+@*                 } *@
+@*             } *@
+@*         </li> *@
+@*     } *@
+@* </ul> *@
+
+
+<main id="content" role="main" class="main">
+  <!-- Content -->
+  <div class="content container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="row align-items-end mb-3">
+        <div class="col-sm mb-2 mb-sm-0">
+          <vc:breadcrumb items="@breadcrumb" />
+            
+
+          <h1 class="page-header-title">@sharedLocalizer["Classes"]</h1>
+        </div>
+        <!-- End Col -->
+
+        <div class="col-sm-auto">
+          @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers))
+          {
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#shareWithPeopleModal">
+              <i class="bi-plus me-1"></i> @sharedLocalizer["Add Teacher"]
+            </button>
+          }
+        </div>
+        <!-- End Col -->
+      </div>
+      <!-- End Row -->
+
+      <!-- Nav -->
+      <!-- Nav -->
+      <div class="js-nav-scroller hs-nav-scroller-horizontal">
+        <span class="hs-nav-scroller-arrow-prev" style="display: none;">
+          <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+            <i class="bi-chevron-left"></i>
+          </a>
+        </span>
+
+        <span class="hs-nav-scroller-arrow-next" style="display: none;">
+          <a class="hs-nav-scroller-arrow-link" href="javascript:;">
+            <i class="bi-chevron-right"></i>
+          </a>
+        </span>
+
+        <ul class="nav nav-tabs page-header-tabs" id="projectsTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" asp-area="Crm" asp-controller="School" asp-action="Details" asp-route-id="@Model.School.Id">Overview</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" asp-area="Crm" asp-controller="Classes" asp-action="List" asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Classes"]</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" asp-area="Crm" asp-controller="Teachers" asp-action="List" asp-route-schoolId="@Model.School.Id">@sharedLocalizer["Teachers"]</a>
+          </li>
+        </ul>
+      </div>
+      <!-- End Nav -->
+    </div>
+    <!-- End Page Header -->
+
+    <!-- Card -->
+    <div class="card">
+
+      <!-- Table -->
+      <div class="table-responsive datatable-custom">
+        <table id="datatable" class="table table-borderless table-thead-bordered card-table">
+          <thead class="thead-light">
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Subjects</th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+
+          <tbody>
+          @foreach (var teacher in Model.Teachers)
+          {
+            <tr>
+              <td>
+                <a class="d-flex align-items-center"
+                   asp-area="Crm"
+                   asp-controller="Teachers"
+                   asp-action="Details"
+                   asp-route-schoolId="@Model.School.Id"
+                   asp-route-id="@teacher.Id">
+                  <div class="avatar avatar-circle">
+                    <img class="avatar-img" src="~/assets/img/160x160/img10.jpg" alt="@teacher.FullName">
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <span class="d-block h5 text-inherit mb-0">@teacher.FullName
+                      @if (teacher.IsInvited)
+                      {
+                        <i class="tio-verified text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Top endorsed"></i>
+                      }
+                    </span>
+                    <span class="d-block fs-6 text-body">@teacher.Email</span>
+                  </div>
+                </a>
+              </td>
+              <td>
+                @foreach(var subject in teacher.Subjects)
                 {
-                    <span>(@string.Join(", ", teacher.Subjects.Select(s => s.Title)))</span>
+                  <span class="badge bg-soft-primary text-primary">@subject.Title</span>
                 }
-            </a>
-            @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers))
-            {
-                @if (!teacher.IsInvited)
-                {
-                    <text>| </text> 
-                    <form asp-action="Invite" asp-route-schoolId="@Model.School.Id" asp-route-id="@teacher.Id">
-                        <button>Invite</button>
-                    </form>
-                }
-                else
-                {
-                    <text>Invited</text>
-                }
-            }
-        </li>
-    }
-</ul>
+              </td>
+              <td>
+                <div class="dropdown">
+                  <button type="button" class="btn btn-white btn-sm" id="teamsDropdown1" data-bs-toggle="dropdown" aria-expanded="false">
+                    More <i class="bi-chevron-down ms-1"></i>
+                  </button>
+
+                  @if (await accessResolver.HasFullAccessAsync(User, Model.School.Id, Sections.Teachers) && teacher.IsInvited)
+                  {
+                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-end" aria-labelledby="teamsDropdown1">
+                      <form class="dropdown-item" asp-action="Invite" asp-route-schoolId="@Model.School.Id" asp-route-id="@teacher.Id">
+                        <button class="link">Invite</button>
+                      </form>
+                    </div>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+      <!-- End Table -->
+    </div>
+    <!-- End Card -->
+  </div>
+  <!-- End Content -->
+
+  <!-- Footer -->
+
+  <div class="footer">
+    <div class="row justify-content-between align-items-center">
+      <div class="col">
+        <p class="fs-6 mb-0">&copy; Front. <span class="d-none d-sm-inline-block">2022 Htmlstream.</span></p>
+      </div>
+      <!-- End Col -->
+
+      <div class="col-auto">
+        <div class="d-flex justify-content-end">
+          <!-- List Separator -->
+          <ul class="list-inline list-separator">
+            <li class="list-inline-item">
+              <a class="list-separator-link" href="#">FAQ</a>
+            </li>
+
+            <li class="list-inline-item">
+              <a class="list-separator-link" href="#">License</a>
+            </li>
+
+            <li class="list-inline-item">
+              <!-- Keyboard Shortcuts Toggle -->
+              <button class="btn btn-ghost-secondary btn btn-icon btn-ghost-secondary rounded-circle" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKeyboardShortcuts" aria-controls="offcanvasKeyboardShortcuts">
+                <i class="bi-command"></i>
+              </button>
+              <!-- End Keyboard Shortcuts Toggle -->
+            </li>
+          </ul>
+          <!-- End List Separator -->
+        </div>
+      </div>
+      <!-- End Col -->
+    </div>
+    <!-- End Row -->
+  </div>
+
+  <!-- End Footer -->
+</main>

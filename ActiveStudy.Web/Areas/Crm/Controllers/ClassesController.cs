@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,7 +80,6 @@ public class ClassesController : Controller
         }
 
         var @class = await classStorage.GetByIdAsync(id);
-        var students = await studentStorage.FindAsync(StudentFilter.ByClass(id));
         var school = await schoolStorage.GetByIdAsync(@class.SchoolId);
 
         var scheduleFrom = DateOnly.FromDateTime(DateTime.Today).NearestMonday();
@@ -92,23 +92,31 @@ public class ClassesController : Controller
         }
         var scheduleTo = scheduleFrom.AddDays(7);
 
-        var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
         var schedule = await schedulerStorage.GetClassScheduleAsync(schoolId, (ClassShortInfo)@class);
 
         var model = new ClassViewModel(@class.Id,
             @class.Title,
             school,
             @class.Teacher,
-            students.Select(s => new StudentViewModel(
-                    s.Id,
-                    s.FullName,
-                    relatives[s.Id]
-                        .Select(r => new RelativeViewModel(r.Id, r.FullName, r.Phone))
-                        .ToList()))
-                .ToList(),
-            schedule);
+            scheduleFrom,
+            BuildEvents(scheduleFrom, scheduleTo, schedule));
 
         return View(model);
+    }
+
+    private IEnumerable<ScheduleEvent> BuildEvents(DateOnly from, DateOnly to, ClassSchedule schedule)
+    {
+        while (from <= to)
+        {
+            foreach (var (index, scheduleItem) in schedule[from.DayOfWeek])
+            {
+                yield return new ScheduleEvent(1, scheduleItem.Subject.Title,
+                    from.ToDateTime(schedule.EducationPeriod.Lessons[index].Start).ToString("yyyy-MM-dd HH:mm"),
+                    from.ToDateTime(schedule.EducationPeriod.Lessons[index].End).ToString("yyyy-MM-dd HH:mm"), "");
+            }
+
+            from = from.AddDays(1);
+        }
     }
 
     // [HttpGet("{id}/schedule-templates/create")]
@@ -265,18 +273,24 @@ public class ClassesController : Controller
 
         var relatives = await relativesStorage.SearchAsync(students.Select(s => s.Id));
 
-        var model = new ClassViewModel(@class.Id,
-            @class.Title,
-            school,
-            @class.Teacher,
-            students.Select(s => new StudentViewModel(
-                    s.Id,
-                    s.FullName,
-                    relatives[s.Id]
-                        .Select(r => new RelativeViewModel(r.Id, r.FullName, r.Phone))
-                        .ToList()))
-                .ToList(),
-            schedule);
+        // var model = new ClassViewModel(@class.Id,
+        //     @class.Title,
+        //     school,
+        //     @class.Teacher,
+        //     students.Select(s => new StudentViewModel(
+        //             s.Id,
+        //             s.FullName,
+        //             relatives[s.Id]
+        //                 .Select(r => new RelativeViewModel(r.Id, r.FullName, r.Phone))
+        //                 .ToList()))
+        //         .ToList(),
+
+            var model = new ClassViewModel(@class.Id,
+                @class.Title,
+                school,
+                @class.Teacher,
+                DateOnly.FromDateTime(DateTime.Today),
+                new List<ScheduleEvent>());
 
         return View(model);
     }

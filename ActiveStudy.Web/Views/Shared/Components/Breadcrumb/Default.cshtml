@@ -1,15 +1,17 @@
 @model IEnumerable<ActiveStudy.Web.Components.Breadcrumb.BreadcrumbItem>
 
-<div>
-    @foreach (var item in Model)
-    {
-        if (item.IsActive)
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-no-gutter">
+        @foreach (var item in Model)
         {
-            <a href="@item.Link">@item.Text</a><span> ></span>
+            if (item.IsActive)
+            {
+                <li class="breadcrumb-item"><a class="breadcrumb-link" href="@item.Link">@item.Text</a></li>
+            }
+            else
+            {
+                <li class="breadcrumb-item active" aria-current="page">@item.Text</li>
+            }
         }
-        else
-        {
-            <span>@item.Text</span>
-        }
-    }
-</div>
+    </ol>
+</nav>
