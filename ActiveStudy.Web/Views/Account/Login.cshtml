@@ -4,34 +4,80 @@
     ViewData["Title"] = localizer["Page Title"];
 }
 
-<form asp-route="Login">
-    <div>
-        <h1>@localizer["Welcome"]</h1>
-        <p>@localizer["Subtitle"]</p>
-    </div>
-    @Html.ValidationSummary()
-
-    <div>
-        <label asp-for="Username">@localizer["Email"]</label>
-        <input type="email"
-               asp-for="Username"
-               placeholder="@localizer["Email"]"
-               required />
+<main id="content" role="main" class="main">
+    <div class="position-fixed top-0 end-0 start-0 bg-img-start" style="height: 32rem; background-image: url(/assets/svg/components/card-6.svg);">
+      <!-- Shape -->
+      <div class="shape shape-bottom zi-1">
+        <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1921 273">
+          <polygon fill="#fff" points="0,273 1921,273 1921,0 "/>
+        </svg>
+      </div>
+      <!-- End Shape -->
     </div>
 
-    <div>
-        <label asp-for="Password">@localizer["Password"]</label>
-        <input type="password"
-               asp-for="Password"
-               placeholder="********"
-               required />
-    </div>
+    <!-- Content -->
+    <div class="container py-5 py-sm-7">
+      <a class="d-flex justify-content-center mb-5" asp-controller="Home" asp-action="Index">
+        <img class="zi-2" src="~/assets/svg/logos/logo.svg" alt="Image Description" style="width: 8rem;">
+      </a>
 
-    <div>
-        <button type="submit">@localizer["Get Started"]</button>
+      <div class="mx-auto" style="max-width: 30rem;">
+        <!-- Card -->
+        <div class="card card-lg mb-5">
+          <div class="card-body">
+            <!-- Form -->
+            <form asp-route="Login" class="js-validate needs-validation" novalidate>
+              <div class="text-center">
+                <div class="mb-5">
+                  <h1 class="display-5">Sign in</h1>
+                  <p>Don't have an account yet? <a class="link" asp-controller="Account" asp-action="Registration">@localizer["Sign out here"]</a></p>
+                </div>
+              </div>
+
+              <!-- Form -->
+              <div class="mb-4">
+                <label class="form-label" for="signinSrEmail">Your email</label>
+                <input asp-for="Username" type="email" class="form-control form-control-lg" id="signinSrEmail" tabindex="1" placeholder="email@address.com" aria-label="email@address.com" required>
+                <span class="invalid-feedback">Please enter a valid email address.</span>
+              </div>
+              <!-- End Form -->
+
+              <!-- Form -->
+              <div class="mb-4">
+                <label class="form-label w-100" for="signupSrPassword" tabindex="0">
+                  <span class="d-flex justify-content-between align-items-center">
+                    <span>Password</span>
+                    <a asp-controller="Account" asp-action="ForgotPassword" class="form-label-link mb-0">Forgot Password?</a>
+                  </span>
+                </label>
+
+                <div class="input-group input-group-merge" data-hs-validation-validate-class>
+                  <input asp-for="Password" class="form-control form-control-lg" id="signupSrPassword" required>
+                </div>
+
+                <span class="invalid-feedback">Please enter a valid password.</span>
+              </div>
+              <!-- End Form -->
+
+              <!-- Form Check -->
+              <div class="form-check mb-4">
+                <input asp-for="RememberLogin" class="form-check-input" id="termsCheckbox">
+                <label class="form-check-label" for="termsCheckbox">
+                  Remember me
+                </label>
+              </div>
+              <!-- End Form Check -->
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Sign in</button>
+              </div>
+            </form>
+            <!-- End Form -->
+          </div>
+        </div>
+        <!-- End Card -->
+
+      </div>
     </div>
-        
-    <div>
-        <a asp-controller="Account" asp-action="ForgotPassword">@localizer["Forgot Password?"]</a>
-    </div>
-</form>
+    <!-- End Content -->
+  </main>

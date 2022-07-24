@@ -8,21 +8,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <link rel="shortcut icon" href="~/favicon.ico">
-    <style>
-        .validation-summary-errors {
-            color: red;
-        }
-    </style>
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+        
+    <!-- CSS Front Template -->
+    <link rel="stylesheet" href="~/assets/css/theme.min.css">
 </head>
 <body>
-<vc:header />
 
 <main>
     @RenderBody()
 </main>
 
-<vc:footer />
-<script src="~/vue.js"></script>
 @await RenderSectionAsync("Scripts", false)
+<!-- JS Global Compulsory -->
+<script src="~/assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JS Front Dashboard -->
+<script src="~/assets/js/hs.core.js"></script>
 </body>
 </html>

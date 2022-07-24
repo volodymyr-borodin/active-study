@@ -4,46 +4,89 @@
     ViewData["Title"] = localizer["Page Title"];
 }
 
-<form asp-route="Registration">
-    <div>
-        <h1>@localizer["Welcome"]</h1>
-        <p>@localizer["Subtitle"]</p>
+<main id="content" role="main" class="main">
+  <div class="position-fixed top-0 end-0 start-0 bg-img-start" style="height: 32rem; background-image: url(/assets/svg/components/card-6.svg);">
+    <!-- Shape -->
+    <div class="shape shape-bottom zi-1">
+      <svg preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 1921 273">
+        <polygon fill="#fff" points="0,273 1921,273 1921,0 " />
+      </svg>
     </div>
-    @Html.ValidationSummary()
+    <!-- End Shape -->
+  </div>
 
-    <div>
-        <label asp-for="FirstName">@localizer["First Name"]</label>
-        <input type="text"
-               asp-for="FirstName"
-               placeholder="@localizer["First Name"]"
-               required />
-    </div>
+  <!-- Content -->
+  <div class="container py-5 py-sm-7">
+    <a class="d-flex justify-content-center mb-5" asp-controller="Home" asp-action="Index">
+      <img class="zi-2" src="~/assets/svg/logos/logo.svg" alt="Image Description" style="width: 8rem;">
+    </a>
 
-    <div>
-        <label asp-for="LastName">@localizer["Last Name"]</label>
-        <input type="text"
-               asp-for="LastName"
-               placeholder="@localizer["Last Name"]"
-               required />
-    </div>
+    <div class="mx-auto" style="max-width: 30rem;">
+      <!-- Card -->
+      <div class="card card-lg mb-5">
+        <div class="card-body">
+          <!-- Form -->
+          <form asp-route="Registration" class="js-validate needs-validation" novalidate>
+            <div class="text-center">
+              <div class="mb-5">
+                <h1 class="display-5">Create your account</h1>
+                <p>Already have an account? <a class="link" asp-controller="Account" asp-action="Login">Sign in here</a></p>
+              </div>
+            </div>
 
-    <div>
-        <label asp-for="Email">@localizer["Email"]</label>
-        <input type="email"
-               asp-for="Email"
-               placeholder="@localizer["Email"]"
-               required />
-    </div>
+            <label class="form-label" for="fullNameSrEmail">Full name</label>
 
-    <div>
-        <label asp-for="Password">@localizer["Password"]</label>
-        <input type="password"
-               asp-for="Password"
-               placeholder="********"
-               required>
+            <!-- Form -->
+            <div class="row">
+              <div class="col-sm-6">
+                <!-- Form -->
+                <div class="mb-4">
+                  <input asp-for="FirstName" class="form-control form-control-lg" id="fullNameSrEmail" placeholder="Mark" aria-label="Mark" required>
+                  <span class="invalid-feedback">Please enter your first name.</span>
+                </div>
+                <!-- End Form -->
+              </div>
+
+              <div class="col-sm-6">
+                <!-- Form -->
+                <div class="mb-4">
+                  <input asp-for="LastName" class="form-control form-control-lg" placeholder="Williams" aria-label="Williams" required>
+                  <span class="invalid-feedback">Please enter your last name.</span>
+                </div>
+                <!-- End Form -->
+              </div>
+            </div>
+            <!-- End Form -->
+
+            <!-- Form -->
+            <div class="mb-4">
+              <label class="form-label" for="signupSrEmail">Your email</label>
+              <input asp-for="Email" class="form-control form-control-lg" id="signupSrEmail" placeholder="Markwilliams@site.com" aria-label="Markwilliams@site.com" required>
+              <span class="invalid-feedback">Please enter a valid email address.</span>
+            </div>
+            <!-- End Form -->
+
+            <!-- Form -->
+            <div class="mb-4">
+              <label class="form-label" for="signupSrPassword">Password</label>
+
+              <div class="input-group input-group-merge" data-hs-validation-validate-class>
+                <input type="password" class="form-control form-control-lg" name="password" id="signupSrPassword" required>
+              </div>
+
+              <span class="invalid-feedback">Your password is invalid. Please try again.</span>
+            </div>
+            <!-- End Form -->
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg">Create an account</button>
+            </div>
+          </form>
+          <!-- End Form -->
+        </div>
+      </div>
+      <!-- End Card -->
     </div>
-        
-    <div>
-        <button type="submit">@localizer["Sign Up"]</button>
-    </div>
-</form>
+  </div>
+  <!-- End Content -->
+</main>
